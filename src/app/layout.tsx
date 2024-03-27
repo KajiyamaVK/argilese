@@ -8,6 +8,9 @@ const roboto = Roboto({ weight: '400', subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'Argile-se',
   description: 'Venda de artes de olaria',
+  icons: {
+    icon: '/favicon.ico',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

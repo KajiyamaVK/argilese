@@ -6,14 +6,17 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "next lint --fix",
     "fastgit": "git add . && git commit -m \"fast commit\" && git push"
   },
   "dependencies": {
+    "mysql2": "^3.9.3",
     "next": "14.0.4",
     "react": "^18",
     "react-dom": "^18",
-    "react-icons": "^5.0.1"
+    "react-icons": "^5.0.1",
+    "sharp": "^0.33.3",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/node": "^20",

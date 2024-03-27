@@ -10,5 +10,7 @@ export async function POST(req: Request) {
       return await getProductsAvailable()
     case 'getProductById':
       return await getProductById(id)
+    default:
+      return new Response(JSON.stringify({ message: 'Invalid action' }), { status: 400 })
   }
 }

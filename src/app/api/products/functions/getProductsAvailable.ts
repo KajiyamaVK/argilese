@@ -15,7 +15,8 @@ export async function getProductsAvailable() {
     price, 
     productImages
     FROM products
-      WHERE isActive = true`)) as [RowDataPacket[], any]
+      WHERE isActive = true`
+      )) as [RowDataPacket[], any]
 
     if (results.length === 0) {
       // Checando se existem resultados.

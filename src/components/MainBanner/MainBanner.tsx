@@ -15,7 +15,7 @@ export function MainBanner() {
           <h2 className={`${baloo.className} font-extrabold text-[3rem] md:text-[4rem] min-w-[400px]`}>
             Da argila à arte
           </h2>
-          <p className="-mt-2">Peças artesanais de cerâmica de alta temperatura</p>
+          <p className="-mt-2 px-2 md:px-0">Peças artesanais de cerâmica de alta temperatura</p>
           <div className="flex justify-between mt-5 p-3 md:p-0">
             <div className="flex flex-col gap-5">
               <div className="flex items-center gap-2">

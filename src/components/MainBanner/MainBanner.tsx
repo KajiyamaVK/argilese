@@ -14,7 +14,7 @@ export function MainBanner() {
         <div>
           <h2 className={`${baloo.className} font-extrabold text-[4rem] min-w-[400px]`}>Da argila à arte</h2>
           <p className="-mt-2">Peças artesanais de cerâmica de alta temperatura</p>
-          <div className="flex justify-between mt-5">
+          <div className="flex justify-between mt-5 p-3 md:p-0">
             <div className="flex flex-col gap-5">
               <div className="flex items-center gap-2">
                 <Image src={bullet1} width={40} alt="Bullet 1" />
@@ -22,13 +22,13 @@ export function MainBanner() {
               </div>
               <div className="flex items-center gap-2">
                 <Image src={bullet2} width={40} alt="Bullet 2" />
-                <p>Feitas à mão</p>
+                <p>Artes de Alta temperatura</p>
               </div>
             </div>
             <div className="flex flex-col gap-5">
               <div className="flex items-center gap-2">
                 <Image src={bullet3} width={40} alt="Bullet 3" />
-                <p>Alta temperatura</p>
+                <p>Feitas à mão</p>
               </div>
               <div className="flex items-center gap-2">
                 <Image src={bullet4} width={40} alt="Bullet 4" />

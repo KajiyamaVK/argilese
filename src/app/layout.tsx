@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pt-BR">
-      <body className={roboto.className}>
+      <body className={`${roboto.className}`}>
         <div
           className="absolute flex flex-wrap justify-center w-full bg-center bg-cover -z-10 top-0 h-full"
           style={{ backgroundImage: 'url(/bannerBG.png)', filter: 'blur(8px)' }}

@@ -11,7 +11,7 @@ export function MainBanner() {
     <div>
       <div className="flex flex-wrap items-center h-full justify-center gap-5">
         <Image src={logo} className=" cover z-1" width={300} alt="Logo da Argile-se" />
-        <div>
+        <div className="px-5 md:px-0">
           <h2 className={`${baloo.className} font-extrabold text-[4rem] min-w-[400px]`}>Da argila à arte</h2>
           <p className="-mt-2">Peças artesanais de cerâmica de alta temperatura</p>
           <div className="flex justify-between mt-5 p-3 md:p-0">

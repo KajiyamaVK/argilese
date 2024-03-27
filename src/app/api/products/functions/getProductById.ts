@@ -20,7 +20,7 @@ export async function getProductById(id: number) {
 
     // Supondo que id é único, deve haver apenas um produto ou nenhum.
     if (results.length === 0) {
-      return new Response('Product not found', { status: 404 })
+      return new Response(JSON.stringify({ message: 'Error fetching products' }), { status: 500 })
     }
 
     // Como id é único, podemos pegar o primeiro resultado diretamente.

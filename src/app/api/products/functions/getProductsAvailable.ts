@@ -19,7 +19,7 @@ export async function getProductsAvailable() {
 
     if (results.length === 0) {
       // Checando se existem resultados.
-      return new Response('No products available', { status: 404 })
+      return new Response(JSON.stringify({ message: 'Error fetching products' }), { status: 500 })
     }
     
     return new Response(JSON.stringify(results), { status: 200 })

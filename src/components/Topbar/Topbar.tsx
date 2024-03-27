@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import logo from '/public/topbar_logo.png'
-import { baloo } from '@/app/layout'
+import { baloo } from '@/utils/functions'
 
 export function Topbar() {
   return (

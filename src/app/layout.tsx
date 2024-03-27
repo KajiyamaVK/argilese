@@ -1,10 +1,9 @@
 import type { Metadata } from 'next'
-import { Baloo_2, Roboto } from 'next/font/google'
+import { Roboto } from 'next/font/google'
 import './globals.css'
 import { Topbar } from '@/components/Topbar/Topbar'
 
 const roboto = Roboto({ weight: '400', subsets: ['latin'] })
-export const baloo = Baloo_2({ weight: '400', subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Argile-se',

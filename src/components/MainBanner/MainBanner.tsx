@@ -1,4 +1,4 @@
-import { baloo } from '@/app/layout'
+import { baloo } from '@/utils/functions'
 import logo from '/public/logo_lg.png'
 import Image from 'next/image'
 import bullet1 from '/public/bullet1.png'

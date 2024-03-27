@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import product from '/public/products/item1.jpg'
-import { baloo } from '@/app/layout'
+import { baloo } from '@/utils/functions'
 
 interface IItemCard {
   itemName?: string

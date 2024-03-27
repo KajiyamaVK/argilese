@@ -4,7 +4,7 @@ import { baloo } from '@/utils/functions'
 export default async function ItemPage({ params }: { params: { itemId: number } }) {
   const { itemId } = params
 
-  let product: IProduct[] = []
+  let product: IProduct
 
   async function getProductById() {
     await fetch(`${process.env.API_URL}/api/products`, {

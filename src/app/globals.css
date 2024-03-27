@@ -3,25 +3,47 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  --foreground: #272221;
+  --background: #fff;
+  --cardBg: #e2ddc6;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+    --foreground: 255, 255, 255;
+    --background-start: 0, 0, 0;
+    --background-end: 0, 0, 0;
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+* {
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
 }
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  margin:0;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 1rem;
+}
+
+h1{
+  font-size: 3rem;
+}
+h2{
+  font-size: 2rem;
+}
+h3{
+  font-size: 1.5rem;
+}
+
+
+h1,h2,h3,h4,h5,h6{
+  font-family: 'Baloo_2', sans-serif;
+  font-weight: 700;
+}
+
+

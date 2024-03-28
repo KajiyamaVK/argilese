@@ -14,3 +14,7 @@ export async function POST(req: Request) {
       return new Response(JSON.stringify({ message: 'Invalid action' }), { status: 400 })
   }
 }
+
+export async function GET() {
+  return await getProductsAvailable()
+}

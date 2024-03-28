@@ -18,11 +18,6 @@ export async function ItemsContainer() {
         headers: {
           'Content-Type': 'application/json',
         },
-        method: 'POST',
-        body: JSON.stringify({
-          action: 'getProductsAvailable',
-          id: 0,
-        }),
       })
 
       if (!response.ok) {

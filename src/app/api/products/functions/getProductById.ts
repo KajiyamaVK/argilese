@@ -1,5 +1,6 @@
 import { Conn } from '@/utils/database'
 import { RowDataPacket } from 'mysql2' // Ou o pacote de tipos correspondente, dependendo do que você está usando.
+import { NextResponse } from 'next/server'
 
 export async function getProductById(id: number) {
   try {
@@ -20,7 +21,8 @@ export async function getProductById(id: number) {
 
     // Supondo que id é único, deve haver apenas um produto ou nenhum.
     if (results.length === 0) {
-      return new Response(JSON.stringify({ message: 'Error fetching products' }), { status: 500 })
+      //return new Response(JSON.stringify({ message: 'Error fetching products' }), { status: 500 })
+      return NextResponse.json({ error: 'Error fetching products' }, { status: 500 })
     }
 
     // Como id é único, podemos pegar o primeiro resultado diretamente.
@@ -28,6 +30,7 @@ export async function getProductById(id: number) {
     return new Response(JSON.stringify(results[0]), { status: 200 })
   } catch (error) {
     console.error(`Error fetching product by id: ${error}`)
-    return new Response(JSON.stringify({ message: 'Error fetching product' }), { status: 500 })
+    //return new Response(JSON.stringify({ message: 'Error fetching product' }), { status: 500 })
+    return NextResponse.json({ error: 'Error fetching products' }, { status: 500 })
   }
 }

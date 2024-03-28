@@ -5,6 +5,7 @@ import { RowDataPacket } from 'mysql2' // Importando o tipo correto para a respo
 import { NextResponse } from 'next/server'
 
 export async function getProductsAvailable() {
+  console.log('getProductsAvailable')
   try {
     // Usando asserção de tipos para informar ao TypeScript o formato esperado da resposta.
     // eslint-disable-

@@ -11,16 +11,30 @@ interface IProductShow {
 let products: IProductShow[] = []
 export async function ItemsContainer() {
   async function getAllProducts() {
-    await fetch(`${process.env.API_URL}/api/products`, {
-      cache: 'no-cache',
-      method: 'POST',
-      body: JSON.stringify({
-        action: 'getProductsAvailable',
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => (products = data))
-      .catch((error) => console.error('Internal Error:', error))
+    try {
+      const response = await fetch(`${process.env.API_URL}/api/products`, {
+        cache: 'no-cache',
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'getProductsAvailable',
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data = await response.json()
+      if (data) {
+        // This check can be more sophisticated based on your API response structure
+        products = data
+      } else {
+        console.error('Received empty or invalid JSON.')
+      }
+      // eslint-disable-next-line
+    } catch (error: any) {
+      console.error('Error fetching products:', error.message)
+    }
   }
 
   await getAllProducts()

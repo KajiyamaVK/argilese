@@ -20,6 +20,7 @@ export async function ItemsContainer() {
     })
       .then((res) => res.json())
       .then((data) => (products = data))
+      .catch((error) => console.error('Internal Error:', error))
   }
 
   await getAllProducts()

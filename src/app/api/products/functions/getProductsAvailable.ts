@@ -19,6 +19,7 @@ export async function getProductsAvailable() {
       WHERE isActive = true`
       )) as [RowDataPacket[], any]
 
+      console.log('results', results)
     if (results.length === 0) {
       // Checando se existem resultados.
       return NextResponse.json({ error: 'Não há produtos disponíveis no momento.' }, { status: 400 })

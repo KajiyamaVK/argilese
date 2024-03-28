@@ -15,6 +15,9 @@ export async function ItemsContainer() {
       console.log('process.env.API_URL', process.env.API_URL)
       const response = await fetch(`${process.env.API_URL}/api/products`, {
         cache: 'no-cache',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         method: 'POST',
         body: JSON.stringify({
           action: 'getProductsAvailable',

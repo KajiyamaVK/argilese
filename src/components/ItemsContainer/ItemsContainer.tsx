@@ -17,6 +17,7 @@ export async function ItemsContainer() {
         method: 'POST',
         body: JSON.stringify({
           action: 'getProductsAvailable',
+          id: 0,
         }),
       })
 

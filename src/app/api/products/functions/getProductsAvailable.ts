@@ -21,7 +21,7 @@ export async function getProductsAvailable() {
 
     if (results.length === 0) {
       // Checando se existem resultados.
-      return NextResponse.json({ error: 'Error fetching products' }, { status: 500 })
+      return NextResponse.json({ error: 'Não há produtos disponíveis no momento.' }, { status: 400 })
       //return new Response(JSON.stringify({ message: 'Error fetching products' }), { status: 500 })
     }
     

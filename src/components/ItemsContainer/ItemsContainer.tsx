@@ -12,6 +12,7 @@ let products: IProductShow[] = []
 export async function ItemsContainer() {
   async function getAllProducts() {
     try {
+      console.log('process.env.API_URL', process.env.API_URL)
       const response = await fetch(`${process.env.API_URL}/api/products`, {
         cache: 'no-cache',
         method: 'POST',

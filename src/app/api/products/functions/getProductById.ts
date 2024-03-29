@@ -1,6 +1,6 @@
 //import { Conn } from '@/utils/database'
 //import { RowDataPacket } from 'mysql2' // Ou o pacote de tipos correspondente, dependendo do que você está usando.
-import mysql, { PoolOptions } from 'mysql2/promise'
+import mysql from 'mysql2/promise'
 import { NextResponse } from 'next/server'
 
 export async function getProductById(id: number) {

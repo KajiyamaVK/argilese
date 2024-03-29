@@ -1,20 +1,15 @@
 import { getProductById } from './functions/getProductById'
-import { getProductsAvailable } from './functions/getProductsAvailable'
+// import { getProductsAvailable } from './functions/getProductsAvailable'
 
 export async function POST(req: Request) {
+  console.log('POST')
   const body = await req.json()
-
-  const { action, id } = body
-  switch (action) {
-    case 'getProductsAvailable':
-      return await getProductsAvailable()
-    case 'getProductById':
-      return await getProductById(id)
-    default:
-      return new Response(JSON.stringify({ message: 'Invalid action' }), { status: 400 })
-  }
+  const { id } = body
+  return await getProductById(id)
+  return new Response('POST')
 }
 
 export async function GET() {
-  return await getProductsAvailable()
+  //return await getProductsAvailable()
+  return new Response('GET')
 }

@@ -5,7 +5,7 @@ import { RowDataPacket } from 'mysql2' // Importando o tipo correto para a respo
 import { NextResponse } from 'next/server'
 
 export async function getProductsAvailable() {
-  console.log('getProductsAvailable')
+  
   try {
     // Usando asserção de tipos para informar ao TypeScript o formato esperado da resposta.
     // eslint-disable-
@@ -20,7 +20,7 @@ export async function getProductsAvailable() {
       WHERE isActive = true`
       )) as [RowDataPacket[], any]
 
-      console.log('results', results)
+      
     if (results.length === 0) {
       // Checando se existem resultados.
       return NextResponse.json({ error: 'Não há produtos disponíveis no momento.' }, { status: 400 })

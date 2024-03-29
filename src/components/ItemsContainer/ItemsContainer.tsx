@@ -12,7 +12,6 @@ let products: IProductShow[] = []
 export async function ItemsContainer() {
   async function getAllProducts() {
     try {
-      console.log('process.env.API_URL', process.env.API_URL)
       const response = await fetch(`${process.env.API_URL}/api/products`, {
         cache: 'no-cache',
         headers: {
@@ -38,7 +37,7 @@ export async function ItemsContainer() {
   }
 
   await getAllProducts()
-  console.log('products', products)
+
   return (
     <div className=" mt-10 ">
       <h2 className="ml-10 border w-fit border-b-gray-400 border-r-0 border-l-0 border-t-0 mb-10">

@@ -11,7 +11,11 @@ export async function getProductById(id: number) {
         productName,
         productDescription,
         price,
-        productImages
+        productImages,
+        height,
+        width,
+        weight,
+        length
       FROM products
       WHERE id = ?`,
       [id],

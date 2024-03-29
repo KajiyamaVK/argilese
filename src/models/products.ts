@@ -8,7 +8,8 @@ export const productSchema = z.object({
   productImages: z.string(),
   height: z.number(),
   width: z.number(),
-  depth: z.number(),
+  weight: z.number(),
+  length: z.number(),
   isSold: z.boolean(),
 })
 

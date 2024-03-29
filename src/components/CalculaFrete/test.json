@@ -1,0 +1,660 @@
+[
+  {
+      "id": 1,
+      "name": "PAC",
+      "price": "21.19",
+      "custom_price": "21.19",
+      "discount": "3.61",
+      "currency": "R$",
+      "delivery_time": 7,
+      "delivery_range": {
+          "min": 6,
+          "max": 7
+      },
+      "custom_delivery_time": 7,
+      "custom_delivery_range": {
+          "min": 6,
+          "max": 7
+      },
+      "packages": [
+          {
+              "price": "21.19",
+              "discount": "3.61",
+              "format": "box",
+              "weight": "0.30",
+              "insurance_value": "0.00",
+              "dimensions": {
+                  "height": 4,
+                  "width": 12,
+                  "length": 17
+              }
+          }
+      ],
+      "additional_services": {
+          "receipt": false,
+          "own_hand": false,
+          "collect": false
+      },
+      "company": {
+          "id": 1,
+          "name": "Correios",
+          "picture": "https://www.melhorenvio.com.br/images/shipping-companies/correios.png"
+      }
+  },
+  {
+      "id": 2,
+      "name": "SEDEX",
+      "price": "29.91",
+      "custom_price": "29.91",
+      "discount": "5.19",
+      "currency": "R$",
+      "delivery_time": 2,
+      "delivery_range": {
+          "min": 1,
+          "max": 2
+      },
+      "custom_delivery_time": 2,
+      "custom_delivery_range": {
+          "min": 1,
+          "max": 2
+      },
+      "packages": [
+          {
+              "price": "29.91",
+              "discount": "5.19",
+              "format": "box",
+              "weight": "0.30",
+              "insurance_value": "0.00",
+              "dimensions": {
+                  "height": 4,
+                  "width": 12,
+                  "length": 17
+              }
+          }
+      ],
+      "additional_services": {
+          "receipt": false,
+          "own_hand": false,
+          "collect": false
+      },
+      "company": {
+          "id": 1,
+          "name": "Correios",
+          "picture": "https://www.melhorenvio.com.br/images/shipping-companies/correios.png"
+      }
+  },
+  {
+      "id": 3,
+      "name": ".Package",
+      "price": "21.64",
+      "custom_price": "21.64",
+      "discount": "4.86",
+      "currency": "R$",
+      "delivery_time": 6,
+      "delivery_range": {
+          "min": 5,
+          "max": 6
+      },
+      "custom_delivery_time": 6,
+      "custom_delivery_range": {
+          "min": 5,
+          "max": 6
+      },
+      "packages": [
+          {
+              "format": "box",
+              "weight": "0.30",
+              "insurance_value": "0.00",
+              "dimensions": {
+                  "height": 4,
+                  "width": 12,
+                  "length": 17
+              }
+          }
+      ],
+      "additional_services": {
+          "receipt": false,
+          "own_hand": false,
+          "collect": false
+      },
+      "company": {
+          "id": 2,
+          "name": "Jadlog",
+          "picture": "https://www.melhorenvio.com.br/images/shipping-companies/jadlog.png"
+      }
+  },
+  {
+      "id": 4,
+      "name": ".Com",
+      "price": "20.33",
+      "custom_price": "20.33",
+      "discount": "12.71",
+      "currency": "R$",
+      "delivery_time": 5,
+      "delivery_range": {
+          "min": 4,
+          "max": 5
+      },
+      "custom_delivery_time": 5,
+      "custom_delivery_range": {
+          "min": 4,
+          "max": 5
+      },
+      "packages": [
+          {
+              "format": "box",
+              "weight": "0.30",
+              "insurance_value": "0.00",
+              "dimensions": {
+                  "height": 4,
+                  "width": 12,
+                  "length": 17
+              }
+          }
+      ],
+      "additional_services": {
+          "receipt": false,
+          "own_hand": false,
+          "collect": false
+      },
+      "company": {
+          "id": 2,
+          "name": "Jadlog",
+          "picture": "https://www.melhorenvio.com.br/images/shipping-companies/jadlog.png"
+      }
+  },
+  {
+      "id": 12,
+      "name": "éFácil",
+      "price": "16.94",
+      "custom_price": "16.94",
+      "discount": "0.00",
+      "currency": "R$",
+      "delivery_time": 4,
+      "delivery_range": {
+          "min": 3,
+          "max": 4
+      },
+      "custom_delivery_time": 4,
+      "custom_delivery_range": {
+          "min": 3,
+          "max": 4
+      },
+      "packages": [
+          {
+              "format": "box",
+              "weight": "0.30",
+              "insurance_value": "0.00",
+              "dimensions": {
+                  "height": 4,
+                  "width": 12,
+                  "length": 17
+              }
+          }
+      ],
+      "additional_services": {
+          "receipt": false,
+          "own_hand": false,
+          "collect": false
+      },
+      "company": {
+          "id": 6,
+          "name": "LATAM Cargo",
+          "picture": "https://www.melhorenvio.com.br/images/shipping-companies/latamcargo.png"
+      }
+  },
+  {
+      "id": 15,
+      "name": "Amanhã",
+      "price": "34.70",
+      "custom_price": "34.70",
+      "discount": "9.14",
+      "currency": "R$",
+      "delivery_time": 3,
+      "delivery_range": {
+          "min": 2,
+          "max": 3
+      },
+      "custom_delivery_time": 3,
+      "custom_delivery_range": {
+          "min": 2,
+          "max": 3
+      },
+      "packages": [
+          {
+              "format": "box",
+              "weight": "0.30",
+              "insurance_value": "0.00",
+              "dimensions": {
+                  "height": 15,
+                  "width": 15,
+                  "length": 17
+              }
+          }
+      ],
+      "additional_services": {
+          "receipt": false,
+          "own_hand": false,
+          "collect": false
+      },
+      "company": {
+          "id": 9,
+          "name": "Azul Cargo Express",
+          "picture": "https://www.melhorenvio.com.br/images/shipping-companies/azulcargo.png"
+      }
+  },
+  {
+      "id": 16,
+      "name": "e-commerce",
+      "price": "20.09",
+      "custom_price": "20.09",
+      "discount": "8.47",
+      "currency": "R$",
+      "delivery_time": 5,
+      "delivery_range": {
+          "min": 4,
+          "max": 5
+      },
+      "custom_delivery_time": 5,
+      "custom_delivery_range": {
+          "min": 4,
+          "max": 5
+      },
+      "packages": [
+          {
+              "format": "box",
+              "weight": "0.30",
+              "insurance_value": "0.00",
+              "dimensions": {
+                  "height": 15,
+                  "width": 15,
+                  "length": 17
+              }
+          }
+      ],
+      "additional_services": {
+          "receipt": false,
+          "own_hand": false,
+          "collect": false
+      },
+      "company": {
+          "id": 9,
+          "name": "Azul Cargo Express",
+          "picture": "https://www.melhorenvio.com.br/images/shipping-companies/azulcargo.png"
+      }
+  },
+  {
+      "id": 17,
+      "name": "Mini Envios",
+      "price": "14.81",
+      "custom_price": "14.81",
+      "discount": "0.00",
+      "currency": "R$",
+      "delivery_time": 8,
+      "delivery_range": {
+          "min": 7,
+          "max": 8
+      },
+      "custom_delivery_time": 8,
+      "custom_delivery_range": {
+          "min": 7,
+          "max": 8
+      },
+      "packages": [
+          {
+              "price": "14.81",
+              "discount": "0.00",
+              "format": "box",
+              "weight": "0.30",
+              "insurance_value": "0.00",
+              "dimensions": {
+                  "height": 4,
+                  "width": 12,
+                  "length": 17
+              }
+          }
+      ],
+      "additional_services": {
+          "receipt": false,
+          "own_hand": false,
+          "collect": false
+      },
+      "company": {
+          "id": 1,
+          "name": "Correios",
+          "picture": "https://www.melhorenvio.com.br/images/shipping-companies/correios.png"
+      }
+  },
+  {
+      "id": 22,
+      "name": "Rodoviário",
+      "price": "23.79",
+      "custom_price": "23.79",
+      "discount": "0.00",
+      "currency": "R$",
+      "delivery_time": 6,
+      "delivery_range": {
+          "min": 5,
+          "max": 6
+      },
+      "custom_delivery_time": 6,
+      "custom_delivery_range": {
+          "min": 5,
+          "max": 6
+      },
+      "packages": [
+          {
+              "format": "box",
+              "weight": "0.30",
+              "insurance_value": "0.00",
+              "dimensions": {
+                  "height": 4,
+                  "width": 12,
+                  "length": 17
+              }
+          }
+      ],
+      "additional_services": {
+          "receipt": false,
+          "own_hand": false,
+          "collect": false
+      },
+      "company": {
+          "id": 12,
+          "name": "Buslog",
+          "picture": "https://www.melhorenvio.com.br/images/shipping-companies/buslog.png"
+      }
+  },
+  {
+      "id": 27,
+      "name": ".Package Centralizado",
+      "price": "16.93",
+      "custom_price": "16.93",
+      "discount": "13.18",
+      "currency": "R$",
+      "delivery_time": 6,
+      "delivery_range": {
+          "min": 5,
+          "max": 6
+      },
+      "custom_delivery_time": 6,
+      "custom_delivery_range": {
+          "min": 5,
+          "max": 6
+      },
+      "packages": [
+          {
+              "format": "box",
+              "weight": "0.30",
+              "insurance_value": "0.00",
+              "dimensions": {
+                  "height": 4,
+                  "width": 12,
+                  "length": 17
+              }
+          }
+      ],
+      "additional_services": {
+          "receipt": false,
+          "own_hand": false,
+          "collect": false
+      },
+      "company": {
+          "id": 2,
+          "name": "Jadlog",
+          "picture": "https://www.melhorenvio.com.br/images/shipping-companies/jadlog.png"
+      }
+  },
+  {
+      "id": 28,
+      "name": "PAC Centralizado",
+      "price": "19.46",
+      "custom_price": "19.46",
+      "discount": "5.34",
+      "currency": "R$",
+      "delivery_time": 7,
+      "delivery_range": {
+          "min": 6,
+          "max": 7
+      },
+      "custom_delivery_time": 7,
+      "custom_delivery_range": {
+          "min": 6,
+          "max": 7
+      },
+      "packages": [
+          {
+              "price": "19.46",
+              "discount": "5.34",
+              "format": "box",
+              "weight": "0.30",
+              "insurance_value": "0.00",
+              "dimensions": {
+                  "height": 4,
+                  "width": 12,
+                  "length": 17
+              }
+          }
+      ],
+      "additional_services": {
+          "receipt": false,
+          "own_hand": false,
+          "collect": false
+      },
+      "company": {
+          "id": 1,
+          "name": "Correios",
+          "picture": "https://www.melhorenvio.com.br/images/shipping-companies/correios.png"
+      }
+  },
+  {
+      "id": 29,
+      "name": "SEDEX Centralizado",
+      "price": "26.70",
+      "custom_price": "26.70",
+      "discount": "8.40",
+      "currency": "R$",
+      "delivery_time": 2,
+      "delivery_range": {
+          "min": 1,
+          "max": 2
+      },
+      "custom_delivery_time": 2,
+      "custom_delivery_range": {
+          "min": 1,
+          "max": 2
+      },
+      "packages": [
+          {
+              "price": "26.70",
+              "discount": "8.40",
+              "format": "box",
+              "weight": "0.30",
+              "insurance_value": "0.00",
+              "dimensions": {
+                  "height": 4,
+                  "width": 12,
+                  "length": 17
+              }
+          }
+      ],
+      "additional_services": {
+          "receipt": false,
+          "own_hand": false,
+          "collect": false
+      },
+      "company": {
+          "id": 1,
+          "name": "Correios",
+          "picture": "https://www.melhorenvio.com.br/images/shipping-companies/correios.png"
+      }
+  },
+  {
+      "id": 30,
+      "name": "Mini Centralizado",
+      "price": "13.49",
+      "custom_price": "13.49",
+      "discount": "0.00",
+      "currency": "R$",
+      "delivery_time": 8,
+      "delivery_range": {
+          "min": 7,
+          "max": 8
+      },
+      "custom_delivery_time": 8,
+      "custom_delivery_range": {
+          "min": 7,
+          "max": 8
+      },
+      "packages": [
+          {
+              "price": "13.49",
+              "discount": "0.00",
+              "format": "box",
+              "weight": "0.30",
+              "insurance_value": "0.00",
+              "dimensions": {
+                  "height": 4,
+                  "width": 12,
+                  "length": 17
+              }
+          }
+      ],
+      "additional_services": {
+          "receipt": false,
+          "own_hand": false,
+          "collect": false
+      },
+      "company": {
+          "id": 1,
+          "name": "Correios",
+          "picture": "https://www.melhorenvio.com.br/images/shipping-companies/correios.png"
+      }
+  },
+  {
+      "id": 31,
+      "name": "Express",
+      "price": "14.11",
+      "custom_price": "14.11",
+      "discount": "0.00",
+      "currency": "R$",
+      "delivery_time": 4,
+      "delivery_range": {
+          "min": 3,
+          "max": 4
+      },
+      "custom_delivery_time": 4,
+      "custom_delivery_range": {
+          "min": 3,
+          "max": 4
+      },
+      "packages": [
+          {
+              "price": "14.11",
+              "discount": "0.00",
+              "format": "box",
+              "weight": "0.30",
+              "insurance_value": "1.00",
+              "dimensions": {
+                  "height": 4,
+                  "width": 12,
+                  "length": 17
+              }
+          }
+      ],
+      "additional_services": {
+          "receipt": false,
+          "own_hand": false,
+          "collect": false
+      },
+      "company": {
+          "id": 14,
+          "name": "Loggi",
+          "picture": "https://www.melhorenvio.com.br/images/shipping-companies/loggi.png"
+      }
+  },
+  {
+      "id": 32,
+      "name": "Coleta",
+      "price": "21.12",
+      "custom_price": "21.12",
+      "discount": "0.00",
+      "currency": "R$",
+      "delivery_time": 4,
+      "delivery_range": {
+          "min": 3,
+          "max": 4
+      },
+      "custom_delivery_time": 4,
+      "custom_delivery_range": {
+          "min": 3,
+          "max": 4
+      },
+      "packages": [
+          {
+              "price": "21.12",
+              "discount": "0.00",
+              "format": "box",
+              "weight": "0.30",
+              "insurance_value": "1.00",
+              "dimensions": {
+                  "height": 4,
+                  "width": 12,
+                  "length": 17
+              }
+          }
+      ],
+      "additional_services": {
+          "receipt": false,
+          "own_hand": false,
+          "collect": true
+      },
+      "company": {
+          "id": 14,
+          "name": "Loggi",
+          "picture": "https://www.melhorenvio.com.br/images/shipping-companies/loggi.png"
+      }
+  },
+  {
+      "id": 33,
+      "name": "Standard",
+      "price": "14.21",
+      "custom_price": "14.21",
+      "discount": "0.00",
+      "currency": "R$",
+      "delivery_time": 6,
+      "delivery_range": {
+          "min": 5,
+          "max": 6
+      },
+      "custom_delivery_time": 6,
+      "custom_delivery_range": {
+          "min": 5,
+          "max": 6
+      },
+      "packages": [
+          {
+              "price": "14.21",
+              "discount": "0.00",
+              "format": "box",
+              "weight": "0.30",
+              "insurance_value": "0.00",
+              "dimensions": {
+                  "height": 4,
+                  "width": 12,
+                  "length": 17
+              }
+          }
+      ],
+      "additional_services": {
+          "receipt": false,
+          "own_hand": false,
+          "collect": false
+      },
+      "company": {
+          "id": 15,
+          "name": "JeT",
+          "picture": "https://www.melhorenvio.com.br/images/shipping-companies/jet.png"
+      }
+  }
+]

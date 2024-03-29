@@ -19,12 +19,15 @@ const envSchema = z.object({
   API_URL: z.string({
     required_error: 'API URL is required',
   }),
+  TOKEN_FRETES: z.string({
+    required_error: 'Token Frete is required',
+  }),
 })
 
 type IEnv = z.infer<typeof envSchema>
 
 let env: IEnv
-console.log('teste')
+
 try {
   envSchema.parse(process.env)
 } catch (error) {

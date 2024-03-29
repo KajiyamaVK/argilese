@@ -1,11 +1,11 @@
-import { getProductById } from './functions/getProductById'
+//import { getProductById } from './functions/getProductById'
 // import { getProductsAvailable } from './functions/getProductsAvailable'
 
 export async function POST(req: Request) {
   console.log('POST')
   const body = await req.json()
   const { id } = body
-  return await getProductById(id)
+  //return await getProductById(id)
   return new Response('POST')
 }
 

@@ -45,7 +45,7 @@ export function CalculaFrete({ height, width, length, weight }: ICalculaFrete) {
         <input
           type="text"
           id="cepInput"
-          className="border border-gray-300 rounded-md p-2 w-[200px] max-w-[200px]"
+          className="border border-gray-300 rounded-md p-2 w-[200px] max-w-[150px]"
           value={cep}
           onChange={(e) => handleChangeCep(e.target.value)}
         />

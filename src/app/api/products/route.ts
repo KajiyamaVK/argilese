@@ -1,6 +1,6 @@
 //import { getProductById } from './functions/getProductById'
 // import { getProductsAvailable } from './functions/getProductsAvailable'
-
+// eslint-disable-next-line
 export async function POST(req: Request) {
   console.log('POST')
   //const body = await req.json()

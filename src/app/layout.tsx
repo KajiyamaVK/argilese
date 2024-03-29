@@ -21,7 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           className="absolute flex flex-wrap justify-center w-full bg-center bg-cover -z-10 top-0 h-full"
           style={{ backgroundImage: 'url(/bannerBG.png)', filter: 'blur(8px)' }}
         />
-        <Topbar />
+        {/* <Topbar /> */}
         {children}
       </body>
     </html>

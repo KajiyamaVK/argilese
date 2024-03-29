@@ -22,6 +22,12 @@ const envSchema = z.object({
   TOKEN_FRETES: z.string({
     required_error: 'Token Frete is required',
   }),
+  TOKEN_CEPCERTO: z.string({
+    required_error: 'Token CepCerto is required',
+  }),
+  FRETE_SERVICE: z.string({
+    required_error: 'Frete service is required',
+  }),
 })
 
 type IEnv = z.infer<typeof envSchema>

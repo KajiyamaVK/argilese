@@ -49,7 +49,7 @@ export function CalculaFrete({ height, width, length, weight }: ICalculaFrete) {
           value={cep}
           onChange={(e) => handleChangeCep(e.target.value)}
         />
-        <Button className="ml-5" disabled={cep.length < 9} onClick={getDeliveryPrice}>
+        <Button className="ml-5 " disabled={cep.length < 9} onClick={getDeliveryPrice}>
           Calcular
         </Button>
       </div>

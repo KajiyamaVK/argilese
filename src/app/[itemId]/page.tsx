@@ -46,7 +46,7 @@ export default async function ItemPage({ params }: { params: { itemId: number } 
           <CalculaFrete height={product.height} width={product.width} length={product.length} weight={product.weight} />
         </div>
 
-        <button className="bg-yellow-700 text-white p-2 rounded-md mt-10 hover:opacity-75">Comprar</button>
+        <button className="bg-yellow-700 text-white p-2 rounded-md mt-10 hover:opacity-75 w-full">Comprar</button>
       </div>
     </div>
   )

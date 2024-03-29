@@ -1,5 +1,5 @@
 //import { getProductById } from './functions/getProductById'
-// import { getProductsAvailable } from './functions/getProductsAvailable'
+import { getProductsAvailable } from './functions/getProductsAvailable'
 // eslint-disable-next-line
 export async function POST(req: Request) {
   console.log('POST')
@@ -10,6 +10,5 @@ export async function POST(req: Request) {
 }
 
 export async function GET() {
-  //return await getProductsAvailable()
-  return new Response('GET')
+  return await getProductsAvailable()
 }

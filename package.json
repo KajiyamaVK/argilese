@@ -10,8 +10,10 @@
     "fastgit": "git add . && git commit -m \"fast commit\" && git push"
   },
   "dependencies": {
+    "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "dotenv": "^16.4.5",
+    "lucide-react": "^0.363.0",
     "mysql2": "^3.9.3",
     "next": "14.1.0",
     "react": "^18",
@@ -19,6 +21,7 @@
     "react-icons": "^5.0.1",
     "sharp": "^0.33.3",
     "tailwind-merge": "^2.2.2",
+    "tailwindcss-animate": "^1.0.7",
     "zod": "^3.22.4"
   },
   "devDependencies": {

@@ -1,20 +1,27 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '../Button/Button'
 import { formatCEP } from '@/utils/functions'
+import pacLogo from '/public/logos/pacLogo.png'
+import sedexLogo from '/public/logos/sedexLogo.png'
+import Image from 'next/image'
+import { Skeleton } from '../ui/skeleton'
 
 interface ICalculaFrete {
-  height: number
-  width: number
-  length: number
-  weight: number
+  height: string
+  width: string
+  length: string
+  weight: string
 }
 
 export function CalculaFrete({ height, width, length, weight }: ICalculaFrete) {
   const [cep, setCep] = useState('')
-  const [pacPrice, setPacPrice] = useState(0)
-  const [sedexPrice, setSedexPrice] = useState(0)
+  const [pacPrice, setPacPrice] = useState('')
+  const [pacDeliveryTime, setPacDeliveryTime] = useState('')
+  const [sedexPrice, setSedexPrice] = useState('')
+  const [sedexDeliveryTime, setSedexDeliveryTime] = useState('')
+  const [showSkeleton, setShowSkeleton] = useState<boolean | null>(null)
 
   function handleChangeCep(value: string) {
     const formattedCep = formatCEP(value)
@@ -22,7 +29,11 @@ export function CalculaFrete({ height, width, length, weight }: ICalculaFrete) {
   }
 
   async function getDeliveryPrice() {
-    //await fetch(`${process.env.API_URL}//api/calculaFrete`, {
+    setPacPrice('')
+    setSedexPrice('')
+    setPacDeliveryTime('')
+    setSedexDeliveryTime('')
+    setShowSkeleton(true)
     await fetch(`/api/calculaFrete`, {
       method: 'POST',
       cache: 'no-cache',
@@ -32,8 +43,16 @@ export function CalculaFrete({ height, width, length, weight }: ICalculaFrete) {
       .then((data) => {
         setPacPrice(data.pacPrice)
         setSedexPrice(data.sedexPrice)
+        setPacDeliveryTime(data.pacDeliveryTime)
+        setSedexDeliveryTime(data.sedexDeliveryTime)
       })
   }
+
+  useEffect(() => {
+    if (pacPrice !== '' || sedexPrice !== '') {
+      setShowSkeleton(false)
+    }
+  }, [pacPrice, sedexPrice])
 
   return (
     <div className="flex flex-col mx-auto md:mx-0">
@@ -53,17 +72,67 @@ export function CalculaFrete({ height, width, length, weight }: ICalculaFrete) {
           Calcular
         </Button>
       </div>
-      {pacPrice > 0 ||
-        (sedexPrice > 0 && (
-          <div className="mt-2">
-            <p>
-              <b>Preço do PAC:</b> R$ {pacPrice.toFixed(2).replace('.', ',')}
-            </p>
-            <p>
-              <b>Preço do Sedex:</b> R$ {sedexPrice.toFixed(2).replace('.', ',')}
-            </p>
-          </div>
-        ))}
+      {showSkeleton !== null ? (
+        <div className="mt-5 flex flex-col gap-5">
+          <table>
+            <tr>
+              <Image src={pacLogo} alt="Ícone de Pac dos Correios" width={125} height={38} />
+            </tr>
+            <tr>
+              <td className="w-[100px]">
+                <b>Preço:</b>
+              </td>
+              <td className="flex items-center">
+                R${' '}
+                {showSkeleton ? (
+                  <Skeleton className="w-[50px] h-[20px] bg-gray-300 ml-2" />
+                ) : (
+                  pacPrice.replace('.', ',')
+                )}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <b>Prazo:</b>
+              </td>
+              <td>
+                {showSkeleton ? <Skeleton className="w-[50px] h-[20px] bg-gray-300 ml-2" /> : `${pacDeliveryTime} dias`}
+              </td>
+            </tr>
+          </table>
+
+          <table>
+            <tr>
+              <Image src={sedexLogo} alt="Ícone do Sedex dos Correios" width={125} height={38} />
+            </tr>
+            <tr>
+              <td className="w-[100px]">
+                <b>Preço:</b>
+              </td>
+              <td className="flex items-center">
+                R${' '}
+                {showSkeleton ? (
+                  <Skeleton className="w-[50px] h-[20px] bg-gray-300 ml-2" />
+                ) : (
+                  sedexPrice.replace('.', ',')
+                )}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <b>Prazo:</b>
+              </td>
+              <td>
+                {showSkeleton ? (
+                  <Skeleton className="w-[50px] h-[20px] bg-gray-300 ml-2" />
+                ) : (
+                  `${sedexDeliveryTime} dias`
+                )}
+              </td>
+            </tr>
+          </table>
+        </div>
+      ) : null}
     </div>
   )
 }

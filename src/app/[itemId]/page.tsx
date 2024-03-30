@@ -43,7 +43,12 @@ export default async function ItemPage({ params }: { params: { itemId: number } 
           <span className="text-3xl">{product.price.toFixed(2).replace('.', ',')}</span>
         </div>
         <div className="flex">
-          <CalculaFrete height={product.height} width={product.width} length={product.length} weight={product.weight} />
+          <CalculaFrete
+            height={product.height.toString()}
+            width={product.width.toString()}
+            length={product.length.toString()}
+            weight={product.weight.toString()}
+          />
         </div>
 
         <button className="bg-yellow-700 text-white p-2 rounded-md mt-10 hover:opacity-75 w-full">Comprar</button>

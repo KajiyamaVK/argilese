@@ -38,15 +38,19 @@ export async function getDeliveryPrice(cep: string, height: number, width: numbe
         const pac = data.filter((item: IShippingOption) => item.name === 'PAC')
 
         const pacPrice = pac[0].error ? 0 : pac[0].price + pac[0].discount
+        const pacDeliveryTime = pac[0].error ? 0 : pac[0].delivery_time
 
         const sedex = data.filter((item: IShippingOption) => item.name === 'SEDEX')
+        const sedexDeliveryTime = sedex[0].error ? 0 : sedex[0].delivery_time
 
         const sedexPrice: number = Number(sedex[0].price) + Number(sedex[0].discount)
 
-        // response = {
-        //   pacPrice,
-        //   sedexPrice,
-        // }
+        response = {
+          pacPrice,
+          pacDeliveryTime,
+          sedexPrice,
+          sedexDeliveryTime,
+        }
       })
       .catch(() => {
         console.error('Error fetching delivery price')

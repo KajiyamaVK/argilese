@@ -15,7 +15,9 @@ export async function getProductById(id: number) {
         height,
         width,
         weight,
-        length
+        length,
+        diameter,
+        hasHandle
       FROM products
       WHERE id = ?`,
       [id],

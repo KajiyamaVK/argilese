@@ -10,14 +10,24 @@ export async function getProductsAvailable() {
     // Usando asserção de tipos para informar ao TypeScript o formato esperado da resposta.
     // eslint-disable-
     const [results] = (await Conn.query(`
-    SELECT
-    id,
-    productName,
-    productDescription,
-    price,
-    productImages
+    SELECT 
+	    id,
+      productName,
+      productDescription,
+      height,
+      width,
+      diameter,
+      isSold,
+      isActive,
+      createdAt,
+      updatedAt,
+      categoryIdFK,
+      productImages,
+      price,
+      length,
+      weight
     FROM products
-      WHERE isActive = true`
+    WHERE isActive = true`
       )) as [RowDataPacket[], any]
 
       

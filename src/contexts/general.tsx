@@ -1,3 +1,4 @@
+'use client'
 import { IProduct } from '@/models/products'
 import { ReactNode, createContext, useState } from 'react'
 

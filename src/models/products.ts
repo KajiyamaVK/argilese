@@ -11,6 +11,8 @@ export const productSchema = z.object({
   weight: z.number(),
   length: z.number(),
   isSold: z.boolean(),
+  diameter: z.number(),
+  hasHandle: z.boolean(),
 })
 
 export type IProduct = z.infer<typeof productSchema>

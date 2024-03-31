@@ -2,6 +2,8 @@ import { CalculaFrete } from '@/components/CalculaFrete/CalculaFrete'
 import { ImagesGallery } from '@/components/ImageGallery/ImagesGallery'
 import { IProduct } from '@/models/products'
 import { baloo } from '@/utils/functions'
+import { AddToCartButton } from './AddToCartButton'
+import BackButton from '@/components/BackButton/BackButton'
 export default async function ItemPage({ params }: { params: { itemId: number } }) {
   const { itemId } = params
 
@@ -9,7 +11,6 @@ export default async function ItemPage({ params }: { params: { itemId: number } 
 
   async function getProductById() {
     await fetch(`${process.env.API_URL}/api/products`, {
-      cache: 'no-cache',
       method: 'POST',
       body: JSON.stringify({ action: 'getProductById', id: itemId }),
     })
@@ -24,21 +25,41 @@ export default async function ItemPage({ params }: { params: { itemId: number } 
   }
   const productImages = product.productImages.split(';')
   return (
-    <div className="w-full p-20 flex flex-col lg:flex-row lg:gap-5 ">
-      <div className="w-full mx-auto lg:w-1/2 flex lg:justify-end justify-center">
+    <div className="w-full p-20 flex flex-col lg:flex-row lg:gap-5">
+      <div className="w-full mx-auto lg:w-1/2  ">
+        <BackButton />
         <ImagesGallery images={productImages} />
       </div>
-      <div className="max-w-[300px] mx-auto lg:w-1/2 lg:flex lg:flex-col lg:min-w-[500px]  ">
-        <h1 className={`text-[2rem] ${baloo.className}`}>{product.productName}</h1>
+      <div className="max-w-[300px] mx-auto lg:w-1/2 lg:flex lg:flex-col lg:min-w-[500px] mt-5 ">
+        <h1 className={`text-[2rem] border-b border-gray-500 ${baloo.className}`}>{product.productName}</h1>
         <p>{product.productDescription}</p>
-        <p className="mt-2">
-          <b>Dimensões:</b> {product.height}x{product.width}x{product.length}cm
+        <p className="mt-5">
+          <b>Medidas aproximadas</b>
         </p>
-        <p>
-          <b>Peso: </b>
-          {product.weight}kg
-        </p>
-        <div className="flex gap-2 items-end">
+        <table>
+          <tr>
+            <td className="pr-20">Altura:</td>
+            <td>{product.height}cm</td>
+          </tr>
+          <tr>
+            <td>Largura:</td>
+            <td>
+              {product.width}cm {product.hasHandle && 'com alça'}
+            </td>
+          </tr>
+          {product.length > 0 && (
+            <tr>
+              <td>Comprimento:</td>
+              <td>{product.length}cm</td>
+            </tr>
+          )}
+          <tr>
+            <td>Peso:</td>
+            <td>{product.weight}Kg</td>
+          </tr>
+        </table>
+
+        <div className="flex gap-2 items-end mt-5">
           <span className="mb-[1px] mt-5">R$</span>
           <span className="text-3xl">{product.price.toFixed(2).replace('.', ',')}</span>
         </div>
@@ -51,7 +72,10 @@ export default async function ItemPage({ params }: { params: { itemId: number } 
           />
         </div>
 
-        <button className="bg-yellow-700 text-white p-2 rounded-md mt-10 hover:opacity-75 w-full">Comprar</button>
+        {/* <button className="bg-yellow-700 text-white p-2 rounded-md mt-10 hover:opacity-75 w-full">
+          Adicionar ao carrinho
+        </button> */}
+        <AddToCartButton product={product} />
       </div>
     </div>
   )

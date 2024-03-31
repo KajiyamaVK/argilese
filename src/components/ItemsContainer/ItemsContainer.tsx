@@ -1,14 +1,8 @@
 import { ItemCard } from '@/components/ItemCard/ItemCard'
+import { IProduct } from '@/models/products'
+import { baloo } from '@/utils/functions'
 
-interface IProductShow {
-  id: number
-  productName: string
-  productDescription: string
-  price: number
-  productImages: string
-}
-
-let products: IProductShow[] = []
+let products: IProduct[] = []
 export async function ItemsContainer() {
   async function getAllProducts() {
     try {
@@ -40,24 +34,15 @@ export async function ItemsContainer() {
 
   return (
     <div className=" mt-10 ">
-      <h2 className="ml-10 border w-fit border-b-gray-400 border-r-0 border-l-0 border-t-0 mb-10">
+      <h2
+        className={`ml-10 border w-fit border-b-gray-400 border-r-0 border-l-0 border-t-0 mb-10 ${baloo.className} font-extrabold`}
+      >
         Nossos projetos{'   '}
       </h2>
-      <div className="p-20 flex flex-wrap justify-center md:justify-start">
+      <div className="p-20 flex flex-wrap justify-center md:justify-start gap-28 md:gap-5">
         {products.length > 0 &&
           products.map((product) => {
-            const productImages = product.productImages.split(';')
-
-            return (
-              <ItemCard
-                key={product.id}
-                id={product.id}
-                description={product.productDescription}
-                itemName={product.productName}
-                itemUrl={productImages[0]}
-                price={product.price}
-              />
-            )
+            return <ItemCard key={product.id} product={product} />
           })}
       </div>
     </div>

@@ -1,6 +1,6 @@
 'use client'
 import Image from 'next/image'
-import { baloo } from '@/utils/functions'
+import { baloo } from '@/utils/maskFunctions'
 import { useRouter } from 'next/navigation'
 import { IProduct } from '@/models/products'
 import { useContext } from 'react'
@@ -28,7 +28,7 @@ export function ItemCard({ product }: IItemCard) {
         width={150}
         height={150}
         alt=""
-        className="rounded-full object-cover absolute -top-20 translate-x-1/3 border-4 border-white shadow-lg shadow-gray-500"
+        className="rounded-full object-cover absolute -top-20 mx-auto right-0 left-0 border-4 border-white shadow-lg shadow-gray-500"
       />
       <h3 className={`${baloo.className} font-extrabold mx-auto mb-4`}>{product.productName}</h3>
       <p>{product.productDescription}</p>

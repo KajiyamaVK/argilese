@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import logo from '/public/topbar_logo.png'
-import { baloo } from '@/utils/functions'
+import { baloo } from '@/utils/maskFunctions'
 import Link from 'next/link'
 import { IoMdCart } from 'react-icons/io'
 import { useContext, useState } from 'react'

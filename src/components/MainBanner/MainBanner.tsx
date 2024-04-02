@@ -1,4 +1,4 @@
-import { baloo } from '@/utils/functions'
+import { baloo } from '@/utils/maskFunctions'
 import logo from '/public/logo_lg.png'
 import Image from 'next/image'
 import bullet1 from '/public/bullet1.png'

@@ -57,7 +57,6 @@ export async function getDeliveryPrice(cep: string, height: number, width: numbe
         return new Response(JSON.stringify({ message: 'Error fetching delivery price' }), { status: 500 })
       })
   } else if (process.env.FRETE_SERVICE === 'cepcerto') {
-    console.log('cep destino', cep)
     await fetch(
       `https://www.cepcerto.com/ws/json-frete/03366070/${cep.replace('-', '')}/${weight}/${height}/${width}/${length}/${process.env.TOKEN_CEPCERTO}`,
       {
@@ -70,7 +69,6 @@ export async function getDeliveryPrice(cep: string, height: number, width: numbe
     )
       .then((res) => res.json())
       .then((data) => {
-        console.log('data', data)
         response = {
           pacPrice: data.valorpac,
           pacDeliveryTime: data.prazopac,
@@ -83,6 +81,6 @@ export async function getDeliveryPrice(cep: string, height: number, width: numbe
         return new Response(JSON.stringify({ message: 'Error fetching delivery price' }), { status: 500 })
       })
   }
-  console.log('response', response)
+
   return new Response(JSON.stringify(response), { status: 200 })
 }

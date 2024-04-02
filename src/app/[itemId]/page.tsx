@@ -1,7 +1,7 @@
 import { CalculaFrete } from '@/components/CalculaFrete/CalculaFrete'
 import { ImagesGallery } from '@/components/ImageGallery/ImagesGallery'
 import { IProduct } from '@/models/products'
-import { baloo } from '@/utils/functions'
+import { baloo } from '@/utils/maskFunctions'
 import { AddToCartButton } from './AddToCartButton'
 import BackButton from '@/components/BackButton/BackButton'
 export default async function ItemPage({ params }: { params: { itemId: number } }) {
@@ -47,10 +47,16 @@ export default async function ItemPage({ params }: { params: { itemId: number } 
               {product.width}cm {product.hasHandle && 'com alça'}
             </td>
           </tr>
-          {product.length > 0 && (
+          {product.diameter > 0 && (
             <tr>
-              <td>Comprimento:</td>
-              <td>{product.length}cm</td>
+              <td>Diametro:</td>
+              <td>{product.diameter}cm</td>
+            </tr>
+          )}
+          {product.milliliters > 0 && (
+            <tr>
+              <td>Capacidade:</td>
+              <td>{product.milliliters}ml</td>
             </tr>
           )}
           <tr>

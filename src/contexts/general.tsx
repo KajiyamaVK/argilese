@@ -6,6 +6,8 @@ interface IGeneralContext {
   cart: IProduct[]
   addToCart: (product: IProduct) => void
   removeFromCart: (productId: number) => void
+
+  resetCart: () => void
 }
 
 export const GeneralContext = createContext({} as IGeneralContext)
@@ -22,5 +24,11 @@ export function GeneralProvider({ children }: { children: ReactNode }) {
     setCart(newCart)
   }
 
-  return <GeneralContext.Provider value={{ cart, addToCart, removeFromCart }}>{children}</GeneralContext.Provider>
+  function resetCart() {
+    setCart([])
+  }
+
+  return (
+    <GeneralContext.Provider value={{ cart, addToCart, removeFromCart, resetCart }}>{children}</GeneralContext.Provider>
+  )
 }

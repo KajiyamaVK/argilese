@@ -1,6 +1,6 @@
 import { ItemCard } from '@/components/ItemCard/ItemCard'
 import { IProduct } from '@/models/products'
-import { baloo } from '@/utils/functions'
+import { baloo } from '@/utils/maskFunctions'
 
 let products: IProduct[] = []
 export async function ItemsContainer() {

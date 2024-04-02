@@ -13,6 +13,7 @@ export const productSchema = z.object({
   isSold: z.boolean(),
   diameter: z.number(),
   hasHandle: z.boolean(),
+  milliliters: z.number(),
 })
 
 export type IProduct = z.infer<typeof productSchema>

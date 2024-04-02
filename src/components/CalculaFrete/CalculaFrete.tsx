@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { Button } from '../Button/Button'
-import { formatCEP } from '@/utils/functions'
+import { formatCEP } from '@/utils/maskFunctions'
 import pacLogo from '/public/logos/pacLogo.png'
 import sedexLogo from '/public/logos/sedexLogo.png'
 import Image from 'next/image'

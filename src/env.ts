@@ -28,6 +28,12 @@ const envSchema = z.object({
   FRETE_SERVICE: z.string({
     required_error: 'Frete service is required',
   }),
+  NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY: z.string({
+    required_error: 'Mercado Pago public key is required',
+  }),
+  MERCADO_PAGO_TOKEN: z.string({
+    required_error: 'Mercado Pago access token is required',
+  }),
 })
 
 type IEnv = z.infer<typeof envSchema>

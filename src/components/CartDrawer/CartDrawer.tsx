@@ -139,7 +139,7 @@ export function CartDrawer({ isOpen, setIsOpen }: ICartDrawer) {
     <Drawer.Root direction="right" open={isOpen} onOpenChange={setIsOpen}>
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0 bg-black/40" />
-        <Drawer.Content className="bg-white flex flex-col rounded-t-[10px] h-full w-[400px] mt-24 fixed bottom-0 right-0 overflow-y-scroll overflow-x-hidden">
+        <Drawer.Content className="bg-white flex flex-col rounded-l-[10px] h-full w-[400px] mt-24 fixed bottom-0 right-0 overflow-y-auto overflow-x-hidden max-h-screen ">
           {isPaymentBrickOpen ? (
             <>
               <button className="flex gap-2 items-center mt-5 ml-5" onClick={() => setIsPaymentBrickOpen(false)}>
@@ -154,7 +154,7 @@ export function CartDrawer({ isOpen, setIsOpen }: ICartDrawer) {
                   Fechar <RxCaretRight />
                 </button>
               </Drawer.Close>
-              <div className="p-4 bg-white flex-1 h-full">
+              <div className="p-4 bg-white flex-1 ">
                 <div className="max-w-md mx-auto">
                   <Drawer.Title className="font-medium mb-4">Carrinho</Drawer.Title>
                   <div className="flex flex-col gap-4">

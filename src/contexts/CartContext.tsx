@@ -2,17 +2,18 @@
 import { IProduct } from '@/models/products'
 import { ReactNode, createContext, useState } from 'react'
 
-interface IGeneralContext {
+interface ICartContext {
   cart: IProduct[]
   addToCart: (product: IProduct) => void
   removeFromCart: (productId: number) => void
 
   resetCart: () => void
+  checkIfAlreadyInCart: (productId: number) => boolean
 }
 
-export const GeneralContext = createContext({} as IGeneralContext)
+export const CartContext = createContext({} as ICartContext)
 
-export function GeneralProvider({ children }: { children: ReactNode }) {
+export function CartContextProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<IProduct[]>([])
 
   function addToCart(product: IProduct) {
@@ -25,11 +26,17 @@ export function GeneralProvider({ children }: { children: ReactNode }) {
     setCart(newCart)
   }
 
+  function checkIfAlreadyInCart(productId: number) {
+    return cart.some((product) => product.id === productId)
+  }
+
   function resetCart() {
     setCart([])
   }
 
   return (
-    <GeneralContext.Provider value={{ cart, addToCart, removeFromCart, resetCart }}>{children}</GeneralContext.Provider>
+    <CartContext.Provider value={{ cart, addToCart, removeFromCart, resetCart, checkIfAlreadyInCart }}>
+      {children}
+    </CartContext.Provider>
   )
 }

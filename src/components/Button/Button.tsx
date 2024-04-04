@@ -10,7 +10,7 @@ export function Button({ children, className, disabled, ...props }: IButton) {
   return (
     <button
       className={cn(
-        'bg-yellow-700 text-white mx-auto p-2 rounded-lg cursor-pointer hover:opacity-50',
+        'bg-yellow-700 text-white mx-auto p-2 rounded-lg cursor-pointer md:hover:opacity-50',
         disabled && 'opacity-50 pointer-events-none',
         className,
       )}

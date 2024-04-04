@@ -1,6 +1,6 @@
 'use client'
 
-import { GeneralContext } from '@/contexts/general'
+import { CartContext } from '@/contexts/CartContext'
 import { Drawer } from '../Drawer/Drawer'
 import { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react'
 import Image from 'next/image'
@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Skeleton } from '../ui/skeleton'
 import { PaymentBrick } from '@/components/PaymentBrick/PaymentBrick'
+import { AlertDialogContext } from '@/contexts/AlertDialogContext'
 
 interface ICartDrawer {
   isOpen: boolean
@@ -28,7 +29,8 @@ interface IGetFreteResponse {
 type TDelivery = 'PAC' | 'SEDEX' | ''
 
 export function CartDrawer({ isOpen, setIsOpen }: ICartDrawer) {
-  const { cart, removeFromCart } = useContext(GeneralContext)
+  const { cart, removeFromCart } = useContext(CartContext)
+  const { sendAlert, setIsAlertOpen } = useContext(AlertDialogContext)
   const [totalItemsAmount, setTotalItemsAmount] = useState<string>('')
   const [totalPurchaseAmount, setTotalPurchaseAmount] = useState<number>(0)
   const [totalWeight, setTotalWeight] = useState<number>(0)
@@ -144,6 +146,20 @@ export function CartDrawer({ isOpen, setIsOpen }: ICartDrawer) {
     setIsPaymentBrickOpen(true)
   }
 
+  function handleRemoveFromCart(productId: number) {
+    sendAlert({
+      message: 'Deseja realmente remover este item do carrinho?',
+      type: 'YN',
+      onConfirm: () => {
+        removeFromCart(productId)
+        setIsAlertOpen(false)
+      },
+      onCancel: () => {
+        setIsAlertOpen(false)
+      },
+    })
+  }
+
   function handleChangeCep(value: string) {
     const formattedCep = formatCEP(value)
     setCep(formattedCep)
@@ -182,7 +198,7 @@ export function CartDrawer({ isOpen, setIsOpen }: ICartDrawer) {
                         <button
                           className="self-end text-destructive"
                           onClick={() => {
-                            removeFromCart(product.id)
+                            handleRemoveFromCart(product.id)
                           }}
                         >
                           Remover

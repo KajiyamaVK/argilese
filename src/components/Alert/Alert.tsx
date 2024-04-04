@@ -28,10 +28,14 @@ export function Alert() {
         return {
           title: 'Confirmação',
           buttons: (
-            <>
-              <Button onClick={alertData.onConfirm}>Sim</Button>
-              <Button onClick={alertData.onCancel}>Não</Button>
-            </>
+            <div className="flex gap-5">
+              <Button onClick={alertData.onConfirm} className="w-20">
+                Sim
+              </Button>
+              <Button onClick={alertData.onCancel} className="w-20">
+                Não
+              </Button>
+            </div>
           ),
         }
       default:
@@ -50,7 +54,7 @@ export function Alert() {
         onClick={() => setIsAlertOpen(false)}
       ></div>
       <div
-        className={`fixed left-1/2 z-50 mx-auto ml-[-250px] mt-[-100px] h-64 w-[500px] min-w-[400px] rounded-lg border-4 border-black bg-white transition-all duration-500 ${isAlertOpen ? 'top-1/2' : 'pointer-events-none top-[400px] opacity-0'}`}
+        className={`fixed left-1/2 z-50 mx-auto ml-[-150px] mt-[-100px] h-64 w-[300px] min-w-[300px] rounded-lg border-4 border-black bg-white transition-all duration-500 md:ml-[-250px] md:w-[500px] ${isAlertOpen ? 'top-1/2' : 'pointer-events-none top-[400px] opacity-0'}`}
       >
         <Image
           src={avatar1}

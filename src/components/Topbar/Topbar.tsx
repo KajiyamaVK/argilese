@@ -6,12 +6,12 @@ import { baloo } from '@/utils/maskFunctions'
 import Link from 'next/link'
 import { IoMdCart } from 'react-icons/io'
 import { useContext, useState } from 'react'
-import { GeneralContext } from '@/contexts/general'
+import { CartContext } from '@/contexts/CartContext'
 import { CartDrawer } from '../CartDrawer/CartDrawer'
 import { AlertDialogContext } from '@/contexts/AlertDialogContext'
 
 export function Topbar() {
-  const { cart } = useContext(GeneralContext)
+  const { cart } = useContext(CartContext)
   const { sendAlert } = useContext(AlertDialogContext)
   const [isCartOpen, setIsCartOpen] = useState(false)
 

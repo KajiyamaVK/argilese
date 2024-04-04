@@ -4,7 +4,7 @@ import { baloo } from '@/utils/maskFunctions'
 import { useRouter } from 'next/navigation'
 import { IProduct } from '@/models/products'
 import { useContext } from 'react'
-import { GeneralContext } from '@/contexts/general'
+import { CartContext } from '@/contexts/CartContext'
 import { AlertDialogContext } from '@/contexts/AlertDialogContext'
 
 interface IItemCard {
@@ -12,16 +12,13 @@ interface IItemCard {
 }
 
 export function ItemCard({ product }: IItemCard) {
-  const { addToCart, cart } = useContext(GeneralContext)
+  const { addToCart, checkIfAlreadyInCart } = useContext(CartContext)
   const { sendAlert } = useContext(AlertDialogContext)
   const router = useRouter()
   function goToProductPage(id: number) {
     router.push(`/${id}`)
   }
 
-  function checkIfAlreadyInCart(productId: number) {
-    return cart.some((product) => product.id === productId)
-  }
   const productImages = product.productImages.split(';')
   return (
     <div className=" relative flex w-[300px]  flex-col flex-wrap rounded-lg bg-white p-5 pt-20 text-foreground shadow shadow-gray-500">

@@ -1,10 +1,10 @@
 'use client'
-import { GeneralContext } from '@/contexts/general'
+import { CartContext } from '@/contexts/CartContext'
 import { Payment } from '@mercadopago/sdk-react'
 import { useContext } from 'react'
 
 export function PaymentBrick({ amount, preferenceId }) {
-  const { resetCart } = useContext(GeneralContext)
+  const { resetCart } = useContext(CartContext)
 
   const initialization = {
     amount,

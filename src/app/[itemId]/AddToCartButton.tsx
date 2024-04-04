@@ -12,7 +12,6 @@ export function AddToCartButton({ product }: AddToCartButtonProps) {
   const { sendAlert } = useContext(AlertDialogContext)
 
   function handleAddToCart() {
-    alert('oi')
     if (checkIfAlreadyInCart(product.id))
       return sendAlert({
         message: `Produto ${product.productName} já está no carrinho. Por favor, verifique.`,

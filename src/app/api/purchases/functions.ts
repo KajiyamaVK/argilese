@@ -38,5 +38,7 @@ export async function getProductById(id: number) {
     console.error(`Error fetching product by id: ${error}`)
     //return new Response(JSON.stringify({ message: 'Error fetching product' }), { status: 500 })
     return NextResponse.json({ error: 'Error fetching products' }, { status: 500 })
+  } finally {
+    Conn.end()
   }
 }

@@ -21,6 +21,7 @@ export function GeneralProvider({ children }: { children: ReactNode }) {
 
   function removeFromCart(productId: number) {
     const newCart = cart.filter((product) => product.id !== productId)
+
     setCart(newCart)
   }
 

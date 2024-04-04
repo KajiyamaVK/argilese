@@ -1,4 +1,6 @@
 {
+  "root": true,
+
   "env": {
     "browser": true,
     "es2021": true,
@@ -8,7 +10,8 @@
     "plugin:react/recommended",
     "plugin:react-hooks/recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:prettier/recommended"
+    "plugin:prettier/recommended",
+    "plugin:tailwindcss/recommended"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -55,7 +58,14 @@
     "import/parsers": {
       "[require.resolve(@typescript-eslint/parser)]": [".ts", ".tsx", ".d.ts"]
     }
-  }
+    
+  },
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx", "*.js"],
+      "parser": "@typescript-eslint/parser"
+    }
+  ]
 
   
 }

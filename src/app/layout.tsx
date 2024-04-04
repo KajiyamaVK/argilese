@@ -3,6 +3,8 @@ import { Roboto } from 'next/font/google'
 import './globals.css'
 import { Topbar } from '@/components/Topbar/Topbar'
 import { GeneralProvider } from '@/contexts/general'
+import { AlertDialogProvider } from '@/contexts/AlertDialogContext'
+import { Alert } from '@/components/Alert/Alert'
 
 const roboto = Roboto({ weight: '400', subsets: ['latin'] })
 
@@ -19,13 +21,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="pt-BR">
       <body className={`${roboto.className}`}>
         <div
-          className="absolute flex flex-wrap justify-center w-full bg-center bg-cover -z-10 top-0 h-full"
+          className="absolute top-0 -z-10 flex size-full flex-wrap justify-center bg-cover bg-center"
           style={{ backgroundImage: 'url(/bannerBG.png)', filter: 'blur(8px)' }}
         />
-        <GeneralProvider>
-          <Topbar />
-          {children}
-        </GeneralProvider>
+        <AlertDialogProvider>
+          <GeneralProvider>
+            <Alert />
+            <Topbar />
+            {children}
+          </GeneralProvider>
+        </AlertDialogProvider>
       </body>
     </html>
   )

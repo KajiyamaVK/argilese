@@ -11,7 +11,7 @@ export function AddToCartButton({ product }: AddToCartButtonProps) {
   return (
     <button
       type="button"
-      className="bg-yellow-700 text-white p-2 rounded-md mt-10 hover:opacity-75 w-full"
+      className="mt-10 w-full rounded-md bg-yellow-700 p-2 text-white hover:opacity-75"
       onClick={() => addToCart(product)}
     >
       Adicionar ao carrinho

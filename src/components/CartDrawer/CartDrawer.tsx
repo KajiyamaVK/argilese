@@ -1,11 +1,11 @@
 'use client'
 
 import { GeneralContext } from '@/contexts/general'
-import { Drawer } from 'vaul'
-import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react'
+import { Drawer } from '../Drawer/Drawer'
+import { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react'
 import Image from 'next/image'
 import { Button } from '../Button/Button'
-import { RxCaretLeft, RxCaretRight } from 'react-icons/rx'
+import { RxCaretLeft } from 'react-icons/rx'
 import { initMercadoPago } from '@mercadopago/sdk-react'
 import { formatCEP } from '@/utils/maskFunctions'
 import { Label } from '@/components/ui/label'
@@ -38,8 +38,21 @@ export function CartDrawer({ isOpen, setIsOpen }: ICartDrawer) {
   const [cep, setCep] = useState<string>('')
   const [chosenDelivery, setChosenDelivery] = useState<TDelivery>('')
   const [showSkeleton, setShowSkeleton] = useState<boolean>(false)
-  const [deliveriesData, setDeliveriesData] = useState<IGetFreteResponse | null>(null)
+  const [deliveriesData, setDeliveriesData] = useState<IGetFreteResponse | null>({
+    pacPrice: '',
+    pacDeliveryTime: '',
+    sedexPrice: '',
+    sedexDeliveryTime: '',
+  })
   const [isPaymentBrickOpen, setIsPaymentBrickOpen] = useState<boolean>(false)
+
+  const deliveryPrices = useMemo(
+    () => ({
+      PAC: deliveriesData?.pacPrice,
+      SEDEX: deliveriesData?.sedexPrice,
+    }),
+    [deliveriesData],
+  )
 
   useEffect(() => {
     let deliveryPrice = 0
@@ -84,7 +97,6 @@ export function CartDrawer({ isOpen, setIsOpen }: ICartDrawer) {
 
   useEffect(() => {
     async function getDeliveryPrice() {
-      setShowSkeleton(true)
       await fetch(`/api/calculaFrete`, {
         method: 'POST',
         cache: 'no-cache',
@@ -109,6 +121,7 @@ export function CartDrawer({ isOpen, setIsOpen }: ICartDrawer) {
     }
 
     if (cep.length === 9) {
+      setShowSkeleton(true)
       getDeliveryPrice()
     } else {
       setDeliveriesData(null)
@@ -136,126 +149,121 @@ export function CartDrawer({ isOpen, setIsOpen }: ICartDrawer) {
     setCep(formattedCep)
   }
   return (
-    <Drawer.Root direction="right" open={isOpen} onOpenChange={setIsOpen}>
-      <Drawer.Portal>
-        <Drawer.Overlay className="fixed inset-0 bg-black/40" />
-        <Drawer.Content className="bg-white flex flex-col rounded-l-[10px] h-full w-[400px] mt-24 fixed bottom-0 right-0 overflow-y-auto overflow-x-hidden max-h-screen ">
-          {isPaymentBrickOpen ? (
-            <>
-              <button className="flex gap-2 items-center mt-5 ml-5" onClick={() => setIsPaymentBrickOpen(false)}>
-                <RxCaretLeft /> Voltar ao carrinho
-              </button>
-              <PaymentBrick amount={totalPurchaseAmount} preferenceId={'teste1'} />
-            </>
-          ) : (
-            <>
-              <Drawer.Close>
-                <button className="flex gap-2 items-center mt-5 ml-5">
-                  Fechar <RxCaretRight />
-                </button>
-              </Drawer.Close>
-              <div className="p-4 bg-white flex-1 ">
-                <div className="max-w-md mx-auto">
-                  <Drawer.Title className="font-medium mb-4">Carrinho</Drawer.Title>
-                  <div className="flex flex-col gap-4">
-                    {cart.map((product) => (
-                      <div key={product.id} className="flex border-b-2 border-gray-100 py-10">
-                        <Image
-                          src={product.productImages.split(';')[0]}
-                          alt={product.productName}
-                          width={70}
-                          height={70}
-                          className="rounded-full border-2 border-gray-200 shadow-lg shadow-gray-500"
-                        />
-                        <div className=" ml-10 flex flex-col justify-between">
-                          <p>{product.productName}</p>
-                          <div className="flex gap-2 items-end justify-end">
-                            <p className="font-bold">R$ </p>
-                            <p className="font-bold ">{product.price.toFixed(2).replace('.', ',')}</p>
-                          </div>
-                          <button
-                            className="text-destructive self-end"
-                            onClick={() => {
-                              removeFromCart(product.id)
-                            }}
-                          >
-                            Remover
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-
-                    <div className="flex gap-5 items-center justify-end mr-2">
-                      <label htmlFor="cep">
-                        <b>Digite seu CEP:</b>
-                      </label>
-                      <input
-                        type="text"
-                        id="cepInput"
-                        className="border border-gray-300 rounded-md p-2 w-[200px] max-w-[150px]"
-                        value={cep}
-                        onChange={(e) => handleChangeCep(e.target.value)}
+    <Drawer.Root isOpen={isOpen} onOpenChange={setIsOpen}>
+      <div className="fixed bottom-0 right-0 mt-24 flex h-full max-h-screen w-[400px] flex-col overflow-y-auto overflow-x-hidden rounded-l-[10px] bg-white ">
+        {isPaymentBrickOpen ? (
+          <>
+            <button className="ml-5 mt-5 flex items-center gap-2" onClick={() => setIsPaymentBrickOpen(false)}>
+              <RxCaretLeft /> Voltar ao carrinho
+            </button>
+            <PaymentBrick amount={totalPurchaseAmount} preferenceId={'teste1'} />
+          </>
+        ) : (
+          <>
+            <div className="flex-1 bg-white p-4 ">
+              <div className="mx-auto max-w-md">
+                <h1 className="mb-4 font-medium">Carrinho</h1>
+                <div className="flex flex-col gap-4">
+                  {cart.map((product) => (
+                    <div key={product.id} className="flex border-b-2 border-gray-100 py-10">
+                      <Image
+                        src={product.productImages.split(';')[0]}
+                        alt={product.productName}
+                        width={70}
+                        height={70}
+                        className="rounded-full border-2 border-gray-200 shadow-lg shadow-gray-500"
                       />
-                    </div>
-                    {showSkeleton || (deliveriesData && deliveriesData.pacPrice !== undefined) ? (
-                      <div className="flex ml-14">
-                        <div>
-                          <RadioGroup
-                            className="ml-10"
-                            value={chosenDelivery}
-                            onValueChange={(e) => {
-                              setChosenDelivery(e as TDelivery)
-                            }}
-                          >
-                            <div className="flex items-center space-x-2">
-                              <RadioGroupItem value="SEDEX" id="sedexChk" />
-                              <Label htmlFor="sedexChk">
-                                <table>
-                                  <tr>
-                                    <td className="w-20">SEDEX</td>
-                                    <td>
-                                      {showSkeleton ? (
-                                        <Skeleton className="w-40 h-4 bg-gray-300" />
-                                      ) : (
-                                        <span>
-                                          R$ {deliveriesData!.sedexPrice.replace('.', ',')} -{' '}
-                                          {deliveriesData!.sedexDeliveryTime} dias úteis
-                                        </span>
-                                      )}
-                                    </td>
-                                  </tr>
-                                </table>
-                              </Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <RadioGroupItem value="PAC" id="pacChk" />
-                              <Label htmlFor="pacChk">
-                                <table>
-                                  <tr>
-                                    <td className="w-20">PAC</td>
-                                    <td>
-                                      {showSkeleton ? (
-                                        <Skeleton className="w-40 h-4 bg-gray-300" />
-                                      ) : (
-                                        <span>
-                                          R$ {deliveriesData!.pacPrice.replace('.', ',')} -{' '}
-                                          {deliveriesData!.pacDeliveryTime} dias úteis
-                                        </span>
-                                      )}
-                                    </td>
-                                  </tr>
-                                </table>
-                              </Label>
-                            </div>
-                          </RadioGroup>
+                      <div className=" ml-10 flex flex-col justify-between">
+                        <p>{product.productName}</p>
+                        <div className="flex items-end justify-end gap-2">
+                          <p className="font-bold">R$ </p>
+                          <p className="font-bold ">{product.price.toFixed(2).replace('.', ',')}</p>
                         </div>
+                        <button
+                          className="self-end text-destructive"
+                          onClick={() => {
+                            removeFromCart(product.id)
+                          }}
+                        >
+                          Remover
+                        </button>
                       </div>
-                    ) : (
-                      ''
-                    )}
+                    </div>
+                  ))}
+
+                  <div className="mr-2 flex items-center justify-end gap-5">
+                    <label htmlFor="cep">
+                      <b>Digite seu CEP:</b>
+                    </label>
+                    <input
+                      type="text"
+                      id="cepInput"
+                      className="w-[200px] max-w-[150px] rounded-md border border-gray-300 p-2"
+                      value={cep}
+                      onChange={(e) => handleChangeCep(e.target.value)}
+                    />
+                  </div>
+                  {cep.length === 9 ? (
+                    <div className="ml-14 flex">
+                      <div>
+                        <RadioGroup
+                          className="ml-10"
+                          value={chosenDelivery}
+                          onValueChange={(e) => {
+                            setChosenDelivery(e as TDelivery)
+                          }}
+                        >
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="SEDEX" id="sedexChk" />
+                            <Label htmlFor="sedexChk">
+                              <table>
+                                <tr>
+                                  <td className="w-20">SEDEX</td>
+                                  <td>
+                                    {showSkeleton && (!deliveriesData || !deliveriesData.sedexPrice) ? (
+                                      <Skeleton className="h-4 w-40 bg-gray-300" />
+                                    ) : (
+                                      <span>
+                                        R$ {deliveriesData?.sedexPrice.replace('.', ',')} -{' '}
+                                        {deliveriesData?.sedexDeliveryTime} dias úteis
+                                      </span>
+                                    )}
+                                  </td>
+                                </tr>
+                              </table>
+                            </Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="PAC" id="pacChk" />
+                            <Label htmlFor="pacChk">
+                              <table>
+                                <tr>
+                                  <td className="w-20">PAC</td>
+                                  <td>
+                                    {showSkeleton ? (
+                                      <Skeleton className="h-4 w-40 bg-gray-300" />
+                                    ) : (
+                                      <span>
+                                        R$ {deliveriesData?.pacPrice.replace('.', ',')} -{' '}
+                                        {deliveriesData?.pacDeliveryTime} dias úteis
+                                      </span>
+                                    )}
+                                  </td>
+                                </tr>
+                              </table>
+                            </Label>
+                          </div>
+                        </RadioGroup>
+                      </div>
+                    </div>
+                  ) : (
+                    ''
+                  )}
+
+                  {cart.length && (
                     <table className="ml-20">
                       <tr>
-                        <td className="font-bold w-fit">Quantidade de itens: </td>
+                        <td className="w-fit font-bold">Quantidade de itens: </td>
                         <td className="flex-1">{cart.length}</td>
                       </tr>
                       <tr>
@@ -264,19 +272,19 @@ export function CartDrawer({ isOpen, setIsOpen }: ICartDrawer) {
                       </tr>
                       <tr>
                         <td className="font-bold">Frete: </td>
-                        <td>R$ {chosenDelivery === 'PAC' ? deliveriesData?.pacPrice : deliveriesData?.sedexPrice}</td>
+                        <td>R$ {chosenDelivery === '' ? '' : deliveryPrices[chosenDelivery]}</td>
                       </tr>
                     </table>
-                  </div>
-                  <Button className="mt-10 bg-yellow-700 float-right" onClick={goToPayment}>
-                    Finalizar compra
-                  </Button>
+                  )}
                 </div>
+                <Button className="float-right mt-10 bg-yellow-700" onClick={goToPayment}>
+                  Finalizar compra
+                </Button>
               </div>
-            </>
-          )}
-        </Drawer.Content>
-      </Drawer.Portal>
+            </div>
+          </>
+        )}
+      </div>
     </Drawer.Root>
   )
 }

@@ -55,7 +55,7 @@ export function CalculaFrete({ height, width, length, weight }: ICalculaFrete) {
   }, [pacPrice, sedexPrice])
 
   return (
-    <div className="flex flex-col mx-auto md:mx-0">
+    <div className="mx-auto flex flex-col md:mx-0">
       <label htmlFor="cepInput" className="mt-10">
         Quer calcular o frete? Digite seu CEP.
       </label>
@@ -64,7 +64,7 @@ export function CalculaFrete({ height, width, length, weight }: ICalculaFrete) {
         <input
           type="text"
           id="cepInput"
-          className="border border-gray-300 rounded-md p-2 w-[200px] max-w-[150px]"
+          className="w-[200px] max-w-[150px] rounded-md border border-gray-300 p-2"
           value={cep}
           onChange={(e) => handleChangeCep(e.target.value)}
         />
@@ -85,7 +85,7 @@ export function CalculaFrete({ height, width, length, weight }: ICalculaFrete) {
               <td className="flex items-center">
                 R${' '}
                 {showSkeleton ? (
-                  <Skeleton className="w-[50px] h-[20px] bg-gray-300 ml-2" />
+                  <Skeleton className="ml-2 h-[20px] w-[50px] bg-gray-300" />
                 ) : (
                   pacPrice.replace('.', ',')
                 )}
@@ -96,7 +96,7 @@ export function CalculaFrete({ height, width, length, weight }: ICalculaFrete) {
                 <b>Prazo:</b>
               </td>
               <td>
-                {showSkeleton ? <Skeleton className="w-[50px] h-[20px] bg-gray-300 ml-2" /> : `${pacDeliveryTime} dias`}
+                {showSkeleton ? <Skeleton className="ml-2 h-[20px] w-[50px] bg-gray-300" /> : `${pacDeliveryTime} dias`}
               </td>
             </tr>
           </table>
@@ -112,7 +112,7 @@ export function CalculaFrete({ height, width, length, weight }: ICalculaFrete) {
               <td className="flex items-center">
                 R${' '}
                 {showSkeleton ? (
-                  <Skeleton className="w-[50px] h-[20px] bg-gray-300 ml-2" />
+                  <Skeleton className="ml-2 h-[20px] w-[50px] bg-gray-300" />
                 ) : (
                   sedexPrice.replace('.', ',')
                 )}
@@ -124,7 +124,7 @@ export function CalculaFrete({ height, width, length, weight }: ICalculaFrete) {
               </td>
               <td>
                 {showSkeleton ? (
-                  <Skeleton className="w-[50px] h-[20px] bg-gray-300 ml-2" />
+                  <Skeleton className="ml-2 h-[20px] w-[50px] bg-gray-300" />
                 ) : (
                   `${sedexDeliveryTime} dias`
                 )}

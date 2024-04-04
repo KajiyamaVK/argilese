@@ -25,13 +25,13 @@ export default async function ItemPage({ params }: { params: { itemId: number } 
   }
   const productImages = product.productImages.split(';')
   return (
-    <div className="w-full p-20 flex flex-col lg:flex-row lg:gap-5">
-      <div className="w-full mx-auto lg:w-1/2  ">
+    <div className="flex w-full flex-col p-20 lg:flex-row lg:gap-5">
+      <div className="mx-auto w-full lg:w-1/2  ">
         <BackButton />
         <ImagesGallery images={productImages} />
       </div>
-      <div className="max-w-[300px] mx-auto lg:w-1/2 lg:flex lg:flex-col lg:min-w-[500px] mt-5 ">
-        <h1 className={`text-[2rem] border-b border-gray-500 ${baloo.className}`}>{product.productName}</h1>
+      <div className="mx-auto mt-5 max-w-[300px] lg:flex lg:w-1/2 lg:min-w-[500px] lg:flex-col ">
+        <h1 className={`border-b border-gray-500 text-[2rem] ${baloo.className}`}>{product.productName}</h1>
         <p>{product.productDescription}</p>
         <p className="mt-5">
           <b>Medidas aproximadas</b>
@@ -65,8 +65,8 @@ export default async function ItemPage({ params }: { params: { itemId: number } 
           </tr>
         </table>
 
-        <div className="flex gap-2 items-end mt-5">
-          <span className="mb-[1px] mt-5">R$</span>
+        <div className="mt-5 flex items-end gap-2">
+          <span className="mb-px mt-5">R$</span>
           <span className="text-3xl">{product.price.toFixed(2).replace('.', ',')}</span>
         </div>
         <div className="flex">

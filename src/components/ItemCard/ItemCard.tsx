@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { IProduct } from '@/models/products'
 import { useContext } from 'react'
 import { GeneralContext } from '@/contexts/general'
+import { AlertDialogContext } from '@/contexts/AlertDialogContext'
 
 interface IItemCard {
   product: IProduct
@@ -12,6 +13,7 @@ interface IItemCard {
 
 export function ItemCard({ product }: IItemCard) {
   const { addToCart, cart } = useContext(GeneralContext)
+  const { sendAlert } = useContext(AlertDialogContext)
   const router = useRouter()
   function goToProductPage(id: number) {
     router.push(`/${id}`)
@@ -22,33 +24,38 @@ export function ItemCard({ product }: IItemCard) {
   }
   const productImages = product.productImages.split(';')
   return (
-    <div className="relative rounded-lg p-5 bg-cardBg  w-[300px] flex flex-col flex-wrap text-foreground pt-20 bg-white shadow shadow-gray-500">
+    <div className=" relative flex w-[300px]  flex-col flex-wrap rounded-lg bg-white p-5 pt-20 text-foreground shadow shadow-gray-500">
       <Image
         src={productImages[0]}
         width={150}
         height={150}
         alt=""
-        className="rounded-full object-cover absolute -top-20 mx-auto right-0 left-0 border-4 border-white shadow-lg shadow-gray-500"
+        className="absolute inset-x-0 -top-20 mx-auto rounded-full border-4 border-white object-cover shadow-lg shadow-gray-500"
       />
-      <h3 className={`${baloo.className} font-extrabold mx-auto mb-4`}>{product.productName}</h3>
+      <h3 className={`${baloo.className} mx-auto mb-4 font-extrabold`}>{product.productName}</h3>
       <p>{product.productDescription}</p>
-      <div className=" flex  flex-col flex-1 justify-end">
-        <div className="flex items-end mt-3 ">
+      <div className=" flex  flex-1 flex-col justify-end">
+        <div className="mt-3 flex items-end ">
           <p className="font-bold">R$ </p>
-          <p className="ml-3 text-3xl -mb-1">{product.price.toFixed(2)}</p>
+          <p className="-mb-1 ml-3 text-3xl">{product.price.toFixed(2)}</p>
         </div>
-        <div className="flex flex-col  mt-5 gap-2 justify-end">
+        <div className="mt-5 flex  flex-col justify-end gap-2">
           <button
-            className="w-full bg-yellow-700 text-white mx-auto  p-2 rounded-lg cursor-pointer hover:opacity-50"
+            className="mx-auto w-full cursor-pointer rounded-lg  bg-yellow-700 p-2 text-white hover:opacity-50"
             onClick={() => {
-              if (checkIfAlreadyInCart(product.id)) return alert('Produto já adicionado ao carrinho.')
+              if (checkIfAlreadyInCart(product.id))
+                return sendAlert({
+                  message: `Produto ${product.productName} já está no carrinho. Por favor, verifique.`,
+                  type: 'OK',
+                })
+              sendAlert({ message: `Produto ${product.productName} adicionado ao carrinho`, type: 'OK' })
               addToCart(product)
             }}
           >
             Adicionar ao carrinho
           </button>
           <button
-            className="w-full bg-yellow-700 text-white mx-auto  p-2 rounded-lg cursor-pointer hover:opacity-50"
+            className="mx-auto w-full cursor-pointer rounded-lg  bg-yellow-700 p-2 text-white hover:opacity-50"
             onClick={() => goToProductPage(product.id)}
           >
             Ver mais

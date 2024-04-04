@@ -35,11 +35,11 @@ export async function ItemsContainer() {
   return (
     <div className=" mt-10 ">
       <h2
-        className={`ml-10 border w-fit border-b-gray-400 border-r-0 border-l-0 border-t-0 mb-10 ${baloo.className} font-extrabold`}
+        className={`mb-10 ml-10 w-fit border border-x-0 border-t-0 border-b-gray-400 ${baloo.className} font-extrabold`}
       >
         Nossos projetos{'   '}
       </h2>
-      <div className="p-20 flex flex-wrap justify-center md:justify-start gap-28 md:gap-5">
+      <div className="flex flex-wrap justify-center gap-28 p-20 md:justify-start md:gap-5">
         {products.length > 0 &&
           products.map((product) => {
             return <ItemCard key={product.id} product={product} />

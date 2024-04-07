@@ -2,9 +2,10 @@
 import { Dispatch, ReactNode, SetStateAction, createContext, useState } from 'react'
 type TSendAlert = 'OK' | 'YN'
 
-interface ISendAlert {
+export interface ISendAlert {
   type: TSendAlert
   message: string
+  //eslint-disable-next-line
   onConfirm?: () => void
   onCancel?: () => void
 }
@@ -14,6 +15,7 @@ interface IAlertDialogContext {
   sendAlert: ({ message, type, onConfirm, onCancel }: ISendAlert) => void
   setIsAlertOpen: Dispatch<SetStateAction<boolean>>
   alertData: ISendAlert
+  setAlertData: Dispatch<SetStateAction<ISendAlert>>
 }
 
 export const AlertDialogContext = createContext<IAlertDialogContext>({} as IAlertDialogContext)
@@ -28,7 +30,7 @@ export function AlertDialogProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AlertDialogContext.Provider value={{ isAlertOpen, sendAlert, setIsAlertOpen, alertData }}>
+    <AlertDialogContext.Provider value={{ isAlertOpen, sendAlert, setIsAlertOpen, alertData, setAlertData }}>
       {children}
     </AlertDialogContext.Provider>
   )

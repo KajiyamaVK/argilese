@@ -18,7 +18,7 @@ export function Topbar() {
   function openCart() {
     if (cart.length === 0) {
       sendAlert({
-        message: 'Seu carrinho está vazio. Adicione produtos para ver seu carrinho.',
+        message: 'Ei! Seu carrinho está vazio. O que você quer ver aí?!',
         type: 'OK',
       })
       return

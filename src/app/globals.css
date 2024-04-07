@@ -86,3 +86,8 @@ h2{
 h3{
   @apply font-semibold text-xl;
 }
+
+.required::after {
+  content: "*";
+  color: var(--destructive);
+}

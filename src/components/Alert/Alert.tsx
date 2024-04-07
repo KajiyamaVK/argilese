@@ -1,12 +1,12 @@
 'use client'
 import { ReactNode, useContext, useMemo } from 'react'
-import { AlertDialogContext } from '@/contexts/AlertDialogContext'
+import { AlertDialogContext, ISendAlert } from '@/contexts/AlertDialogContext'
 import { Button } from '../Button/Button'
-import avatar1 from '/public/alertAvatar1.png'
+import avatar1 from '/public/totoro_totorinho.png'
 import Image from 'next/image'
 
 export function Alert() {
-  const { isAlertOpen, alertData, setIsAlertOpen } = useContext(AlertDialogContext)
+  const { isAlertOpen, alertData, setIsAlertOpen, setAlertData } = useContext(AlertDialogContext)
 
   interface IAlertValues {
     title: string
@@ -29,7 +29,13 @@ export function Alert() {
           title: 'Confirmação',
           buttons: (
             <div className="flex gap-5">
-              <Button onClick={alertData.onConfirm} className="w-20">
+              <Button
+                onClick={() => {
+                  if (alertData.onConfirm) alertData.onConfirm()
+                  setAlertData({} as ISendAlert)
+                }}
+                className="w-20"
+              >
                 Sim
               </Button>
               <Button onClick={alertData.onCancel} className="w-20">
@@ -61,7 +67,7 @@ export function Alert() {
           alt=""
           width={200}
           height={100}
-          className={`absolute bottom-[193px] right-0 z-50 transition-all ${isAlertOpen ? '' : 'pointer-events-none opacity-0'}`}
+          className={`absolute bottom-[199px] right-0 z-50 transition-all ${isAlertOpen ? '' : 'pointer-events-none opacity-0'}`}
         />
         <div className="flex min-h-full flex-1 flex-col justify-between rounded-lg bg-yellow-100">
           <div className="border-b-4 border-black bg-yellow-900 px-5 py-3 text-white">{alertValues.title}</div>

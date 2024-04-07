@@ -20,7 +20,28 @@ export function PaymentBrick({ amount, preferenceId }) {
 
   const onSubmit = async ({ selectedPaymentMethod, formData }) => {
     // callback chamado ao clicar no botão de submissão dos dados
+
     console.log('selectedPaymentMethod', selectedPaymentMethod)
+    console.log('formData', JSON.stringify(formData))
+
+    /*
+  Current Body
+  {
+    "token": "995b40cc1a7f592c2a9abd898b997174",
+    "issuer_id": "24",
+    "payment_method_id": "master",
+    "transaction_amount": 102,
+    "installments": 1,
+    "payer": {
+        "email": "victor.kajiyama@gmail.com",
+        "identification": {
+            "type": "CPF",
+            "number": "12345678909"
+        }
+    }
+}
+  */
+
     return new Promise((resolve, reject) => {
       fetch('api/purchases/process_payment', {
         method: 'POST',

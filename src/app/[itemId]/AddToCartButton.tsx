@@ -14,7 +14,7 @@ export function AddToCartButton({ product }: AddToCartButtonProps) {
   function handleAddToCart() {
     if (checkIfAlreadyInCart(product.id))
       return sendAlert({
-        message: `Produto ${product.productName} já está no carrinho. Por favor, verifique.`,
+        message: `Ei! Bem que você queria comprar mais deste, né?! Produto ${product.productName} já está no carrinho. Por favor, verifique!`,
         type: 'OK',
       })
     sendAlert({ message: `Produto ${product.productName} adicionado ao carrinho`, type: 'OK' })

@@ -101,3 +101,8 @@ export function formatCEP(cep: string) {
   // Junta as partes formatadas com um traço
   return part2 ? `${part1}-${part2}` : part1
 }
+
+//função que remove todos caracteres que não são números
+export function formatToNumber(number: string) {
+  return number.replace(/\D/g, '')
+}

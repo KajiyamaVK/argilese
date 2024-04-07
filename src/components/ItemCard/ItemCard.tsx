@@ -45,7 +45,7 @@ export function ItemCard({ product }: IItemCard) {
                   message: `Produto ${product.productName} já está no carrinho. Por favor, verifique.`,
                   type: 'OK',
                 })
-              sendAlert({ message: `Produto ${product.productName} adicionado ao carrinho`, type: 'OK' })
+              sendAlert({ message: `Produto adicionado ao carrinho. A Argile-se agradece! ^^`, type: 'OK' })
               addToCart(product)
             }}
           >

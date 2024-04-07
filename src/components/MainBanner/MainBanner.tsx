@@ -1,10 +1,6 @@
 import { baloo } from '@/utils/maskFunctions'
 import logo from '/public/logo_lg.png'
 import Image from 'next/image'
-import bullet1 from '/public/bullet1.png'
-import bullet2 from '/public/bullet2.png'
-import bullet3 from '/public/bullet3.png'
-import bullet4 from '/public/bullet4.png'
 
 export function MainBanner() {
   return (
@@ -16,28 +12,6 @@ export function MainBanner() {
             Da argila à arte
           </h2>
           <p className="mt-3 px-2 md:px-0">Peças artesanais de cerâmica de alta temperatura</p>
-          <div className="mt-5 flex justify-between p-3 md:p-0">
-            <div className="flex flex-col gap-5">
-              <div className="flex items-center gap-2">
-                <Image src={bullet1} width={40} alt="Bullet 1" />
-                <p>Peças exclusivas</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <Image src={bullet2} width={40} alt="Bullet 2" />
-                <p>Artes de Alta temperatura</p>
-              </div>
-            </div>
-            <div className="flex flex-col gap-5">
-              <div className="flex items-center gap-2">
-                <Image src={bullet3} width={40} alt="Bullet 3" />
-                <p>Feitas à mão</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <Image src={bullet4} width={40} alt="Bullet 4" />
-                <p>Peças únicas</p>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>

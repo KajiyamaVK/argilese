@@ -8,7 +8,6 @@ export async function ItemsContainer() {
   const result = await getProducts()
 
   const products: IProduct[] = result.data
-  revalidatePath('/')
   return (
     <div className=" mt-10 ">
       <h2

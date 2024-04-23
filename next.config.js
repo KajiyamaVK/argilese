@@ -6,6 +6,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'i.imgur.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'www.argilesestudio.com.br',
+      },
     ],
   },
 }

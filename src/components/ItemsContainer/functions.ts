@@ -3,6 +3,7 @@ import { IProduct } from '@/models/products'
 import { getDatabaseConnection } from '@/utils/database'
 import { FieldPacket, QueryResult } from 'mysql2'
 
+export const dynamic = 'force-dynamic'
 export async function getProducts(id?: number) {
   const Conn = await getDatabaseConnection()
   let returnValue: IDBResponse = {} as IDBResponse
@@ -60,3 +61,4 @@ export async function getProducts(id?: number) {
     return returnValue
   }
 }
+

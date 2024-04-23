@@ -2,7 +2,6 @@ import { ItemCard } from '@/components/ItemCard/ItemCard'
 import { IProduct } from '@/models/products'
 import { baloo } from '@/utils/maskFunctions'
 import { getProducts } from './functions'
-import { revalidatePath } from 'next/cache'
 import { cookies } from 'next/headers'
 
 export async function ItemsContainer() {

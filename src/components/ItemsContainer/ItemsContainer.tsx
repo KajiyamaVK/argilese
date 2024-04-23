@@ -3,9 +3,10 @@ import { IProduct } from '@/models/products'
 import { baloo } from '@/utils/maskFunctions'
 import { getProducts } from './functions'
 import { revalidatePath } from 'next/cache'
+import { cookies } from 'next/headers'
 
 export async function ItemsContainer() {
-  revalidatePath('/')
+  cookies() // To not cache the page
   const result = await getProducts()
 
   const products: IProduct[] = result.data

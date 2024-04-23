@@ -2,9 +2,11 @@ import { IDBResponse } from '@/models/database'
 import { IProduct } from '@/models/products'
 import { getDatabaseConnection } from '@/utils/database'
 import { FieldPacket, QueryResult } from 'mysql2'
+import { cookies } from 'next/headers'
 
 export const dynamic = 'force-dynamic'
 export async function getProducts(id?: number) {
+  cookies()
   const Conn = await getDatabaseConnection()
   let returnValue: IDBResponse = {} as IDBResponse
   try {

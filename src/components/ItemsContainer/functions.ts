@@ -3,7 +3,6 @@ import { IProduct } from '@/models/products'
 import { getDatabaseConnection } from '@/utils/database'
 import { FieldPacket, QueryResult } from 'mysql2'
 import { unstable_noStore as noStore } from 'next/cache'
-import { cookies } from 'next/headers'
 
 export const dynamic = 'force-dynamic'
 export async function getProducts(id?: number) {

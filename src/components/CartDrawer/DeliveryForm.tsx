@@ -179,14 +179,17 @@ export function DeliveryForm() {
   }
 
   async function handleCepChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setValue('cep', formatCEP(e.target.value))
-    const value = formatToNumber(e.target.value)
+    const value: string = e.currentTarget.value
+    // console.log('value', value)
+    const cep = formatCEP(value)
+    console.log('cep', cep)
+    setValue('cep', cep)
 
-    if (value.length === 8) {
+    if (value.length === 9) {
       console.log('yabaaaaaaa')
       await getDeliveryPrice()
 
-      const address = await getAddressByCep(value)
+      const address = await getAddressByCep(formatToNumber(cep))
 
       if (address.error) {
         //return alert('CEP não encontrado. Ele está certo?')
@@ -205,14 +208,9 @@ export function DeliveryForm() {
       }, 500)
       setFocus('number')
     } else {
+      console.log('nope')
       setDeliveriesPricesData(null)
-      //setChosenDelivery('')
-      setDeliveryData({
-        ...deliveryData,
-        type: '',
-        price: null,
-        deliveryDays: 0,
-      })
+      console.log('cep2', value)
     }
   }
 
@@ -221,15 +219,13 @@ export function DeliveryForm() {
       <h2>DADOS DE ENTREGA</h2>
       <form className="flex flex-col gap-5 p-5" onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col items-start  gap-3">
-          <label htmlFor="cep">Digite seu cep para entrega</label>
+          <label htmlFor="cep">Digite seu cep</label>
           <input
             type="text"
             id="cep"
             className="w-32 rounded-lg border border-gray-300 p-3"
             {...register('cep', {
-              onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-                handleCepChange(e)
-              },
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleCepChange(e),
             })}
           />
           {errors.cep && <p className="text-destructive">{errors.cep.message}</p>}
@@ -241,6 +237,7 @@ export function DeliveryForm() {
             type="text"
             id="address"
             className="w-full rounded-lg border border-gray-300 p-3"
+            disabled={(watch('cep') && watch('cep').length === 9) || true}
             {...register('address')}
           />
           {errors.address && <p className="text-destructive">{errors.address.message}</p>}

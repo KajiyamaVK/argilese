@@ -5,6 +5,7 @@ import { getProducts } from './functions'
 import { revalidatePath } from 'next/cache'
 
 export async function ItemsContainer() {
+  revalidatePath('/')
   const result = await getProducts()
 
   const products: IProduct[] = result.data

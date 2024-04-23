@@ -205,7 +205,7 @@ export function DeliveryForm() {
 
       setTimeout(() => {
         setValue('city', address.localidade)
-      }, 500)
+      }, 1000)
       setFocus('number')
     } else {
       console.log('nope')

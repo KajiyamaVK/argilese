@@ -4,18 +4,21 @@ import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '../Button/Button'
-import { formatCEP, formatToNumber } from '@/utils/maskFunctions'
-import { useContext, useEffect, useState } from 'react'
-import { CartContext } from '@/contexts/CartContext'
-import { getAddressByCep, getCityByUf } from '@/utils/fetchFunctions'
+import { formatCEP, formatPhone, formatToNumber } from '@/utils/maskFunctions'
+import { useContext, useState } from 'react'
+import { PurchaseContext } from '@/contexts/PurchaseContext'
 import { AlertDialogContext } from '@/contexts/AlertDialogContext'
 import { TotalsContainer } from './TotalsContainer'
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group'
 import { Label } from '../ui/label'
 import { Skeleton } from '../ui/skeleton'
+import { TDelivery } from '@/models/deliveries'
+import { getCitiesByUF, insertPurchase } from './functions'
+import { getDeliveryPrices } from '@/app/[itemId]/functions'
+import { IAddress } from '@mercadopago/sdk-react/bricks/payment/type'
 
 const DeliveryFormSchema = z.object({
-  name: z.string({ required_error: 'O nome é necessário para a entrega.' }),
+  customerName: z.string({ required_error: 'O nome é necessário para a entrega.' }),
   email: z
     .string({ required_error: 'O e-mail é necessário para o envio dos dados da compra.' })
     .email('O formato do e-mail é inválido.'),
@@ -26,7 +29,7 @@ const DeliveryFormSchema = z.object({
   neighborhood: z.string({ required_error: 'O bairro é necessário para a entrega.' }),
   city: z.string({ required_error: 'Selecione a cidade da lista acima' }),
   state: z.string({ required_error: 'Selecione o estado da lista acima' }),
-  whatsapp: z.string().optional(),
+  customerWhatsapp: z.string().nullable(),
 })
 
 const ufs = [
@@ -68,8 +71,6 @@ interface IGetFreteResponse {
   sedexDeliveryTime: string
 }
 
-type TDelivery = 'PAC' | 'SEDEX' | ''
-
 export function DeliveryForm() {
   const {
     register,
@@ -82,113 +83,99 @@ export function DeliveryForm() {
     resolver: zodResolver(DeliveryFormSchema),
   })
 
-  const { setCurrentStep, setDeliveryPrice, totalWeight, totalHeight, totalLength, totalWidth, cart } =
-    useContext(CartContext)
+  const { setCurrentStep, deliveryData, setDeliveryData, cart, currentStep } = useContext(PurchaseContext)
   const { sendAlert } = useContext(AlertDialogContext)
   const [cities, setCities] = useState<string[]>([])
 
-  const [chosenDelivery, setChosenDelivery] = useState<TDelivery>('')
-  const [showSkeleton, setShowSkeleton] = useState<boolean>(false)
-  const [deliveriesData, setDeliveriesData] = useState<IGetFreteResponse | null>({
+  //const [chosenDelivery, setChosenDelivery] = useState<TDelivery>('')
+  const [deliveriesPricesData, setDeliveriesPricesData] = useState<IGetFreteResponse | null>({
     pacPrice: '',
     pacDeliveryTime: '',
     sedexPrice: '',
     sedexDeliveryTime: '',
   })
 
-  useEffect(() => {
-    if (chosenDelivery === 'PAC') {
-      setDeliveryPrice(parseFloat(deliveriesData?.pacPrice || '0'))
-    } else if (chosenDelivery === 'SEDEX') {
-      setDeliveryPrice(parseFloat(deliveriesData?.sedexPrice || '0'))
-    }
-    // eslint-disable-next-line
-  }, [chosenDelivery, deliveriesData])
-
-  useEffect(() => {
-    async function handleCitySelect() {
-      await getCityByUf(watch('state')).then((cities) => {
-        const oldCityValue = watch('city')
-        setCities(cities)
-        setValue('city', oldCityValue)
-      })
-    }
-    handleCitySelect()
-
-    // eslint-disable-next-line
-  }, [watch('state')])
-
   function goBackToCart() {
     setCurrentStep('cart')
   }
 
+  function handleStateChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    const value = e.target.value
+    setValue('city', '')
+    setCities([])
+    getCitiesByUF(value).then((data) => {
+      setCities(data.data)
+    })
+  }
+
   async function onSubmit(data: DeliveryFormType) {
-    const deliveryInfo = {
-      cep: data.cep,
-      deliveryPrice: parseFloat(
-        chosenDelivery === 'PAC' ? deliveriesData?.pacPrice || '0' : deliveriesData?.sedexPrice || '0',
-      ),
-      deliveryType: chosenDelivery,
+    const newDeliveryData = {
+      ...deliveryData,
+      cep: formatToNumber(data.cep),
+      deliveryPrice: deliveryData.price,
       deliveryTime: parseInt(
-        chosenDelivery === 'PAC' ? deliveriesData?.pacDeliveryTime || '0' : deliveriesData?.sedexDeliveryTime || '0',
+        deliveryData.type === 'PAC'
+          ? deliveriesPricesData?.pacDeliveryTime || '0'
+          : deliveriesPricesData?.sedexDeliveryTime || '0',
       ),
-      customerName: data.name,
-      customerWhatsapp: data.whatsapp,
-      customerEmail: data.email,
       address: data.address,
       addressNumber: data.number,
-      complement: data.complement,
+      complement: data.complement || '',
       neighborhood: data.neighborhood,
       city: data.city,
       state: data.state,
+      customerName: data.customerName,
+      customerEmail: data.email,
+      customerWhatsapp: data.customerWhatsapp ? formatToNumber(data.customerWhatsapp) : '',
     }
 
-    const productsId = cart.map((product) => product.id)
+    await setDeliveryData(newDeliveryData)
 
-    fetch('/api/purchases', {
-      method: 'POST',
-      cache: 'no-cache',
-      body: JSON.stringify({
-        action: 'openPurchase',
-        data: {
-          deliveryInfo,
-          productsId,
-        },
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.error) throw new Error(data.error)
-        setCurrentStep('payment')
-      })
-      .catch((error) => {
-        console.error(error)
-        alert('Erro ao enviar dados de entrega: ' + error)
-      })
+    await insertPurchase({ deliveryData: newDeliveryData, cartData: cart })
+
+    setCurrentStep('payment')
   }
 
   async function getDeliveryPrice() {
-    await fetch(`/api/calculaFrete`, {
-      method: 'POST',
-      cache: 'no-cache',
-      body: JSON.stringify({
-        width: totalWidth.toString(),
-        height: totalHeight.toString(),
-        length: totalLength.toString(),
-        weight: totalWeight.toString(),
-        cep: watch('cep'),
-      }),
-    })
-      .then((res) => res.json())
+    await getDeliveryPrices(
+      watch('cep'),
+      deliveryData.totalHeight,
+      deliveryData.totalWidth,
+      deliveryData.totalLength,
+      deliveryData.totalWeight,
+    )
       .then((data) => {
-        if (data.msg) throw new Error(data.msg)
-        setDeliveriesData(data)
+        if (data.isError) throw new Error(data.message)
+        setDeliveriesPricesData(data.data)
       })
-      .then(() => setShowSkeleton(false))
       .catch((error) => {
         console.error(error)
         alert('Erro ao calcular frete: ' + error)
       })
+  }
+
+  // eslint-disable-next-line
+  async function getAddressByCep(cep: string): Promise<IAddress | any> {
+    try {
+      const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      if (!response.ok) {
+        sendAlert({
+          message:
+            'Ué. Está parecendo que não estamos conseguindo conectar ao serviço dos Correios. Entre com seu endereço manualmente, por gentileza.',
+          type: 'error',
+        })
+      }
+      const data = await response.json()
+      return data
+    } catch (error) {
+      console.error(error)
+      return { error: 'Error fetching data: ' + error }
+    }
   }
 
   async function handleCepChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -196,8 +183,7 @@ export function DeliveryForm() {
     e.target.value = value
 
     if (value.length === 9) {
-      setShowSkeleton(true)
-      getDeliveryPrice()
+      await getDeliveryPrice()
 
       const address = await getAddressByCep(formatToNumber(value))
 
@@ -208,20 +194,29 @@ export function DeliveryForm() {
           type: 'OK',
         })
       }
-      console.log(address.localidade)
+
       setValue('address', address.logradouro)
       setValue('neighborhood', address.bairro)
       setValue('state', address.uf)
-      setValue('city', address.localidade)
+
+      setTimeout(() => {
+        setValue('city', address.localidade)
+      }, 500)
       setFocus('number')
     } else {
-      setDeliveriesData(null)
-      setChosenDelivery('')
+      setDeliveriesPricesData(null)
+      //setChosenDelivery('')
+      setDeliveryData({
+        ...deliveryData,
+        type: '',
+        price: null,
+        deliveryDays: 0,
+      })
     }
   }
 
   return (
-    <div className="p-5">
+    <div className={`p-5 ${currentStep !== 'delivery' && 'hidden'}`}>
       <h2>DADOS DE ENTREGA</h2>
       <form className="flex flex-col gap-5 p-5" onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col items-start  gap-3">
@@ -284,7 +279,12 @@ export function DeliveryForm() {
         </div>
         <div className="flex flex-col items-start  gap-3">
           <label htmlFor="state">Estado</label>
-          <select id="state" className="w-full rounded-lg border border-gray-300 p-3" {...register('state')}>
+          <select
+            id="state"
+            className="w-full rounded-lg border border-gray-300 p-3"
+            {...register('state')}
+            onChange={(e) => handleStateChange(e)}
+          >
             <option value="">Selecione o estado</option>
             {ufs.map((estado) => (
               <option key={estado.value} value={estado.value}>
@@ -316,8 +316,13 @@ export function DeliveryForm() {
 
         <div className="flex flex-col items-start  gap-3">
           <label htmlFor="name">Nome do destinatário</label>
-          <input type="text" id="name" className="w-full rounded-lg border border-gray-300 p-3" {...register('name')} />
-          {errors.name && <p className="text-destructive">{errors.name.message}</p>}
+          <input
+            type="text"
+            id="name"
+            className="w-full rounded-lg border border-gray-300 p-3"
+            {...register('customerName')}
+          />
+          {errors.customerName && <p className="text-destructive">{errors.customerName.message}</p>}
         </div>
 
         <div className="flex flex-col items-start  gap-3">
@@ -331,34 +336,59 @@ export function DeliveryForm() {
           {errors.email && <p className="text-destructive">{errors.email.message}</p>}
         </div>
 
+        <div className="flex flex-col items-start  gap-3">
+          <label htmlFor="customerWhatsapp">Whatsapp</label>
+          <input
+            type="text"
+            id="customerWhatsapp"
+            className="w-full rounded-lg border border-gray-300 p-3"
+            {...register('customerWhatsapp', {
+              onChange: (e) => {
+                e.target.value = formatPhone(e.target.value)
+              },
+            })}
+          />
+          {errors.customerWhatsapp && <p className="text-destructive">{errors.customerWhatsapp.message}</p>}
+        </div>
+
         {watch('cep') && watch('cep').length === 9 && (
           <div className="flex flex-col gap-3">
             <b>Escolha o frete:</b>
 
             <div>
               <RadioGroup
-                value={chosenDelivery}
+                value={deliveryData.type}
                 onValueChange={(e) => {
-                  setChosenDelivery(e as TDelivery)
+                  setDeliveryData({
+                    ...deliveryData,
+                    price:
+                      e === 'SEDEX'
+                        ? Number(deliveriesPricesData?.sedexPrice.replace(',', '.'))
+                        : Number(deliveriesPricesData?.pacPrice.replace(',', '.')),
+                    type: e as TDelivery,
+                  })
                 }}
+                disabled={!deliveriesPricesData?.sedexPrice}
               >
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="SEDEX" id="sedexChk" />
                   <Label htmlFor="sedexChk">
                     <table>
-                      <tr>
-                        <td className="w-20">SEDEX</td>
-                        <td>
-                          {showSkeleton && (!deliveriesData || !deliveriesData.sedexPrice) ? (
-                            <Skeleton className="h-4 w-40 bg-gray-300" />
-                          ) : (
-                            <span>
-                              R$ {deliveriesData?.sedexPrice.replace('.', ',')} - {deliveriesData?.sedexDeliveryTime}{' '}
-                              dias úteis
-                            </span>
-                          )}
-                        </td>
-                      </tr>
+                      <tbody>
+                        <tr>
+                          <td className="w-20">SEDEX</td>
+                          <td>
+                            {!deliveriesPricesData?.sedexPrice ? (
+                              <Skeleton className="h-4 w-40 bg-gray-300" />
+                            ) : (
+                              <span>
+                                R$ {deliveriesPricesData?.sedexPrice.replace('.', ',')} -{' '}
+                                {deliveriesPricesData?.sedexDeliveryTime} dias úteis
+                              </span>
+                            )}
+                          </td>
+                        </tr>
+                      </tbody>
                     </table>
                   </Label>
                 </div>
@@ -366,19 +396,21 @@ export function DeliveryForm() {
                   <RadioGroupItem value="PAC" id="pacChk" />
                   <Label htmlFor="pacChk">
                     <table>
-                      <tr>
-                        <td className="w-20">PAC</td>
-                        <td>
-                          {showSkeleton ? (
-                            <Skeleton className="h-4 w-40 bg-gray-300" />
-                          ) : (
-                            <span>
-                              R$ {deliveriesData?.pacPrice.replace('.', ',')} - {deliveriesData?.pacDeliveryTime} dias
-                              úteis
-                            </span>
-                          )}
-                        </td>
-                      </tr>
+                      <tbody>
+                        <tr>
+                          <td className="w-20">PAC</td>
+                          <td>
+                            {!deliveriesPricesData?.pacPrice ? (
+                              <Skeleton className="h-4 w-40 bg-gray-300" />
+                            ) : (
+                              <span>
+                                R$ {deliveriesPricesData?.pacPrice.replace('.', ',')} -{' '}
+                                {deliveriesPricesData?.pacDeliveryTime} dias úteis
+                              </span>
+                            )}
+                          </td>
+                        </tr>
+                      </tbody>
                     </table>
                   </Label>
                 </div>
@@ -394,7 +426,21 @@ export function DeliveryForm() {
         <Button type="button" className="w-full" onClick={goBackToCart}>
           Voltar para os itens
         </Button>
-        <Button type="submit" className="w-full" disabled={!chosenDelivery}>
+        <Button
+          type="submit"
+          className="w-full"
+          disabled={
+            !deliveryData.type ||
+            !watch('customerName') ||
+            !watch('email') ||
+            !watch('cep') ||
+            !watch('address') ||
+            !watch('number') ||
+            !watch('neighborhood') ||
+            !watch('city') ||
+            !watch('state')
+          }
+        >
           Ir para o pagamento
         </Button>
       </form>

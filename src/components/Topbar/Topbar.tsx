@@ -6,12 +6,12 @@ import { baloo } from '@/utils/maskFunctions'
 import Link from 'next/link'
 import { IoMdCart } from 'react-icons/io'
 import { useContext, useState } from 'react'
-import { CartContext } from '@/contexts/CartContext'
+import { PurchaseContext } from '@/contexts/PurchaseContext'
 import { CartDrawer } from '../CartDrawer/CartDrawer'
 import { AlertDialogContext } from '@/contexts/AlertDialogContext'
 
 export function Topbar() {
-  const { cart } = useContext(CartContext)
+  const { cart } = useContext(PurchaseContext)
   const { sendAlert } = useContext(AlertDialogContext)
   const [isCartOpen, setIsCartOpen] = useState(false)
 
@@ -19,7 +19,7 @@ export function Topbar() {
     if (cart.length === 0) {
       sendAlert({
         message: 'Ei! Seu carrinho está vazio. O que você quer ver aí?!',
-        type: 'OK',
+        type: 'error',
       })
       return
     }

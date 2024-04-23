@@ -1,37 +1,12 @@
 import { ItemCard } from '@/components/ItemCard/ItemCard'
 import { IProduct } from '@/models/products'
 import { baloo } from '@/utils/maskFunctions'
+import { getProducts } from './functions'
 
-let products: IProduct[] = []
 export async function ItemsContainer() {
-  async function getAllProducts() {
-    try {
-      const response = await fetch(`${process.env.API_URL}/api/products`, {
-        cache: 'no-cache',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
+  const result = await getProducts()
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-
-      const data = await response.json()
-      if (data) {
-        // This check can be more sophisticated based on your API response structure
-        products = data
-      } else {
-        console.error('Received empty or invalid JSON.')
-      }
-      // eslint-disable-next-line
-    } catch (error: any) {
-      console.error('Error fetching products:', error.message)
-    }
-  }
-
-  await getAllProducts()
-
+  const products: IProduct[] = result.data
   return (
     <div className=" mt-10 ">
       <h2

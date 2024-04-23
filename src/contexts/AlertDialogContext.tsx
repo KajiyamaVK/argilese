@@ -1,6 +1,6 @@
 'use client'
 import { Dispatch, ReactNode, SetStateAction, createContext, useState } from 'react'
-type TSendAlert = 'OK' | 'YN'
+type TSendAlert = 'OK' | 'YN' | 'error'
 
 export interface ISendAlert {
   type: TSendAlert

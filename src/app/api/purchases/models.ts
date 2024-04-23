@@ -7,7 +7,7 @@ interface IOpenPurchaseDelivery {
   deliveryType: TDeliveryType
   deliveryTime: number
   customerName: string
-  customerWhatsapp?: string
+  customerWhatsapp: string | null
   customerEmail: string
   address: string
   addressNumber: string
@@ -21,6 +21,6 @@ export interface IOpenPurchase {
   action: TActions
   data: {
     productsId: number[]
-    deliveryInfo: IOpenPurchaseDelivery
+    newDeliveryData: IOpenPurchaseDelivery
   }
 }

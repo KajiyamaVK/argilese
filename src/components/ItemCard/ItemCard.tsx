@@ -4,7 +4,7 @@ import { baloo } from '@/utils/maskFunctions'
 import { useRouter } from 'next/navigation'
 import { IProduct } from '@/models/products'
 import { useContext } from 'react'
-import { CartContext } from '@/contexts/CartContext'
+import { PurchaseContext } from '@/contexts/PurchaseContext'
 import { AlertDialogContext } from '@/contexts/AlertDialogContext'
 
 interface IItemCard {
@@ -12,7 +12,7 @@ interface IItemCard {
 }
 
 export function ItemCard({ product }: IItemCard) {
-  const { addToCart, checkIfAlreadyInCart } = useContext(CartContext)
+  const { addToCart, checkIfAlreadyInCart } = useContext(PurchaseContext)
   const { sendAlert } = useContext(AlertDialogContext)
   const router = useRouter()
   function goToProductPage(id: number) {
@@ -42,8 +42,8 @@ export function ItemCard({ product }: IItemCard) {
             onClick={() => {
               if (checkIfAlreadyInCart(product.id))
                 return sendAlert({
-                  message: `Produto ${product.productName} já está no carrinho. Por favor, verifique.`,
-                  type: 'OK',
+                  message: `Ué... mas você já adicionou esse produto ao carrinho! `,
+                  type: 'error',
                 })
               sendAlert({ message: `Produto adicionado ao carrinho. A Argile-se agradece! ^^`, type: 'OK' })
               addToCart(product)

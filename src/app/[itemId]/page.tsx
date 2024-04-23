@@ -4,21 +4,19 @@ import { IProduct } from '@/models/products'
 import { baloo } from '@/utils/maskFunctions'
 import { AddToCartButton } from './AddToCartButton'
 import BackButton from '@/components/BackButton/BackButton'
+import { getProducts } from '@/components/ItemsContainer/functions'
 export default async function ItemPage({ params }: { params: { itemId: number } }) {
   const { itemId } = params
 
   let product: IProduct = {} as IProduct
 
-  async function getProductById() {
-    await fetch(`${process.env.API_URL}/api/products`, {
-      method: 'POST',
-      body: JSON.stringify({ action: 'getProductById', id: itemId }),
-    })
-      .then((res) => res.json())
-      .then((data) => (product = data))
+  const result = await getProducts(itemId)
+  if (result.isError) {
+    alert(result.message)
+    return
   }
 
-  await getProductById()
+  product = result.data[0]
 
   if (!product) {
     return <div>Produto não encontrado</div>

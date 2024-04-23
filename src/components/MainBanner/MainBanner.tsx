@@ -6,7 +6,7 @@ export function MainBanner() {
   return (
     <div>
       <div className="flex h-full flex-wrap items-center justify-center gap-5">
-        <Image src={logo} className=" z-10 bg-cover" width={300} alt="Logo da Argile-se" />
+        <Image src={logo} className=" z-10 bg-cover" width={300} alt="Logo da Argile-se" priority />
         <div className="px-5 md:px-0">
           <h2 className={`${baloo.className} min-w-[400px] text-[3rem] font-extrabold md:text-[4rem]`}>
             Da argila à arte

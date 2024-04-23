@@ -7,6 +7,7 @@ import pacLogo from '/public/logos/pacLogo.png'
 import sedexLogo from '/public/logos/sedexLogo.png'
 import Image from 'next/image'
 import { Skeleton } from '../ui/skeleton'
+import { getDeliveryPrices } from '@/app/[itemId]/functions'
 
 interface ICalculaFrete {
   height: string
@@ -17,10 +18,10 @@ interface ICalculaFrete {
 
 export function CalculaFrete({ height, width, length, weight }: ICalculaFrete) {
   const [cep, setCep] = useState('')
-  const [pacPrice, setPacPrice] = useState('')
-  const [pacDeliveryTime, setPacDeliveryTime] = useState('')
-  const [sedexPrice, setSedexPrice] = useState('')
-  const [sedexDeliveryTime, setSedexDeliveryTime] = useState('')
+  const [pacPrice, setPacPrice] = useState<number | null>(null)
+  const [pacDeliveryTime, setPacDeliveryTime] = useState<number | null>(null)
+  const [sedexPrice, setSedexPrice] = useState<number | null>(null)
+  const [sedexDeliveryTime, setSedexDeliveryTime] = useState<number | null>(null)
   const [showSkeleton, setShowSkeleton] = useState<boolean | null>(null)
 
   function handleChangeCep(value: string) {
@@ -29,27 +30,23 @@ export function CalculaFrete({ height, width, length, weight }: ICalculaFrete) {
   }
 
   async function getDeliveryPrice() {
-    setPacPrice('')
-    setSedexPrice('')
-    setPacDeliveryTime('')
-    setSedexDeliveryTime('')
+    setPacPrice(null)
+    setSedexPrice(null)
+    setPacDeliveryTime(null)
+    setSedexDeliveryTime(null)
     setShowSkeleton(true)
-    await fetch(`/api/calculaFrete`, {
-      method: 'POST',
-      cache: 'no-cache',
-      body: JSON.stringify({ width, height, length, weight, cep }),
+
+    await getDeliveryPrices(cep, Number(height), Number(width), Number(length), Number(weight)).then((data) => {
+      const result = data.data
+      setPacPrice(result.pacPrice)
+      setSedexPrice(result.sedexPrice)
+      setPacDeliveryTime(result.pacDeliveryTime)
+      setSedexDeliveryTime(result.sedexDeliveryTime)
     })
-      .then((res) => res.json())
-      .then((data) => {
-        setPacPrice(data.pacPrice)
-        setSedexPrice(data.sedexPrice)
-        setPacDeliveryTime(data.pacDeliveryTime)
-        setSedexDeliveryTime(data.sedexDeliveryTime)
-      })
   }
 
   useEffect(() => {
-    if (pacPrice !== '' || sedexPrice !== '') {
+    if (pacPrice !== null || sedexPrice !== 0) {
       setShowSkeleton(false)
     }
   }, [pacPrice, sedexPrice])
@@ -87,7 +84,7 @@ export function CalculaFrete({ height, width, length, weight }: ICalculaFrete) {
                 {showSkeleton ? (
                   <Skeleton className="ml-2 h-[20px] w-[50px] bg-gray-300" />
                 ) : (
-                  pacPrice.replace('.', ',')
+                  pacPrice?.toString().replace('.', ',')
                 )}
               </td>
             </tr>
@@ -114,7 +111,7 @@ export function CalculaFrete({ height, width, length, weight }: ICalculaFrete) {
                 {showSkeleton ? (
                   <Skeleton className="ml-2 h-[20px] w-[50px] bg-gray-300" />
                 ) : (
-                  sedexPrice.replace('.', ',')
+                  sedexPrice?.toString().replace('.', ',')
                 )}
               </td>
             </tr>

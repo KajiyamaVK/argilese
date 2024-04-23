@@ -1,16 +1,30 @@
-export interface IShippingOption {
-  id: number
-  name: string
-  price: string
-  custom_price: string
+export interface IPurchaseDelivery {
+  id?: number
+  customerName: string
+  customerWhatsapp: string
+  customerEmail: string
+  cep: string
+  address: string
+  complement: string
+  addressNumber: string
+  neighborhood: string
+  city: string
+  state: string
+  price: number | null
+  type: TDelivery
+  customPrice: string
+  totalWeight: number
+  totalHeight: number
+  totalWidth: number
+  totalLength: number
   discount: string
   currency: string
-  delivery_time: number
-  delivery_range: DeliveryRange
-  custom_delivery_time: number
-  custom_delivery_range: DeliveryRange
+  deliveryDays: number
+  deliveryRange: DeliveryRange
+  customDeliveryDays: number
+  customDeliveryRange: DeliveryRange
   packages: Package[]
-  additional_services: AdditionalServices
+  additionalServices: AdditionalServices
   company: Company
 }
 
@@ -27,6 +41,8 @@ interface Package {
   insurance_value: string
   dimensions: Dimensions
 }
+
+export type TDelivery = 'PAC' | 'SEDEX' | ''
 
 interface Dimensions {
   height: number

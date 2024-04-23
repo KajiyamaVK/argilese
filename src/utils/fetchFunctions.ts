@@ -1,3 +1,5 @@
+'use server'
+
 import Error from 'next/error'
 
 interface IGetDeliveryTimeAndValue {
@@ -24,60 +26,30 @@ export async function getFrete({ width, height, length, weight, cep }: IGetDeliv
     })
 }
 
-interface IAddress {
-  cep: string
-  logradouro: string
-  complemento: string
-  bairro: string
-  localidade: string
-  uf: string
-  ibge: string
-  gia: string
-  ddd: string
-  siafi: string
-}
-// eslint-disable-next-line
-
-interface IAddressError {
-  error: string
-}
+// This function fetches city names for a given UF code from the database
 
 // eslint-disable-next-line
-export async function getAddressByCep(cep: string): Promise<IAddress | IAddressError | any> {
-  try {
-    const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-    if (!response.ok) {
-      throw new Error({ statusCode: response.status, message: 'Erro ao buscar o cep. Entre em contato com o suporte.' })
-    }
-    const data = await response.json()
-    return data
-  } catch (error) {
-    console.error(error)
-    return { error: 'Error fetching data: ' + error }
-  }
+
+export interface ICity {
+  nome: string
+  id: number
 }
 
-// eslint-disable-next-line
-export function getCityByUf(uf: string): Promise<string[] | any> {
-  return fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      const cities: string[] = data.map((city: { nome: string }) => city.nome)
-
-      return cities
-    })
-    .catch((error) => {
-      console.error(error)
-      return { error: 'Error fetching data: ' + error }
-    })
+// Fetch state names and cities from the IBGE API
+export async function getStateAndCities(): Promise<{ uf: string; stateName: string; cities: ICity[] }[]> {
+  const response = await fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
+  const states = await response.json()
+  return Promise.all(
+    states.map(async (state: { sigla: string; nome: string }) => {
+      const cityResponse = await fetch(
+        `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${state.sigla}/municipios`,
+      )
+      const cities = await cityResponse.json()
+      return {
+        uf: state.sigla,
+        stateName: state.nome,
+        cities: cities.map((city: { nome: string; id: number }) => ({ name: city.nome, id: city.id })),
+      }
+    }),
+  )
 }

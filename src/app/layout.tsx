@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { Roboto } from 'next/font/google'
 import './globals.css'
 import { Topbar } from '@/components/Topbar/Topbar'
-import { CartContextProvider } from '@/contexts/CartContext'
+import { PurchaseContextProvider } from '@/contexts/PurchaseContext'
 import { AlertDialogProvider } from '@/contexts/AlertDialogContext'
 import { Alert } from '@/components/Alert/Alert'
 
@@ -25,11 +25,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           style={{ backgroundImage: 'url(/bannerBG.png)', filter: 'blur(8px)' }}
         />
         <AlertDialogProvider>
-          <CartContextProvider>
+          <PurchaseContextProvider>
             <Alert />
             <Topbar />
             {children}
-          </CartContextProvider>
+          </PurchaseContextProvider>
         </AlertDialogProvider>
       </body>
     </html>

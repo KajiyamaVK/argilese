@@ -1,12 +1,12 @@
 import { AlertDialogContext } from '@/contexts/AlertDialogContext'
-import { CartContext } from '@/contexts/CartContext'
+import { PurchaseContext } from '@/contexts/PurchaseContext'
 import Image from 'next/image'
 import { useContext } from 'react'
 import { Button } from '../Button/Button'
 import { TotalsContainer } from './TotalsContainer'
 
 export function ProductsList() {
-  const { cart, removeFromCart, setCurrentStep } = useContext(CartContext)
+  const { cart, removeFromCart, setCurrentStep, currentStep } = useContext(PurchaseContext)
   const { sendAlert, setIsAlertOpen } = useContext(AlertDialogContext)
 
   function handleRemoveFromCart(productId: number) {
@@ -28,7 +28,7 @@ export function ProductsList() {
   }
 
   return (
-    <div className="flex-1 bg-white p-4 ">
+    <div className={`flex-1 bg-white p-4 ${currentStep !== 'cart' && 'hidden'}`}>
       <div className="mx-auto max-w-md">
         <h1 className="mb-4 font-medium">Carrinho</h1>
         <div className="flex flex-col gap-4">

@@ -1,6 +1,6 @@
 'use client'
 import { AlertDialogContext } from '@/contexts/AlertDialogContext'
-import { CartContext } from '@/contexts/CartContext'
+import { PurchaseContext } from '@/contexts/PurchaseContext'
 import { IProduct } from '@/models/products'
 import { useContext } from 'react'
 
@@ -8,14 +8,14 @@ interface AddToCartButtonProps {
   product: IProduct
 }
 export function AddToCartButton({ product }: AddToCartButtonProps) {
-  const { addToCart, checkIfAlreadyInCart } = useContext(CartContext)
+  const { addToCart, checkIfAlreadyInCart } = useContext(PurchaseContext)
   const { sendAlert } = useContext(AlertDialogContext)
 
   function handleAddToCart() {
     if (checkIfAlreadyInCart(product.id))
       return sendAlert({
         message: `Ei! Bem que você queria comprar mais deste, né?! Produto ${product.productName} já está no carrinho. Por favor, verifique!`,
-        type: 'OK',
+        type: 'error',
       })
     sendAlert({ message: `Produto ${product.productName} adicionado ao carrinho`, type: 'OK' })
     addToCart(product)

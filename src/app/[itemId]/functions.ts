@@ -1,6 +1,14 @@
-import { IShippingOption } from '@/models/IShippingOption'
+'use server'
+import { IDBResponse } from '@/models/database'
+import { IPurchaseDelivery } from '@/models/deliveries'
 
-export async function getDeliveryPrice(cep: string, height: number, width: number, length: number, weight: number) {
+export async function getDeliveryPrices(
+  cep: string,
+  height: number,
+  width: number,
+  length: number,
+  weight: number,
+): Promise<IDBResponse> {
   interface IResponse {
     pacPrice: number
     pacDeliveryTime: number
@@ -35,12 +43,12 @@ export async function getDeliveryPrice(cep: string, height: number, width: numbe
       .then((res) => res.json())
       .then((data) => {
         //
-        const pac = data.filter((item: IShippingOption) => item.name === 'PAC')
+        const pac = data.filter((item: IPurchaseDelivery) => item.type === 'PAC')
 
         const pacPrice = pac[0].error ? 0 : pac[0].price + pac[0].discount
         const pacDeliveryTime = pac[0].error ? 0 : pac[0].delivery_time
 
-        const sedex = data.filter((item: IShippingOption) => item.name === 'SEDEX')
+        const sedex = data.filter((item: IPurchaseDelivery) => item.type === 'SEDEX')
         const sedexDeliveryTime = sedex[0].error ? 0 : sedex[0].delivery_time
 
         const sedexPrice: number = Number(sedex[0].price) + Number(sedex[0].discount)
@@ -54,7 +62,7 @@ export async function getDeliveryPrice(cep: string, height: number, width: numbe
       })
       .catch(() => {
         console.error('Error fetching delivery price')
-        return new Response(JSON.stringify({ message: 'Error fetching delivery price' }), { status: 500 })
+        return { message: 'Error fetching delivery price', isError: true, affectedRows: 0, insertId: 0 }
       })
   } else if (process.env.FRETE_SERVICE === 'cepcerto') {
     await fetch(
@@ -78,9 +86,9 @@ export async function getDeliveryPrice(cep: string, height: number, width: numbe
       })
       .catch(() => {
         console.error('Error fetching delivery price')
-        return new Response(JSON.stringify({ message: 'Error fetching delivery price' }), { status: 500 })
+        return { message: 'Error fetching delivery price', isError: true, affectedRows: 0, insertId: 0 }
       })
   }
 
-  return new Response(JSON.stringify(response), { status: 200 })
+  return { data: response, message: 'Delivery price fetched', isError: false, affectedRows: 0, insertId: 0 }
 }

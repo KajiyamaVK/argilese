@@ -2,11 +2,13 @@ import { ItemCard } from '@/components/ItemCard/ItemCard'
 import { IProduct } from '@/models/products'
 import { baloo } from '@/utils/maskFunctions'
 import { getProducts } from './functions'
+import { revalidatePath } from 'next/cache'
 
 export async function ItemsContainer() {
   const result = await getProducts()
 
   const products: IProduct[] = result.data
+  revalidatePath('/products')
   return (
     <div className=" mt-10 ">
       <h2

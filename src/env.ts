@@ -16,9 +16,6 @@ const envSchema = z.object({
   DB_PASSWORD: z.string({
     required_error: 'Database password is required',
   }),
-  API_URL: z.string({
-    required_error: 'API URL is required',
-  }),
   TOKEN_FRETES: z.string({
     required_error: 'Token Frete is required',
   }),

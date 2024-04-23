@@ -3,9 +3,10 @@ import { IProduct } from '@/models/products'
 import { baloo } from '@/utils/maskFunctions'
 import { getProducts } from './functions'
 import { cookies } from 'next/headers'
+import { unstable_noStore as noStore} from 'next/cache'
 
 export async function ItemsContainer() {
-  cookies() // To not cache the page
+  noStore() // To not cache the page
   const result = await getProducts()
 
   const products: IProduct[] = result.data

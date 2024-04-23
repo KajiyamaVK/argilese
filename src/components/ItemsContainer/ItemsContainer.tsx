@@ -2,10 +2,10 @@ import { ItemCard } from '@/components/ItemCard/ItemCard'
 import { IProduct } from '@/models/products'
 import { baloo } from '@/utils/maskFunctions'
 import { getProducts } from './functions'
-import { unstable_noStore as noStore} from 'next/cache'
+import { unstable_noStore } from 'next/cache'
 
 export async function ItemsContainer() {
-  noStore() // To not cache the page
+  unstable_noStore() // To not cache the page
   const result = await getProducts()
 
   const products: IProduct[] = result.data

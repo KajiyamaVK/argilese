@@ -179,13 +179,13 @@ export function DeliveryForm() {
   }
 
   async function handleCepChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const value = formatCEP(e.target.value)
-    e.target.value = value
+    setValue('cep', formatCEP(e.target.value))
+    const value = formatToNumber(e.target.value)
 
     if (value.length === 9) {
       await getDeliveryPrice()
 
-      const address = await getAddressByCep(formatToNumber(value))
+      const address = await getAddressByCep(value)
 
       if (address.error) {
         //return alert('CEP não encontrado. Ele está certo?')
@@ -226,7 +226,7 @@ export function DeliveryForm() {
             id="cep"
             className="w-32 rounded-lg border border-gray-300 p-3"
             {...register('cep', {
-              onChange: (e) => {
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
                 handleCepChange(e)
               },
             })}
@@ -343,7 +343,7 @@ export function DeliveryForm() {
             id="customerWhatsapp"
             className="w-full rounded-lg border border-gray-300 p-3"
             {...register('customerWhatsapp', {
-              onChange: (e) => {
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
                 e.target.value = formatPhone(e.target.value)
               },
             })}
@@ -358,7 +358,7 @@ export function DeliveryForm() {
             <div>
               <RadioGroup
                 value={deliveryData.type}
-                onValueChange={(e) => {
+                onValueChange={(e: TDelivery) => {
                   setDeliveryData({
                     ...deliveryData,
                     price:

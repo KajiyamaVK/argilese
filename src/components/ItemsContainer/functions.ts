@@ -2,11 +2,8 @@ import { IDBResponse } from '@/models/database'
 import { IProduct } from '@/models/products'
 import { getDatabaseConnection } from '@/utils/database'
 import { FieldPacket, QueryResult } from 'mysql2'
-import { unstable_noStore as noStore } from 'next/cache'
 
-export const fetchCache = 'force-no-store'
 export async function getProducts(id?: number) {
-  noStore() // To not cache the page
   const Conn = await getDatabaseConnection()
   let returnValue: IDBResponse = {} as IDBResponse
   try {

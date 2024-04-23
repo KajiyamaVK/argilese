@@ -220,7 +220,7 @@ export function DeliveryForm() {
       <h2>DADOS DE ENTREGA</h2>
       <form className="flex flex-col gap-5 p-5" onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col items-start  gap-3">
-          <label htmlFor="cep">Digite seu cep</label>
+          <label htmlFor="cep">Digite seu cep para entrega</label>
           <input
             type="text"
             id="cep"

@@ -182,7 +182,8 @@ export function DeliveryForm() {
     setValue('cep', formatCEP(e.target.value))
     const value = formatToNumber(e.target.value)
 
-    if (value.length === 9) {
+    if (value.length === 8) {
+      console.log('yabaaaaaaa')
       await getDeliveryPrice()
 
       const address = await getAddressByCep(value)

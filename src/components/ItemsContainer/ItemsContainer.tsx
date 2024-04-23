@@ -3,7 +3,7 @@ import { IProduct } from '@/models/products'
 import { baloo } from '@/utils/maskFunctions'
 import { getProducts } from './functions'
 import { unstable_noStore } from 'next/cache'
-export const fetchCache = 'force-no-store';
+export const fetchCache = 'force-no-store'
 
 export async function ItemsContainer() {
   unstable_noStore() // To not cache the page

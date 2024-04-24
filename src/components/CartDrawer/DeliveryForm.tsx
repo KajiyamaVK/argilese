@@ -1,11 +1,11 @@
 'use client'
-
+import { FaSpinner } from 'react-icons/fa'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '../Button/Button'
 import { formatCEP, formatPhone, formatToNumber } from '@/utils/maskFunctions'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { PurchaseContext } from '@/contexts/PurchaseContext'
 import { AlertDialogContext } from '@/contexts/AlertDialogContext'
 import { TotalsContainer } from './TotalsContainer'
@@ -86,6 +86,7 @@ export function DeliveryForm() {
   const { setCurrentStep, deliveryData, setDeliveryData, cart, currentStep } = useContext(PurchaseContext)
   const { sendAlert } = useContext(AlertDialogContext)
   const [cities, setCities] = useState<string[]>([])
+  const [isLoadingAddress, setIsLoadingAddress] = useState(false)
 
   //const [chosenDelivery, setChosenDelivery] = useState<TDelivery>('')
   const [deliveriesPricesData, setDeliveriesPricesData] = useState<IGetFreteResponse | null>({
@@ -95,15 +96,20 @@ export function DeliveryForm() {
     sedexDeliveryTime: '',
   })
 
+  useEffect(() => {
+    handleStateChange()
+    // eslint-disable-next-line
+  }, [watch('state')])
+
   function goBackToCart() {
     setCurrentStep('cart')
   }
 
-  function handleStateChange(e: React.ChangeEvent<HTMLSelectElement>) {
-    const value = e.target.value
+  async function handleStateChange() {
     setValue('city', '')
     setCities([])
-    getCitiesByUF(value).then((data) => {
+    await getCitiesByUF(watch('state')).then((data) => {
+      console.log('data', data)
       setCities(data.data)
     })
   }
@@ -137,6 +143,7 @@ export function DeliveryForm() {
   }
 
   async function getDeliveryPrice() {
+    console.log('getDeliveryPrice')
     await getDeliveryPrices(
       watch('cep'),
       deliveryData.totalHeight,
@@ -145,6 +152,7 @@ export function DeliveryForm() {
       deliveryData.totalWeight,
     )
       .then((data) => {
+        console.log('data', data.data)
         if (data.isError) throw new Error(data.message)
         setDeliveriesPricesData(data.data)
       })
@@ -180,13 +188,14 @@ export function DeliveryForm() {
 
   async function handleCepChange(e: React.ChangeEvent<HTMLInputElement>) {
     const value: string = e.currentTarget.value
-    // console.log('value', value)
+    //
     const cep = formatCEP(value)
-    console.log('cep', cep)
+
     setValue('cep', cep)
 
     if (value.length === 9) {
-      console.log('yabaaaaaaa')
+      setIsLoadingAddress(true)
+
       await getDeliveryPrice()
 
       const address = await getAddressByCep(formatToNumber(cep))
@@ -199,18 +208,13 @@ export function DeliveryForm() {
         })
       }
 
+      setValue('state', address.uf)
       setValue('address', address.logradouro)
       setValue('neighborhood', address.bairro)
-      setValue('state', address.uf)
-
-      setTimeout(() => {
-        setValue('city', address.localidade)
-      }, 1000)
+      setIsLoadingAddress(false)
       setFocus('number')
     } else {
-      console.log('nope')
       setDeliveriesPricesData(null)
-      console.log('cep2', value)
     }
   }
 
@@ -220,14 +224,17 @@ export function DeliveryForm() {
       <form className="flex flex-col gap-5 p-5" onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col items-start  gap-3">
           <label htmlFor="cep">Digite seu cep</label>
-          <input
-            type="text"
-            id="cep"
-            className="w-32 rounded-lg border border-gray-300 p-3"
-            {...register('cep', {
-              onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleCepChange(e),
-            })}
-          />
+          <div className="flex items-center gap-5">
+            <input
+              type="text"
+              id="cep"
+              className="w-32 rounded-lg border border-gray-300 p-3"
+              {...register('cep', {
+                onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleCepChange(e),
+              })}
+            />
+            {isLoadingAddress && <FaSpinner className="animate-spin" size={24} />}
+          </div>
           {errors.cep && <p className="text-destructive">{errors.cep.message}</p>}
         </div>
 
@@ -281,7 +288,7 @@ export function DeliveryForm() {
             id="state"
             className="w-full rounded-lg border border-gray-300 p-3"
             {...register('state')}
-            onChange={(e) => handleStateChange(e)}
+            onChange={handleStateChange}
           >
             <option value="">Selecione o estado</option>
             {ufs.map((estado) => (

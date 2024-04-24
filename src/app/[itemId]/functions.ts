@@ -65,18 +65,18 @@ export async function getDeliveryPrices(
         return { message: 'Error fetching delivery price', isError: true, affectedRows: 0, insertId: 0 }
       })
   } else if (process.env.FRETE_SERVICE === 'cepcerto') {
-    await fetch(
-      `https://www.cepcerto.com/ws/json-frete/03366070/${cep.replace('-', '')}/${weight}/${height}/${width}/${length}/${process.env.TOKEN_CEPCERTO}`,
-      {
-        cache: 'no-cache',
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+    const urlString = `https://www.cepcerto.com/ws/json-frete/03366070/${cep.replace('-', '')}/${weight}/${height}/${width}/${length}/${process.env.TOKEN_CEPCERTO}`
+    console.log('urlString', urlString)
+    await fetch(urlString, {
+      cache: 'no-cache',
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    )
+    })
       .then((res) => res.json())
       .then((data) => {
+        console.log('data', data)
         response = {
           pacPrice: data.valorpac,
           pacDeliveryTime: data.prazopac,

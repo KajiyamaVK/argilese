@@ -18,7 +18,7 @@ interface IPurchaseContext {
   setCurrentStep: Dispatch<SetStateAction<TStep>>
   totalPurchaseAmount: number
 }
-export type TStep = 'cart' | 'payment' | 'delivery'
+export type TStep = 'cart' | 'delivery' | 'payment' | 'paymentStatus'
 
 export const PurchaseContext = createContext({} as IPurchaseContext)
 
@@ -100,6 +100,7 @@ export function PurchaseContextProvider({ children }: { children: ReactNode }) {
   }
 
   function resetCart() {
+    setCurrentStep('cart')
     setCart([])
   }
 

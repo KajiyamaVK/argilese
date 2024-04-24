@@ -5,6 +5,7 @@ import { Topbar } from '@/components/Topbar/Topbar'
 import { PurchaseContextProvider } from '@/contexts/PurchaseContext'
 import { AlertDialogProvider } from '@/contexts/AlertDialogContext'
 import { Alert } from '@/components/Alert/Alert'
+import { GeneralProvider } from '@/contexts/GeneralContext'
 
 const roboto = Roboto({ weight: '400', subsets: ['latin'] })
 
@@ -24,13 +25,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           className="absolute top-0 -z-10 flex size-full flex-wrap justify-center bg-cover bg-center"
           style={{ backgroundImage: 'url(/bannerBG.png)', filter: 'blur(8px)' }}
         />
-        <AlertDialogProvider>
-          <PurchaseContextProvider>
-            <Alert />
-            <Topbar />
-            {children}
-          </PurchaseContextProvider>
-        </AlertDialogProvider>
+        <GeneralProvider>
+          <AlertDialogProvider>
+            <PurchaseContextProvider>
+              <Alert />
+              <Topbar />
+              {children}
+            </PurchaseContextProvider>
+          </AlertDialogProvider>
+        </GeneralProvider>
       </body>
     </html>
   )

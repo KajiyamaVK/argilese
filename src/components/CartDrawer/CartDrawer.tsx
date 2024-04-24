@@ -2,13 +2,15 @@
 
 //import { PurchaseContext } from '@/contexts/PurchaseContext'
 import { Drawer } from '../Drawer/Drawer'
-import { Dispatch, SetStateAction, useContext, useEffect } from 'react'
+import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react'
 import { RxCaretRight } from 'react-icons/rx'
 import { initMercadoPago } from '@mercadopago/sdk-react'
 import { PaymentBrick } from '@/components/PaymentBrick/PaymentBrick'
 import { ProductsList } from './ProductsList'
 import { PurchaseContext } from '@/contexts/PurchaseContext'
 import { DeliveryForm } from './DeliveryForm'
+import { PaymentStatusBrick } from '../PaymentStatusBrick/PaymentStatusBrick'
+import { Button } from '../Button/Button'
 
 interface ICartDrawer {
   isOpen: boolean
@@ -16,8 +18,8 @@ interface ICartDrawer {
 }
 
 export function CartDrawer({ isOpen, setIsOpen }: ICartDrawer) {
-  const { currentStep, totalCartQty, setCurrentStep, totalPurchaseAmount } = useContext(PurchaseContext)
-
+  const { currentStep, totalCartQty, setCurrentStep, totalPurchaseAmount, resetCart } = useContext(PurchaseContext)
+  const [paymentId, setPaymentId] = useState<string>('')
   const mercadoPagoPublicToken = process.env.NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY
 
   useEffect(() => {
@@ -51,7 +53,15 @@ export function CartDrawer({ isOpen, setIsOpen }: ICartDrawer) {
         </button>
         <ProductsList />
         <DeliveryForm />
-        {currentStep === 'payment' && <PaymentBrick amount={totalPurchaseAmount} preferenceId={'teste1'} />}
+        {currentStep === 'payment' && <PaymentBrick amount={totalPurchaseAmount} setPaymentId={setPaymentId} />}
+        {currentStep === 'paymentStatus' && (
+          <div className="flex flex-col justify-center">
+            <PaymentStatusBrick paymentId={paymentId} setPaymentId={setPaymentId} />
+            <Button className="border border-black bg-white text-black" onClick={resetCart}>
+              Ok
+            </Button>
+          </div>
+        )}
       </div>
     </Drawer.Root>
   )

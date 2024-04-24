@@ -66,7 +66,7 @@ export async function getDeliveryPrices(
       })
   } else if (process.env.FRETE_SERVICE === 'cepcerto') {
     const urlString = `https://www.cepcerto.com/ws/json-frete/03366070/${cep.replace('-', '')}/${weight}/${height}/${width}/${length}/${process.env.TOKEN_CEPCERTO}`
-    console.log('urlString', urlString)
+
     await fetch(urlString, {
       cache: 'no-cache',
       method: 'GET',
@@ -76,7 +76,6 @@ export async function getDeliveryPrices(
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log('data', data)
         response = {
           pacPrice: data.valorpac,
           pacDeliveryTime: data.prazopac,

@@ -1,8 +1,9 @@
 'use client'
+import { AlertDialogContext } from '@/contexts/AlertDialogContext'
 import { PurchaseContext } from '@/contexts/PurchaseContext'
 import { Payment } from '@mercadopago/sdk-react'
 import { IPaymentBrickCustomization } from '@mercadopago/sdk-react/bricks/payment/type'
-import { useContext } from 'react'
+import { Dispatch, SetStateAction, useContext } from 'react'
 
 export interface AdditionalInfo {
   items: Item[]
@@ -50,15 +51,15 @@ interface ReceiverAddress {
 
 interface IPaymentBrick {
   amount: number
-  preferenceId: string
+  setPaymentId: Dispatch<SetStateAction<string>>
 }
 
-export function PaymentBrick({ amount, preferenceId }: IPaymentBrick) {
-  const { resetCart, cart, deliveryData } = useContext(PurchaseContext)
+export function PaymentBrick({ amount, setPaymentId }: IPaymentBrick) {
+  const { cart, deliveryData, setCurrentStep } = useContext(PurchaseContext)
+  const { sendAlert } = useContext(AlertDialogContext)
 
   const initialization = {
     amount,
-    preferenceId,
   }
   const customization = {
     paymentMethods: {
@@ -110,94 +111,14 @@ export function PaymentBrick({ amount, preferenceId }: IPaymentBrick) {
       payer,
       shipments,
     }
-    // callback chamado ao clicar no botão de submissão dos dados
 
     const body = {
       ...formData,
       additional_info,
     }
 
-    /*
-  Current Body
-  {
-    "token": "995b40cc1a7f592c2a9abd898b997174",
-    "issuer_id": "24",
-    "payment_method_id": "master",
-    "transaction_amount": 102,
-    "installments": 1,
-    "payer": {
-        "email": "victor.kajiyama@gmail.com",
-        "identification": {
-            "type": "CPF",
-            "number": "12345678909"
-        }
-    }
-}
-
-Full Body
-
-
-  body: {
-    additional_info: {
-      items: [
-        {
-          id: 'MLB2907679857',
-          title: 'Point Mini',
-          description: 'Point product for card payments via Bluetooth.',
-          picture_url: 'https://http2.mlstatic.com/resources/frontend/statics/growth-sellers-landings/device-mlb-point-i_medium2x.png',
-          category_id: 'electronics',
-          quantity: 1,
-          unit_price: 58.8,
-        }
-      ],
-      payer: {
-        first_name: 'Test',
-        last_name: 'Test',
-        phone: {
-          area_code: '11',
-          number: '987654321'
-        },
-        address: {
-          street_number: null
-        }
-      },
-      shipments: {
-        receiver_address: {
-          zip_code: '12312-123',
-          state_name: 'Rio de Janeiro',
-          city_name: 'Buzios',
-          street_name: 'Av das Nacoes Unidas',
-          street_number: 3003
-        }
-      }
-    },
-    application_fee: null,
-    binary_mode: false,
-    campaign_id: null,
-    capture: false,
-    coupon_amount: null,
-    description: 'Payment for product',
-    differential_pricing_id: null,
-    external_reference: 'MP0001',
-    installments: 1,
-    metadata: null,
-    payer: {
-      entity_type: 'individual',
-      type: 'customer',
-      email: 'test_user_123@testuser.com',
-      identification: {
-        type: 'CPF',
-        number: '95749019047'
-      }
-    },
-    payment_method_id: 'master',
-    token: 'ff8080814c11e237014c1ff593b57b4d',
-    transaction_amount: 58.8
-  },
-  */
-
-    return new Promise<void>((resolve, reject) => {
-      fetch('api/purchases/process_payment', {
+    return new Promise<void>(async (resolve, reject) => {
+      await fetch('api/purchases/process_payment', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -210,12 +131,16 @@ Full Body
           // receber o resultado do pagamento
 
           resolve()
-          alert('Pagamento realizado com sucesso!')
-          resetCart()
+          if (!response.id) {
+            sendAlert({ message: 'Erro ao realizar a compra!', type: 'error' })
+            return
+          } else {
+            setPaymentId(response.id)
+            setCurrentStep('paymentStatus')
+          }
         })
         // eslint-disable-next-line
         .catch((error) => {
-          // lidar com a resposta de erro ao tentar criar o pagamento
           reject()
         })
     })
@@ -223,6 +148,7 @@ Full Body
   // eslint-disable-next-line
   const onError = async (error: any) => {
     // callback chamado para todos os casos de erro do Brick
+    alert('Erro não esperado. ')
   }
   const onReady = async () => {
     /*

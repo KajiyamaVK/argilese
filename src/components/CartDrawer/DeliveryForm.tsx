@@ -16,6 +16,7 @@ import { TDelivery } from '@/models/deliveries'
 import { getCitiesByUF, insertPurchase } from './functions'
 import { getDeliveryPrices } from '@/app/[itemId]/functions'
 import { IAddress } from '@mercadopago/sdk-react/bricks/payment/type'
+import { GeneralContext } from '@/contexts/GeneralContext'
 
 const DeliveryFormSchema = z.object({
   customerName: z.string({ required_error: 'O nome é necessário para a entrega.' }),
@@ -84,6 +85,7 @@ export function DeliveryForm() {
   })
 
   const { setCurrentStep, deliveryData, setDeliveryData, cart, currentStep } = useContext(PurchaseContext)
+  const { isAdmin } = useContext(GeneralContext)
   const { sendAlert } = useContext(AlertDialogContext)
   const [cities, setCities] = useState<string[]>([])
   const [isLoadingAddress, setIsLoadingAddress] = useState(false)
@@ -109,7 +111,6 @@ export function DeliveryForm() {
     setValue('city', '')
     setCities([])
     await getCitiesByUF(watch('state')).then((data) => {
-      console.log('data', data)
       setCities(data.data)
     })
   }
@@ -135,6 +136,10 @@ export function DeliveryForm() {
       customerWhatsapp: data.customerWhatsapp ? formatToNumber(data.customerWhatsapp) : '',
     }
 
+    if (isAdmin) {
+      newDeliveryData.deliveryPrice = 1.5
+    }
+
     await setDeliveryData(newDeliveryData)
 
     await insertPurchase({ deliveryData: newDeliveryData, cartData: cart })
@@ -143,7 +148,6 @@ export function DeliveryForm() {
   }
 
   async function getDeliveryPrice() {
-    console.log('getDeliveryPrice')
     await getDeliveryPrices(
       watch('cep'),
       deliveryData.totalHeight,
@@ -152,7 +156,6 @@ export function DeliveryForm() {
       deliveryData.totalWeight,
     )
       .then((data) => {
-        console.log('data', data.data)
         if (data.isError) throw new Error(data.message)
         setDeliveriesPricesData(data.data)
       })

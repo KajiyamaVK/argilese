@@ -2,6 +2,7 @@ import { MercadoPagoConfig, Payment } from 'mercadopago'
 
 export async function POST(req) {
   const body = await req.json()
+  console.log('body', body)
 
   const client = new MercadoPagoConfig({ accessToken: process.env.MERCADO_PAGO_TOKEN, options: { timeout: 5000 } })
 

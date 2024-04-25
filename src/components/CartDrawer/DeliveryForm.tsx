@@ -16,7 +16,6 @@ import { TDelivery } from '@/models/deliveries'
 import { getCitiesByUF, savePurchaseDelivery } from './functions'
 import { getDeliveryPrices } from '@/app/[itemId]/functions'
 import { IAddress } from '@mercadopago/sdk-react/bricks/payment/type'
-import { GeneralContext } from '@/contexts/GeneralContext'
 
 const DeliveryFormSchema = z.object({
   customerName: z.string({ required_error: 'O nome é necessário para a entrega.' }),
@@ -84,8 +83,7 @@ export function DeliveryForm({ purchaseId }: { purchaseId: number }) {
     resolver: zodResolver(DeliveryFormSchema),
   })
 
-  const { setCurrentStep, deliveryData, setDeliveryData, cart, currentStep } = useContext(PurchaseContext)
-  const { isAdmin } = useContext(GeneralContext)
+  const { setCurrentStep, deliveryData, setDeliveryData, currentStep } = useContext(PurchaseContext)
   const { sendAlert } = useContext(AlertDialogContext)
   const [cities, setCities] = useState<string[]>([])
   const [isLoadingAddress, setIsLoadingAddress] = useState(false)

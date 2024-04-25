@@ -4,11 +4,8 @@ import { getDatabaseConnection } from '@/utils/database'
 import { ResultSetHeader } from 'mysql2'
 import mysql from 'mysql2/promise'
 import { IPurchaseDelivery } from '@/models/deliveries'
-import { IPurchase } from '@/models/purchase'
 import { IDBResponse } from '@/models/database'
 import { IProduct } from '@/models/products'
-import { useContext } from 'react'
-import { PurchaseContext } from '@/contexts/PurchaseContext'
 
 export async function openPurchase(cartData: IProduct[]): Promise<IDBResponse> {
   const Conn = await getDatabaseConnection()

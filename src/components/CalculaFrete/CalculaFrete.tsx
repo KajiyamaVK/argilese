@@ -51,7 +51,7 @@ export function CalculaFrete({ height, width, length, weight }: ICalculaFrete) {
     if ((pacPrice !== 0 || sedexPrice !== 0) && showSkeleton) {
       setShowSkeleton(false)
     }
-  }, [pacPrice, sedexPrice])
+  }, [pacPrice, sedexPrice, showSkeleton])
 
   return (
     <div className="mx-auto flex flex-col md:mx-0">

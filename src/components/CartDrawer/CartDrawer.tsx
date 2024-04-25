@@ -20,6 +20,7 @@ interface ICartDrawer {
 export function CartDrawer({ isOpen, setIsOpen }: ICartDrawer) {
   const { currentStep, totalCartQty, setCurrentStep, totalPurchaseAmount, resetCart } = useContext(PurchaseContext)
   const [paymentId, setPaymentId] = useState<string>('')
+  const [purchaseId, setPurchaseId] = useState<number>(0)
   const mercadoPagoPublicToken = process.env.NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY
 
   useEffect(() => {
@@ -51,9 +52,11 @@ export function CartDrawer({ isOpen, setIsOpen }: ICartDrawer) {
         <button className="ml-5 mt-5 flex items-center gap-2" onClick={() => setIsOpen(false)}>
           <RxCaretRight /> Fechar
         </button>
-        <ProductsList />
-        <DeliveryForm />
-        {currentStep === 'payment' && <PaymentBrick amount={totalPurchaseAmount} setPaymentId={setPaymentId} />}
+        <ProductsList setPurchaseId={setPurchaseId} />
+        <DeliveryForm purchaseId={purchaseId} />
+        {currentStep === 'payment' && (
+          <PaymentBrick amount={totalPurchaseAmount} setPaymentId={setPaymentId} purchaseId={purchaseId} />
+        )}
         {currentStep === 'paymentStatus' && (
           <div className="flex flex-col justify-center">
             <PaymentStatusBrick paymentId={paymentId} setPaymentId={setPaymentId} />

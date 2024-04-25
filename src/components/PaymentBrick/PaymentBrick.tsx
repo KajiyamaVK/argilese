@@ -4,6 +4,8 @@ import { PurchaseContext } from '@/contexts/PurchaseContext'
 import { Payment } from '@mercadopago/sdk-react'
 import { IPaymentBrickCustomization } from '@mercadopago/sdk-react/bricks/payment/type'
 import { Dispatch, SetStateAction, useContext } from 'react'
+import { savePayment } from './functions'
+import { GeneralContext } from '@/contexts/GeneralContext'
 
 export interface AdditionalInfo {
   items: Item[]
@@ -52,14 +54,16 @@ interface ReceiverAddress {
 interface IPaymentBrick {
   amount: number
   setPaymentId: Dispatch<SetStateAction<string>>
+  purchaseId: number
 }
 
-export function PaymentBrick({ amount, setPaymentId }: IPaymentBrick) {
+export function PaymentBrick({ amount, setPaymentId, purchaseId }: IPaymentBrick) {
   const { cart, deliveryData, setCurrentStep } = useContext(PurchaseContext)
+  const { isAdmin } = useContext(GeneralContext)
   const { sendAlert } = useContext(AlertDialogContext)
 
   const initialization = {
-    amount,
+    amount: isAdmin ? 1 : amount,
   }
   const customization = {
     paymentMethods: {
@@ -70,7 +74,7 @@ export function PaymentBrick({ amount, setPaymentId }: IPaymentBrick) {
   }
 
   // eslint-disable-next-line
-  const onSubmit = async ({ selectedPaymentMethod, formData }: any) => {
+  const onSubmit = async ({  formData }: any) => {
     const items: Item[] = cart.map((product) => {
       const item: Item = {
         id: product.id.toString(),
@@ -127,14 +131,30 @@ export function PaymentBrick({ amount, setPaymentId }: IPaymentBrick) {
       })
         .then((response) => response.json())
         // eslint-disable-next-line
-        .then((response) => {
+        .then(async (response) => {
           // receber o resultado do pagamento
-
+          console.log('response', response)
           resolve()
           if (!response.id) {
             sendAlert({ message: 'Erro ao realizar a compra!', type: 'error' })
             return
           } else {
+            await savePayment({
+              purchaseId: purchaseId,
+              paymentId: response.id,
+              paymentMethdod: response.payment_method.id,
+              paymentType: response.payment_method.type,
+              isApproved: response.status === 'approved',
+              isRefunded: false,
+              productsPaidAmount: response.transaction_amount,
+              // eslint-disable-next-line
+              financeFee: response.fee_details.filter((fee: any) => fee.type === 'financing_fee')[0].amount,
+              // eslint-disable-next-line
+              MLFee: response.fee_details.filter((fee: any) => fee.type === 'mercadopago_fee')[0].amount,
+              paidAmount: response.transaction_details.total_paid_amount,
+              netAmount: response.transaction_details.net_received_amount,
+              installments: response.installments,
+            })
             setPaymentId(response.id)
             setCurrentStep('paymentStatus')
           }

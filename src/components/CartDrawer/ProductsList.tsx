@@ -1,11 +1,16 @@
 import { AlertDialogContext } from '@/contexts/AlertDialogContext'
 import { PurchaseContext } from '@/contexts/PurchaseContext'
 import Image from 'next/image'
-import { useContext } from 'react'
+import { Dispatch, SetStateAction, useContext } from 'react'
 import { Button } from '../Button/Button'
 import { TotalsContainer } from './TotalsContainer'
+import { openPurchase } from './functions'
 
-export function ProductsList() {
+interface IProductList {
+  setPurchaseId: Dispatch<SetStateAction<number>>
+}
+
+export function ProductsList({ setPurchaseId }: IProductList) {
   const { cart, removeFromCart, setCurrentStep, currentStep } = useContext(PurchaseContext)
   const { sendAlert, setIsAlertOpen } = useContext(AlertDialogContext)
 
@@ -23,7 +28,9 @@ export function ProductsList() {
     })
   }
 
-  function goToDeliveryForm() {
+  async function goToDeliveryForm() {
+    const result = await openPurchase(cart)
+    setPurchaseId(result.insertId)
     setCurrentStep('delivery')
   }
 

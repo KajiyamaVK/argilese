@@ -12,7 +12,7 @@ export default async function ItemPage({ params }: { params: { itemId: number } 
 
   const result = await getProducts(itemId)
   if (result.isError) {
-    alert(result.message)
+    console.error('Erro ao buscar produto', result.message)
     return
   }
 
@@ -30,37 +30,39 @@ export default async function ItemPage({ params }: { params: { itemId: number } 
       </div>
       <div className="mx-auto mt-5 max-w-[300px] lg:flex lg:w-1/2 lg:min-w-[500px] lg:flex-col ">
         <h1 className={`border-b border-gray-500 text-[2rem] ${baloo.className}`}>{product.productName}</h1>
-        <p>{product.productDescription}</p>
+        {/* <p>{product.productDescription}</p> */}
         <p className="mt-5">
           <b>Medidas aproximadas</b>
         </p>
         <table>
-          <tr>
-            <td className="pr-20">Altura:</td>
-            <td>{product.height}cm</td>
-          </tr>
-          <tr>
-            <td>Largura:</td>
-            <td>
-              {product.width}cm {product.hasHandle && 'com alça'}
-            </td>
-          </tr>
-          {product.diameter > 0 && (
+          <tbody>
             <tr>
-              <td>Diametro:</td>
-              <td>{product.diameter}cm</td>
+              <td className="pr-20">Altura:</td>
+              <td>{product.height}cm</td>
             </tr>
-          )}
-          {product.milliliters > 0 && (
             <tr>
-              <td>Capacidade:</td>
-              <td>{product.milliliters}ml</td>
+              <td>Largura:</td>
+              <td>
+                {product.width}cm {product.hasHandle && 'com alça'}
+              </td>
             </tr>
-          )}
-          <tr>
-            <td>Peso:</td>
-            <td>{product.weight}Kg</td>
-          </tr>
+            {product.diameter > 0 && (
+              <tr>
+                <td>Diametro:</td>
+                <td>{product.diameter}cm</td>
+              </tr>
+            )}
+            {product.milliliters > 0 && (
+              <tr>
+                <td>Capacidade:</td>
+                <td>{product.milliliters}ml</td>
+              </tr>
+            )}
+            <tr>
+              <td>Peso:</td>
+              <td>{product.weight}Kg</td>
+            </tr>
+          </tbody>
         </table>
 
         <div className="mt-5 flex items-end gap-2">
@@ -75,10 +77,6 @@ export default async function ItemPage({ params }: { params: { itemId: number } 
             weight={product.weight.toString()}
           />
         </div>
-
-        {/* <button className="bg-yellow-700 text-white p-2 rounded-md mt-10 hover:opacity-75 w-full">
-          Adicionar ao carrinho
-        </button> */}
         <AddToCartButton product={product} />
       </div>
     </div>

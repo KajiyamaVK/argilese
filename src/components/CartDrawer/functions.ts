@@ -6,45 +6,25 @@ import mysql from 'mysql2/promise'
 import { IPurchaseDelivery } from '@/models/deliveries'
 import { IPurchase } from '@/models/purchase'
 import { IDBResponse } from '@/models/database'
+import { IProduct } from '@/models/products'
+import { useContext } from 'react'
+import { PurchaseContext } from '@/contexts/PurchaseContext'
 
-interface IInsertPurchaseHeader {
-  customerName: string
-  customerEmail: string
-  customerWhatsapp: string | null
-  Conn: mysql.Pool
-}
-
-export async function insertPurchase({ deliveryData, cartData }: IPurchase): Promise<IDBResponse> {
+export async function openPurchase(cartData: IProduct[]): Promise<IDBResponse> {
   const Conn = await getDatabaseConnection()
+  let purchaseId = 0
+
   try {
     await Conn.query('START TRANSACTION;')
-    const purchaseId = await insertPurchaseHeader({
-      customerName: deliveryData.customerName,
-      customerEmail: deliveryData.customerEmail,
-      customerWhatsapp: deliveryData.customerWhatsapp,
+    purchaseId = await savePurchaseHeader(Conn)
+
+    savePurchaseProducts({
+      purchaseId,
+      productsId: cartData.map((product) => product.id),
       Conn,
+    }).then(async () => {
+      await Conn.query('COMMIT;')
     })
-
-    await Promise.all([
-      insertPurchaseProducts({
-        purchaseId,
-        productsId: cartData.map((product) => product.id),
-        Conn,
-      }),
-      insertPurchaseDelivery({
-        purchaseId,
-        data: deliveryData,
-        Conn,
-      }),
-    ])
-
-    await Conn.query('COMMIT;')
-    return {
-      message: 'Purchase inserted successfully',
-      isError: false,
-      affectedRows: 1,
-      insertId: purchaseId,
-    }
   } catch (error) {
     console.error('Transaction error:', error)
     await Conn.query('ROLLBACK;')
@@ -57,30 +37,23 @@ export async function insertPurchase({ deliveryData, cartData }: IPurchase): Pro
   } finally {
     Conn.end()
   }
+
+  return {
+    message: 'Purchase opened successfully',
+    isError: false,
+    affectedRows: 1,
+    insertId: purchaseId,
+  }
 }
 
-export async function insertPurchaseHeader({
-  customerName,
-  customerEmail,
-  customerWhatsapp,
-  Conn,
-}: IInsertPurchaseHeader): Promise<number> {
+export async function savePurchaseHeader(Conn: mysql.Pool): Promise<number> {
   const insertHeaderQuery = `
-    INSERT INTO purchaseHeaders(
-      customerName, 
-      customerCpf, 
-      customerEmail, 
-      customerWhatsapp
-    )
-    VALUES(?,'0',?,?);
+    INSERT INTO purchaseHeaders()
+    VALUES();
   `
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [inserted] = await Conn.query<ResultSetHeader>(insertHeaderQuery, [
-    customerName,
-    customerEmail,
-    customerWhatsapp,
-  ]).catch((error) => {
+  const [inserted] = await Conn.query<ResultSetHeader>(insertHeaderQuery).catch((error) => {
     console.error(`Error inserting purchase header: ${error}`)
     throw new Error('Database error inserting purchase header: ' + error)
   })
@@ -94,7 +67,7 @@ interface IInsertPurchaseProducts {
   Conn: mysql.Pool
 }
 
-export async function insertPurchaseProducts({ purchaseId, productsId, Conn }: IInsertPurchaseProducts): Promise<void> {
+export async function savePurchaseProducts({ purchaseId, productsId, Conn }: IInsertPurchaseProducts): Promise<void> {
   const insertPurchaseProductsQuery = `
     INSERT INTO purchaseProducts(purchaseIdFK, productIdFK) VALUES(?, ?);
   `
@@ -111,13 +84,13 @@ export async function insertPurchaseProducts({ purchaseId, productsId, Conn }: I
   }
 }
 
-interface IInsertPurchaseDelivery {
+interface ISavePurchaseDelivery {
   purchaseId: number
   data: IPurchaseDelivery
-  Conn: mysql.Pool
 }
 
-export async function insertPurchaseDelivery({ purchaseId, data, Conn }: IInsertPurchaseDelivery): Promise<void> {
+export async function savePurchaseDelivery({ purchaseId, data }: ISavePurchaseDelivery): Promise<void> {
+  const Conn = await getDatabaseConnection()
   const insertDeliveryDataQuery = `
     INSERT INTO purchaseDeliveries(
       purchaseIdFK, 

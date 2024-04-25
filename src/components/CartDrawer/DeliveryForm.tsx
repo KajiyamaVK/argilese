@@ -13,7 +13,7 @@ import { RadioGroup, RadioGroupItem } from '../ui/radio-group'
 import { Label } from '../ui/label'
 import { Skeleton } from '../ui/skeleton'
 import { TDelivery } from '@/models/deliveries'
-import { getCitiesByUF, insertPurchase } from './functions'
+import { getCitiesByUF, savePurchaseDelivery } from './functions'
 import { getDeliveryPrices } from '@/app/[itemId]/functions'
 import { IAddress } from '@mercadopago/sdk-react/bricks/payment/type'
 import { GeneralContext } from '@/contexts/GeneralContext'
@@ -72,7 +72,7 @@ interface IGetFreteResponse {
   sedexDeliveryTime: string
 }
 
-export function DeliveryForm() {
+export function DeliveryForm({ purchaseId }: { purchaseId: number }) {
   const {
     register,
     handleSubmit,
@@ -136,13 +136,10 @@ export function DeliveryForm() {
       customerWhatsapp: data.customerWhatsapp ? formatToNumber(data.customerWhatsapp) : '',
     }
 
-    if (isAdmin) {
-      newDeliveryData.deliveryPrice = 1.5
-    }
-
     await setDeliveryData(newDeliveryData)
 
-    await insertPurchase({ deliveryData: newDeliveryData, cartData: cart })
+    //const receivedInsertedValue: IDBResponse = await insertPurchase({ deliveryData: newDeliveryData, cartData: cart })
+    await savePurchaseDelivery({ data: newDeliveryData, purchaseId })
 
     setCurrentStep('payment')
   }

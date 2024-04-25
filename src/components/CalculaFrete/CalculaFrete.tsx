@@ -18,22 +18,23 @@ interface ICalculaFrete {
 
 export function CalculaFrete({ height, width, length, weight }: ICalculaFrete) {
   const [cep, setCep] = useState('')
-  const [pacPrice, setPacPrice] = useState<number | null>(null)
-  const [pacDeliveryTime, setPacDeliveryTime] = useState<number | null>(null)
-  const [sedexPrice, setSedexPrice] = useState<number | null>(null)
-  const [sedexDeliveryTime, setSedexDeliveryTime] = useState<number | null>(null)
-  const [showSkeleton, setShowSkeleton] = useState<boolean | null>(null)
+  const [pacPrice, setPacPrice] = useState<number>(0)
+  const [pacDeliveryTime, setPacDeliveryTime] = useState<number>(0)
+  const [sedexPrice, setSedexPrice] = useState<number>(0)
+  const [sedexDeliveryTime, setSedexDeliveryTime] = useState<number>(0)
+  const [showSkeleton, setShowSkeleton] = useState<boolean>(false)
 
   function handleChangeCep(value: string) {
+    console.log('shazam!!!!!!!!')
     const formattedCep = formatCEP(value)
     setCep(formattedCep)
   }
 
   async function getDeliveryPrice() {
-    setPacPrice(null)
-    setSedexPrice(null)
-    setPacDeliveryTime(null)
-    setSedexDeliveryTime(null)
+    setPacPrice(0)
+    setSedexPrice(0)
+    setPacDeliveryTime(0)
+    setSedexDeliveryTime(0)
     setShowSkeleton(true)
 
     await getDeliveryPrices(cep, Number(height), Number(width), Number(length), Number(weight)).then((data) => {
@@ -46,7 +47,8 @@ export function CalculaFrete({ height, width, length, weight }: ICalculaFrete) {
   }
 
   useEffect(() => {
-    if (pacPrice !== null || sedexPrice !== 0) {
+    console.log('111111111')
+    if ((pacPrice !== 0 || sedexPrice !== 0) && showSkeleton) {
       setShowSkeleton(false)
     }
   }, [pacPrice, sedexPrice])
@@ -69,67 +71,75 @@ export function CalculaFrete({ height, width, length, weight }: ICalculaFrete) {
           Calcular
         </Button>
       </div>
-      {showSkeleton !== null ? (
+      {pacPrice !== 0 && (
         <div className="mt-5 flex flex-col gap-5">
           <table>
-            <tr>
-              <Image src={pacLogo} alt="Ícone de Pac dos Correios" width={125} height={38} />
-            </tr>
-            <tr>
-              <td className="w-[100px]">
-                <b>Preço:</b>
-              </td>
-              <td className="flex items-center">
-                R${' '}
-                {showSkeleton ? (
-                  <Skeleton className="ml-2 h-[20px] w-[50px] bg-gray-300" />
-                ) : (
-                  pacPrice?.toString().replace('.', ',')
-                )}
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <b>Prazo:</b>
-              </td>
-              <td>
-                {showSkeleton ? <Skeleton className="ml-2 h-[20px] w-[50px] bg-gray-300" /> : `${pacDeliveryTime} dias`}
-              </td>
-            </tr>
+            <tbody>
+              <tr>
+                <Image src={pacLogo} alt="Ícone de Pac dos Correios" width={125} height={38} />
+              </tr>
+              <tr>
+                <td className="w-[100px]">
+                  <b>Preço:</b>
+                </td>
+                <td className="flex items-center">
+                  R${' '}
+                  {showSkeleton ? (
+                    <Skeleton className="ml-2 h-[20px] w-[50px] bg-gray-300" />
+                  ) : (
+                    pacPrice?.toString().replace('.', ',')
+                  )}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <b>Prazo:</b>
+                </td>
+                <td>
+                  {showSkeleton ? (
+                    <Skeleton className="ml-2 h-[20px] w-[50px] bg-gray-300" />
+                  ) : (
+                    `${pacDeliveryTime} dias`
+                  )}
+                </td>
+              </tr>
+            </tbody>
           </table>
 
           <table>
-            <tr>
-              <Image src={sedexLogo} alt="Ícone do Sedex dos Correios" width={125} height={38} />
-            </tr>
-            <tr>
-              <td className="w-[100px]">
-                <b>Preço:</b>
-              </td>
-              <td className="flex items-center">
-                R${' '}
-                {showSkeleton ? (
-                  <Skeleton className="ml-2 h-[20px] w-[50px] bg-gray-300" />
-                ) : (
-                  sedexPrice?.toString().replace('.', ',')
-                )}
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <b>Prazo:</b>
-              </td>
-              <td>
-                {showSkeleton ? (
-                  <Skeleton className="ml-2 h-[20px] w-[50px] bg-gray-300" />
-                ) : (
-                  `${sedexDeliveryTime} dias`
-                )}
-              </td>
-            </tr>
+            <tbody>
+              <tr>
+                <Image src={sedexLogo} alt="Ícone do Sedex dos Correios" width={125} height={38} />
+              </tr>
+              <tr>
+                <td className="w-[100px]">
+                  <b>Preço:</b>
+                </td>
+                <td className="flex items-center">
+                  R${' '}
+                  {showSkeleton ? (
+                    <Skeleton className="ml-2 h-[20px] w-[50px] bg-gray-300" />
+                  ) : (
+                    sedexPrice?.toString().replace('.', ',')
+                  )}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <b>Prazo:</b>
+                </td>
+                <td>
+                  {showSkeleton ? (
+                    <Skeleton className="ml-2 h-[20px] w-[50px] bg-gray-300" />
+                  ) : (
+                    `${sedexDeliveryTime} dias`
+                  )}
+                </td>
+              </tr>
+            </tbody>
           </table>
         </div>
-      ) : null}
+      )}
     </div>
   )
 }

@@ -47,7 +47,6 @@ export function CalculaFrete({ height, width, length, weight }: ICalculaFrete) {
   }
 
   useEffect(() => {
-    console.log('111111111')
     if ((pacPrice !== 0 || sedexPrice !== 0) && showSkeleton) {
       setShowSkeleton(false)
     }

@@ -15,7 +15,7 @@ export async function openPurchase(cartData: IProduct[]): Promise<IDBResponse> {
     await Conn.query('START TRANSACTION;')
     purchaseId = await savePurchaseHeader(Conn)
 
-    savePurchaseProducts({
+    await savePurchaseProducts({
       purchaseId,
       productsId: cartData.map((product) => product.id),
       Conn,

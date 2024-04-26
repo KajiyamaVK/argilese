@@ -8,9 +8,10 @@ import { openPurchase } from './functions'
 
 interface IProductList {
   setPurchaseId: Dispatch<SetStateAction<number>>
+  purchaseId: number
 }
 
-export function ProductsList({ setPurchaseId }: IProductList) {
+export function ProductsList({ purchaseId, setPurchaseId }: IProductList) {
   const { cart, removeFromCart, setCurrentStep, currentStep } = useContext(PurchaseContext)
   const { sendAlert, setIsAlertOpen } = useContext(AlertDialogContext)
 
@@ -29,8 +30,11 @@ export function ProductsList({ setPurchaseId }: IProductList) {
   }
 
   async function goToDeliveryForm() {
-    const result = await openPurchase(cart)
-    setPurchaseId(result.insertId)
+    if (!purchaseId) {
+      const result = await openPurchase(cart)
+      setPurchaseId(result.insertId)
+    }
+
     setCurrentStep('delivery')
   }
 

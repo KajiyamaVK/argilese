@@ -52,7 +52,7 @@ export function CartDrawer({ isOpen, setIsOpen }: ICartDrawer) {
         <button className="ml-5 mt-5 flex items-center gap-2" onClick={() => setIsOpen(false)}>
           <RxCaretRight /> Fechar
         </button>
-        <ProductsList setPurchaseId={setPurchaseId} />
+        <ProductsList setPurchaseId={setPurchaseId} purchaseId={purchaseId} />
         <DeliveryForm purchaseId={purchaseId} />
         {currentStep === 'payment' && (
           <PaymentBrick amount={totalPurchaseAmount} setPaymentId={setPaymentId} purchaseId={purchaseId} />

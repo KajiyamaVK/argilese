@@ -209,8 +209,11 @@ export function DeliveryForm({ purchaseId }: { purchaseId: number }) {
       setValue('state', address.uf)
       setValue('address', address.logradouro)
       setValue('neighborhood', address.bairro)
-      setIsLoadingAddress(false)
       setFocus('number')
+      setIsLoadingAddress(false)
+      setTimeout(() => {
+        setValue('city', address.localidade)
+      }, 500)
     } else {
       setDeliveriesPricesData(null)
     }
@@ -284,7 +287,9 @@ export function DeliveryForm({ purchaseId }: { purchaseId: number }) {
           <label htmlFor="state">Estado</label>
           <select
             id="state"
-            className="w-full rounded-lg border border-gray-300 p-3"
+            className="w-full cursor-not-allowed rounded-lg border border-gray-300 p-3 disabled:opacity-100"
+            title="Preencha o CEP para preencher este campo"
+            disabled
             {...register('state')}
             onChange={handleStateChange}
           >
@@ -301,9 +306,9 @@ export function DeliveryForm({ purchaseId }: { purchaseId: number }) {
           <label htmlFor="city">Cidade</label>
           <select
             id="city"
-            className="w-full rounded-lg border border-gray-300 p-3"
-            disabled={watch('state') === ''}
-            title={watch('state') === '' ? 'Selecione o estado antes de preencher a cidade.' : ''}
+            className="w-full cursor-not-allowed rounded-lg border border-gray-300 p-3 disabled:opacity-100"
+            disabled
+            title="Preencha o CEP para preencher este campo"
             {...register('city')}
           >
             <option value="">Selecione a cidade</option>

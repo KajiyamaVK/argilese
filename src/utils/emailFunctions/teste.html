@@ -16,68 +16,71 @@
       box-sizing: border-box;
     }
 
-    .header {
-      width: 100%;
-      background-color: #ffedd5;
-      padding-top: 20px;
-      padding-bottom: 20px;
-    }
+    body, p, h1, h2, h3, b {
+      color: #1f1f1f;
+      margin: 0;
+      padding: 0;
+  }
 
-    h1,h2,h3{
+  h1, h2 {
       font-family: 'Baloo 2', cursive;
-      font-size: 24px;
-      color: #1f1f1f;
-    }
+  }
 
-    p,b {
+  p,b {
       font-family: 'Roboto', sans-serif;
-      font-size: 16px;
-      color: #1f1f1f;
-    }
+  }
 
-    .content {
-        width: 100%;
-        
-        padding: 20px;
-      }
-    @media  (max-width: 320px) {
-
-
-      
-
-      
-    }
+  .header {
+      background-color: #ffedd5;
+      padding: 20px 0;
+      text-align: center;
+  }
+  .content {
+      padding: 20px;
+      text-align: left;
+  }
+  .important {
+      background-color: rgb(207, 71, 71);
+      color: #fff;
+      padding: 10px;
+      margin-top: 20px;
+  }
   </style>
 
 </head>
-<body style="flex flex-col">
-  <div style="max-width: 46.15rem;  margin-left: auto; margin-right: auto; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); height:100vh">
-    
-    <div class="header">
-      <div style="display: flex; gap: 20px; align-items: center;">
-        <img alt="Logo da Argilese com um sol e um cachorro de orelhas longas, caramelo" style="width: 50; height: auto; margin-left: 20px;" src="https://www.argilesestudio.com.br/topbar_logo.png">
-        <h1>Argile-se</h1>
+<body style="max-width: 600px;margin-left: auto; margin-right: auto;">
+    <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+            <td class="header">
+                <table align="center" cellpadding="0" cellspacing="0">
+                    <tr style="max-width: 600px;margin-left: auto; margin-right: auto;">
+                        <td style="padding-right: 20px;">
+                            <img src="https://www.argilesestudio.com.br/topbar_logo.png" alt="Logo da Argilese com um sol e um cachorro de orelhas longas, caramelo" width="50" height="auto">
+                        </td>
+                        <td>
+                            <h1>Argile-se</h1>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td class="content">
+                <img src="https://argilesestudio.com.br/mariana1.png" alt="" style="width:200px; height: auto; margin: auto; display: block;"/>
+            </td>
+        </tr>
+    </table>
+    <div style="margin:20px">
+      <h2>Olá, ${name}!</h2>
+      <p>Primeiramente, muito obrigada pela sua compra.</p>
+      <p>Isso representa para mim não apenas um ganho financeiro, mas um apoio ao carinho e empenho que tenho em cada uma das pecinhas. Deus te abençoe.</p>
+      <p>Logo abaixo está o número da venda. Ela é importante para qualquer suporte referente a essa venda:</p>
+      <p><b>Nº da venda: </b> ${order}</p>
+      <div class="important">
+        <b style="color: #fff;">Importante</b>
+        <p style="color: #fff;">O <b style="color: #fff;">código de rastreio</b> será enviado após o envio da mercadoria.</p>
       </div>
     </div>
 
-    <div class="content" style="display: flex; flex-direction: column; ">
-      <img src="https://argilesestudio.com.br/mariana1.png" alt="" style="width:200px; height: auto; margin-left: auto; margin-right: auto; position: relative;"/>
-      <h2 style="margin-bottom: 20px;">Olá, ${name}! </h2>
-      <p>Primeiramente, muito obrigada pela sua compra.</p><br/>
-      <p>Isso representa para mim não apenas um ganho financeiro, mas um apoio ao carinho e empenho que tenho em cada uma das pecinhas. Deus te abençoe.</p><br/>
-
-      <p>Logo abaixo está o número da venda. Ela é importante para qualquer suporte referente a essa venda:</p><br/>
-
-      <div style="display: flex;">
-        <b>Nº da venda: </b> ${order} <br/>
-      </div>
-
-      <div style="background-color: rgb(207, 71, 71); margin-top: 20px; padding: 10px;">
-        <b style="color: white;">Importante</b>
-        <p style="color: white; margin-top: 20px;">O <b style="color: white;">código de rastreio</b> será enviado após o envio da mercadoria</p>
-      </div>
-
-    </div>
-  </div>
 </body>
 </html>

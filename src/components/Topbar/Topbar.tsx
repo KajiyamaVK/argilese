@@ -1,5 +1,5 @@
 'use client'
-import { sendEmail } from '@/utils/emailFunctions/sendEmail'
+//import { sendEmail } from '@/utils/emailFunctions/sendEmail'
 import Image from 'next/image'
 import logo from '/public/topbar_logo.png'
 import { baloo } from '@/utils/fontsExports/fonts'
@@ -9,7 +9,7 @@ import { useContext, useState } from 'react'
 import { PurchaseContext } from '@/contexts/PurchaseContext'
 import { CartDrawer } from '../CartDrawer/CartDrawer'
 import { AlertDialogContext } from '@/contexts/AlertDialogContext'
-import { AfterPurchaseEmailHTML } from '@/utils/emailFunctions/AfterPurchaseEmail'
+//import { AfterPurchaseEmailHTML } from '@/utils/emailFunctions/AfterPurchaseEmail'
 
 export function Topbar() {
   const { cart } = useContext(PurchaseContext)
@@ -48,13 +48,13 @@ export function Topbar() {
           )}
         </div>
       </div>
-      <p
+      {/* <p
         onClick={() => {
           sendEmail({
-            to: 'victor.kajiyama@gmail.com',
+            to: 'marianatande@gmail.com',
             subject: 'Teste de email',
             html: AfterPurchaseEmailHTML({
-              name: 'Victor',
+              name: 'Mariana',
               order: '1234',
             }),
           })
@@ -62,7 +62,7 @@ export function Topbar() {
         }}
       >
         enviar
-      </p>
+      </p> */}
       <CartDrawer isOpen={isCartOpen} setIsOpen={setIsCartOpen} />
     </div>
   )

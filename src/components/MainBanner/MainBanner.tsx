@@ -1,5 +1,5 @@
 'use client'
-import { baloo } from '@/utils/maskFunctions'
+import { baloo } from '@/utils/fontsExports/fonts'
 import logo from '/public/logo_lg.png'
 import Image from 'next/image'
 import { useContext, useEffect, useState } from 'react'

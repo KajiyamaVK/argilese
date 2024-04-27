@@ -34,10 +34,24 @@ export async function POST(req) {
       },
     })
     .then((response) => {
-      return new Response(JSON.stringify(response), { status: 200 })
+      return new Response(JSON.stringify(response), {
+        status: 200,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        },
+      })
     })
     .catch((error) => {
       console.error(error)
-      return new Response(JSON.stringify(error), { status: 400 })
+      return new Response(JSON.stringify(error), {
+        status: 400,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        },
+      })
     })
 }

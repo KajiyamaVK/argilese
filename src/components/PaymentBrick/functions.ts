@@ -1,6 +1,6 @@
 'use server'
 import { IDBResponse } from '@/models/database'
-import { getDatabaseConnection } from '@/utils/database'
+import { getDatabaseConnection } from '@/utils/databaseFunctions/createConnection'
 
 type TPaymentMethod = 'master' | 'visa' | 'pix'
 type TPaymentType = 'credit_card' | 'debit_card' | 'pix' | 'boleto'

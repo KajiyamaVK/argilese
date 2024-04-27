@@ -6,6 +6,8 @@ import { IPaymentBrickCustomization } from '@mercadopago/sdk-react/bricks/paymen
 import { Dispatch, SetStateAction, useContext } from 'react'
 import { savePayment } from './functions'
 import { GeneralContext } from '@/contexts/GeneralContext'
+import { sendEmail } from '@/utils/emailFunctions/sendEmail'
+import { AfterPurchaseEmailHTML } from '@/utils/emailFunctions/AfterPurchaseEmail'
 
 export interface AdditionalInfo {
   items: Item[]
@@ -156,6 +158,14 @@ export function PaymentBrick({ amount, setPaymentId, purchaseId }: IPaymentBrick
               installments: response.installments,
             })
             setPaymentId(response.id)
+            sendEmail({
+              to: deliveryData.customerEmail,
+              subject: 'Argile-se - Confirmação de compra',
+              html: AfterPurchaseEmailHTML({
+                name: deliveryData.customerName,
+                order: purchaseId.toString(),
+              }),
+            })
             setCurrentStep('paymentStatus')
           }
         })

@@ -1,7 +1,7 @@
 import { CalculaFrete } from '@/components/CalculaFrete/CalculaFrete'
 import { ImagesGallery } from '@/components/ImageGallery/ImagesGallery'
 import { IProduct } from '@/models/products'
-import { baloo } from '@/utils/maskFunctions'
+import { baloo } from '@/utils/fontsExports/fonts'
 import { AddToCartButton } from './AddToCartButton'
 import BackButton from '@/components/BackButton/BackButton'
 import { getProducts } from '@/components/ItemsContainer/functions'

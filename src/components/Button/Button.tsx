@@ -1,4 +1,4 @@
-import { cn } from '@/utils/cn'
+import { cn } from '@/utils/libs/cn'
 
 interface IButton extends React.HTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode

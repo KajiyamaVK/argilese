@@ -1,6 +1,6 @@
 'use client'
 import Image from 'next/image'
-import { baloo } from '@/utils/maskFunctions'
+import { baloo } from '@/utils/fontsExports/fonts'
 import { useRouter } from 'next/navigation'
 import { IProduct } from '@/models/products'
 import { useContext } from 'react'

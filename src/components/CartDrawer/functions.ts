@@ -1,6 +1,6 @@
 'use server'
 import { RowDataPacket } from 'mysql2'
-import { getDatabaseConnection } from '@/utils/database'
+import { getDatabaseConnection } from '@/utils/databaseFunctions/createConnection'
 import { ResultSetHeader } from 'mysql2'
 import mysql from 'mysql2/promise'
 import { IPurchaseDelivery } from '@/models/deliveries'

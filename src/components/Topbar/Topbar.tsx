@@ -1,14 +1,15 @@
 'use client'
-
+import { sendEmail } from '@/utils/emailFunctions/sendEmail'
 import Image from 'next/image'
 import logo from '/public/topbar_logo.png'
-import { baloo } from '@/utils/maskFunctions'
+import { baloo } from '@/utils/fontsExports/fonts'
 import Link from 'next/link'
 import { IoMdCart } from 'react-icons/io'
 import { useContext, useState } from 'react'
 import { PurchaseContext } from '@/contexts/PurchaseContext'
 import { CartDrawer } from '../CartDrawer/CartDrawer'
 import { AlertDialogContext } from '@/contexts/AlertDialogContext'
+import { AfterPurchaseEmailHTML } from '@/utils/emailFunctions/AfterPurchaseEmail'
 
 export function Topbar() {
   const { cart } = useContext(PurchaseContext)
@@ -47,6 +48,21 @@ export function Topbar() {
           )}
         </div>
       </div>
+      <p
+        onClick={() => {
+          sendEmail({
+            to: 'victor.kajiyama@gmail.com',
+            subject: 'Teste de email',
+            html: AfterPurchaseEmailHTML({
+              name: 'Victor',
+              order: '1234',
+            }),
+          })
+          alert('email enviado')
+        }}
+      >
+        enviar
+      </p>
       <CartDrawer isOpen={isCartOpen} setIsOpen={setIsCartOpen} />
     </div>
   )

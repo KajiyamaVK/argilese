@@ -1,6 +1,6 @@
 import { ItemCard } from '@/components/ItemCard/ItemCard'
 import { IProduct } from '@/models/products'
-import { baloo } from '@/utils/maskFunctions'
+import { baloo } from '@/utils/fontsExports/fonts'
 import { getProducts } from './functions'
 
 export async function ItemsContainer() {

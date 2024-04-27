@@ -1,6 +1,6 @@
 import { IDBResponse } from '@/models/database'
 import { IProduct } from '@/models/products'
-import { getDatabaseConnection } from '@/utils/database'
+import { getDatabaseConnection } from '@/utils/databaseFunctions/createConnection'
 import { FieldPacket, QueryResult } from 'mysql2'
 
 export async function getProducts(id?: number) {

@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint --fix",
-    "fastgit": "git add . && git commit -m \"fast commit\" && git push",
+    "fg": "git add . && git commit -m \"fast commit\" && git push",
     "bs": "bun run build && bun run start",
     "prepare": "husky"
   },

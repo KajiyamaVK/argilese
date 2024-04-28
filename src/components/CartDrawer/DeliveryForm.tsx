@@ -5,7 +5,6 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '../Button/Button'
 import { formatCEP, formatPhone, formatToNumber } from '@/utils/maskFunctions/'
-
 import { useContext, useState } from 'react'
 import { PurchaseContext } from '@/contexts/PurchaseContext'
 import { AlertDialogContext } from '@/contexts/AlertDialogContext'
@@ -338,25 +337,25 @@ export function DeliveryForm({ purchaseId }: { purchaseId: number }) {
             <div className="flex justify-evenly gap-5">
               <div
                 className={`w-20 cursor-pointer rounded-lg   border p-2  text-center ${deliveryData.type === 'SEDEX' ? 'border-white bg-yellow-700 text-white' : 'border-yellow-700 text-yellow-700 hover:border-white hover:bg-yellow-600 hover:text-white'}`}
-                onClick={() =>
-                  setDeliveryData({
-                    ...deliveryData,
-                    price: Number(deliveriesPricesData?.sedexPrice.replace(',', '.')),
-                    type: 'SEDEX',
-                  })
-                }
+                // onClick={() =>
+                //   setDeliveryData({
+                //     ...deliveryData,
+                //     price: Number(deliveriesPricesData?.sedexPrice.replace(',', '.')),
+                //     type: 'SEDEX',
+                //   })
+                // }
               >
                 SEDEX
               </div>
               <div
                 className={`w-20 cursor-pointer rounded-lg   border p-2  text-center ${deliveryData.type === 'PAC' ? 'border-white bg-yellow-700 text-white' : 'border-yellow-700 text-yellow-700 hover:border-white hover:bg-yellow-600 hover:text-white'}`}
-                onClick={() =>
-                  setDeliveryData({
-                    ...deliveryData,
-                    price: Number(deliveriesPricesData?.pacPrice.replace(',', '.')),
-                    type: 'PAC',
-                  })
-                }
+                // onClick={() =>
+                //   setDeliveryData({
+                //     ...deliveryData,
+                //     price: Number(deliveriesPricesData?.pacPrice.replace(',', '.')),
+                //     type: 'PAC',
+                //   })
+                // }
               >
                 PAC
               </div>

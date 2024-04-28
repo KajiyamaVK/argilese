@@ -64,7 +64,7 @@ export function PaymentBrick({ amount, setPaymentId, purchaseId }: IPaymentBrick
   const { isAdmin } = useContext(GeneralContext)
   const { sendAlert } = useContext(AlertDialogContext)
 
-  setPaymentId(purchaseId.toString()) // TIRAAAAAAAAAAAAAAAAAAAAAAA
+  console.log(purchaseId) // Tiraaaaaaaaaaaaa
 
   const initialization = {
     amount: isAdmin ? 1 : amount,
@@ -104,10 +104,10 @@ export function PaymentBrick({ amount, setPaymentId, purchaseId }: IPaymentBrick
     const payer: Payer = {
       first_name: deliveryData.customerName.split(' ')[0],
       last_name: deliveryData.customerName.split(' ')[deliveryData.customerName.length - 1] ?? '',
-      // phone: {
-      //   area_code: deliveryData.customerWhatsapp.slice(0, 2),
-      //   number: deliveryData.customerWhatsapp.slice(2, deliveryData.customerWhatsapp.length),
-      // },
+      phone: {
+        area_code: deliveryData.customerWhatsapp.slice(0, 2),
+        number: deliveryData.customerWhatsapp.slice(2, deliveryData.customerWhatsapp.length),
+      },
       address: {
         street_number: isNaN(Number(deliveryData.addressNumber)) ? 0 : parseInt(deliveryData.addressNumber),
       },
@@ -122,7 +122,7 @@ export function PaymentBrick({ amount, setPaymentId, purchaseId }: IPaymentBrick
 
     const body = {
       ...formData,
-      //additional_info,
+      additional_info,
     }
     console.log('formData', formData)
     console.log('body', body)
@@ -138,6 +138,7 @@ export function PaymentBrick({ amount, setPaymentId, purchaseId }: IPaymentBrick
         .then((response) => response.json())
         .then((response) => {
           console.log('response', response)
+          setPaymentId(response.paymentId)
           if (response.status === 500) {
             sendAlert({ type: 'error', message: response.message })
             reject()

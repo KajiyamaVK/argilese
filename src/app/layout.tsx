@@ -43,7 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             width={75}
             height={75}
             alt=""
-            className="fixed bottom-10 z-50 md:bottom-20 md:right-8 "
+            className="fixed bottom-10 right-8 z-50 md:bottom-20 "
           />
         </Link>
       </body>

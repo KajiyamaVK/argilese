@@ -6,8 +6,10 @@ import { IPaymentBrickCustomization } from '@mercadopago/sdk-react/bricks/paymen
 import { Dispatch, SetStateAction, useContext } from 'react'
 import { savePayment } from './functions'
 import { GeneralContext } from '@/contexts/GeneralContext'
-import { sendEmail } from '@/utils/emailFunctions/sendEmail'
-import { AfterPurchaseEmailHTML } from '@/utils/emailFunctions/AfterPurchaseEmail'
+import { formatCEP } from '@/utils/maskFunctions'
+import { ufs } from '@/data/UFs'
+import MercadoPagoConfig from 'mercadopago'
+import { randomUUID } from 'crypto'
 
 export interface AdditionalInfo {
   items: Item[]
@@ -92,26 +94,26 @@ export function PaymentBrick({ amount, setPaymentId, purchaseId }: IPaymentBrick
 
     const shipments: Shipment = {
       receiver_address: {
-        zip_code: deliveryData.cep,
-        state_name: deliveryData.state,
+        zip_code: formatCEP(deliveryData.cep),
+        state_name: ufs.find((uf) => uf.value === deliveryData.state)?.label!, //eslint-disable-line
         city_name: deliveryData.city,
         street_name: deliveryData.address,
         street_number: isNaN(Number(deliveryData.addressNumber)) ? 0 : parseInt(deliveryData.addressNumber),
       },
     }
-
     const payer: Payer = {
       first_name: deliveryData.customerName.split(' ')[0],
-      last_name: deliveryData.customerName.split(' ')[deliveryData.customerName.length - 1],
-      phone: {
-        area_code: deliveryData.customerWhatsapp.slice(0, 2),
-        number: deliveryData.customerWhatsapp.slice(2, deliveryData.customerWhatsapp.length),
-      },
+      last_name: deliveryData.customerName.split(' ')[deliveryData.customerName.length - 1] ?? '',
+      // phone: {
+      //   area_code: deliveryData.customerWhatsapp.slice(0, 2),
+      //   number: deliveryData.customerWhatsapp.slice(2, deliveryData.customerWhatsapp.length),
+      // },
       address: {
         street_number: isNaN(Number(deliveryData.addressNumber)) ? 0 : parseInt(deliveryData.addressNumber),
       },
     }
 
+    // eslint-disable-next-line
     const additional_info: AdditionalInfo = {
       items,
       payer,
@@ -120,60 +122,92 @@ export function PaymentBrick({ amount, setPaymentId, purchaseId }: IPaymentBrick
 
     const body = {
       ...formData,
-      additional_info,
+      //additional_info,
     }
+    console.log('body', body)
+    const client = new MercadoPagoConfig({ accessToken: process.env.MERCADO_PAGO_TOKEN!, options: { timeout: 5000 } })
+    const payment:any = new (Payment as any)(client) //eslint-disable-line
 
-    return new Promise<void>(async (resolve, reject) => {
-      await fetch('api/purchases/process_payment', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
-      })
-        .then((response) => response.json())
-        // eslint-disable-next-line
-        .then(async (response) => {
-          // receber o resultado do pagamento
+
+
+    try {
+      payment
+        .create({
+          body,
+          requestOptions: {
+            idempotency: randomUUID(),
+          },
+        })
+        .then((response: any) => { //eslint-disable-line
           console.log('response', response)
-          resolve()
-          if (!response.id) {
-            sendAlert({ message: 'Erro ao realizar a compra!', type: 'error' })
-            return
-          } else {
+          return new Response(JSON.stringify(response), {
+            status: 200,
+            headers: {
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+              'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+            },
+          })
+          // eslint-disable-next-line
+        }).then(async (response: any) => { 
+          // eslint-disable-next-line
+          const financeFeeResult = response.fee_details.find((fee: any) => fee.type === 'financing_fee')
+          const financeFee = financeFeeResult ? financeFeeResult.amount : 0
+          console.log('financeFee', financeFee)
+
+          // eslint-disable-next-line
+          const MLFeeResult = response.fee_details.find((fee: any) => fee.type === 'mercadopago_fee')
+          const MLFee = MLFeeResult ? MLFeeResult.amount : 0
+
+          console.log('MLFee', MLFee)
+          try {
             await savePayment({
               purchaseId: purchaseId,
               paymentId: response.id,
               paymentMethdod: response.payment_method.id,
-              paymentType: response.payment_method.type,
-              isApproved: response.status === 'approved',
-              isRefunded: false,
+              paymentType: response.payment_method.type === 'bank_transfer' ? 'pix' : response.payment_method.type,
+              status: response.status,
               productsPaidAmount: response.transaction_amount,
               // eslint-disable-next-line
-              financeFee: response.fee_details.filter((fee: any) => fee.type === 'financing_fee')[0].amount,
+            financeFee,
               // eslint-disable-next-line
-              MLFee: response.fee_details.filter((fee: any) => fee.type === 'mercadopago_fee')[0].amount,
+            MLFee,
               paidAmount: response.transaction_details.total_paid_amount,
               netAmount: response.transaction_details.net_received_amount,
               installments: response.installments,
             })
+            console.log('response.id', response.id)
             setPaymentId(response.id)
-            sendEmail({
-              to: deliveryData.customerEmail,
-              subject: 'Argile-se - Confirmação de compra',
-              html: AfterPurchaseEmailHTML({
-                name: deliveryData.customerName,
-                order: purchaseId.toString(),
-              }),
-            })
+            console.log('2')
+
             setCurrentStep('paymentStatus')
+          } catch (error) {
+            console.log('error', error)
+            sendAlert({ message: 'Erro ao salvar o pagamento!', type: 'error' })
           }
         })
-        // eslint-disable-next-line
-        .catch((error) => {
-          reject()
+        .catch((error: any) => {// eslint-disable-line
+          console.error('Eita', error)
+          return new Response(JSON.stringify(error), {
+            status: 400,
+            headers: {
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+              'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+            },
+          })
         })
-    })
+    } catch (error) {
+      console.error('Eita', error)
+      return new Response(JSON.stringify(error), {
+        status: 400,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        },
+      })
+    }
   }
   // eslint-disable-next-line
   const onError = async (error: any) => {

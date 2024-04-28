@@ -27,6 +27,11 @@ export function CartDrawer({ isOpen, setIsOpen }: ICartDrawer) {
     if (isOpen) {
       setCurrentStep('cart')
     }
+
+    // To clear the cart when the payment is done and the user doesn't use the OK button.
+    if (!isOpen && currentStep === 'paymentStatus') {
+      resetCart()
+    }
     // eslint-disable-next-line
   }, [isOpen])
 

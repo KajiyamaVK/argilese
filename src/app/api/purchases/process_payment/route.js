@@ -22,36 +22,52 @@ export async function POST(req) {
       break
   }
 
+  console.log('MLProcessBody', MLProcessBody)
   const client = new MercadoPagoConfig({ accessToken: process.env.MERCADO_PAGO_TOKEN, options: { timeout: 5000 } })
-
   const payment = new Payment(client)
+  console.log('client', client)
 
-  return payment
-    .create({
-      body: MLProcessBody,
-      requestOptions: {
-        idempotency: randomUUID(),
+  console.log('payment', payment)
+
+  try {
+    return payment
+      .create({
+        body: MLProcessBody,
+        requestOptions: {
+          idempotency: randomUUID(),
+        },
+      })
+      .then((response) => {
+        console.log('response', response)
+        return new Response(JSON.stringify(response), {
+          status: 200,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+          },
+        })
+      })
+      .catch((error) => {
+        console.error('Eita', error)
+        return new Response(JSON.stringify(error), {
+          status: 400,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+          },
+        })
+      })
+  } catch (error) {
+    console.error('Eita', error)
+    return new Response(JSON.stringify(error), {
+      status: 400,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
       },
     })
-    .then((response) => {
-      return new Response(JSON.stringify(response), {
-        status: 200,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-        },
-      })
-    })
-    .catch((error) => {
-      console.error(error)
-      return new Response(JSON.stringify(error), {
-        status: 400,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-        },
-      })
-    })
+  }
 }

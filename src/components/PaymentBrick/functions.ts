@@ -10,8 +10,7 @@ interface ISavePayment {
   paymentId: string | null
   paymentMethdod: TPaymentMethod | null
   paymentType: TPaymentType | null
-  isApproved: boolean
-  isRefunded: boolean
+  status: string
   productsPaidAmount: number | null
   financeFee: number | null
   MLFee: number | null
@@ -21,29 +20,29 @@ interface ISavePayment {
 }
 
 export async function savePayment(data: ISavePayment): Promise<IDBResponse> {
+  console.log('entrei aqui')
   const Conn = await getDatabaseConnection()
+  console.log('entrei aqui 2')
   const savePaymentQuery = `
-    INSERT INTO purchasePayments(
-      purchaseIdFK,
-      paymentId,
-      paymentMethod,
-      paymentType,
-      isRefunded,
-      isApproved,
-      productsPaidAmount,
-      financeFee,
-      MLFee,
-      paidAmount,
-      netAmount)
+  INSERT INTO purchasePayments(
+    purchaseIdFK,
+    paymentId,
+    paymentMethod,
+    paymentType,
+    status,
+    productsPaidAmount,
+    financeFee,
+    MLFee,
+    paidAmount,
+    netAmount)
     VALUES(?,?,?,?,?,?,?,?,?,?,?)`
-
+  console.log('entrei aqui 3')
   await Conn.query(savePaymentQuery, [
     data.purchaseId,
     data.paymentId,
     data.paymentMethdod,
     data.paymentType,
-    data.isApproved,
-    data.isRefunded,
+    data.status,
     data.productsPaidAmount,
     data.financeFee,
     data.MLFee,
@@ -51,6 +50,7 @@ export async function savePayment(data: ISavePayment): Promise<IDBResponse> {
     data.netAmount,
   ])
     .catch((err) => {
+      console.error(err)
       return { message: err.message, isError: true } as IDBResponse
     })
     .finally(() => {
@@ -67,8 +67,7 @@ export async function updatePayment(data: ISavePayment): Promise<IDBResponse> {
       paymentId = ?,
       paymentMethod = ?,
       paymentType = ?,
-      isRefunded = ?,
-      isApproved = ?,
+      status=?,
       productsPaidAmount = ?,
       financeFee = ?,
       MLFee = ?,
@@ -80,8 +79,7 @@ export async function updatePayment(data: ISavePayment): Promise<IDBResponse> {
     data.paymentId,
     data.paymentMethdod,
     data.paymentType,
-    data.isApproved,
-    data.isRefunded,
+    data.status,
     data.productsPaidAmount,
     data.financeFee,
     data.MLFee,

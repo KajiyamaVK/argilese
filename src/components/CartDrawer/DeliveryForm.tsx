@@ -17,6 +17,7 @@ import { TDelivery } from '@/models/deliveries'
 import { getCitiesByUF, savePurchaseDelivery } from './functions'
 import { getDeliveryPrices } from '@/app/[itemId]/functions'
 import { IAddress } from '@mercadopago/sdk-react/bricks/payment/type'
+import { ufs } from '@/data/UFs'
 
 const DeliveryFormSchema = z.object({
   customerName: z.string({ required_error: 'O nome é necessário para a entrega.' }),
@@ -32,36 +33,6 @@ const DeliveryFormSchema = z.object({
   state: z.string({ required_error: 'Selecione o estado da lista acima' }),
   customerWhatsapp: z.string().nullable(),
 })
-
-const ufs = [
-  { value: 'AC', label: 'Acre' },
-  { value: 'AL', label: 'Alagoas' },
-  { value: 'AP', label: 'Amapá' },
-  { value: 'AM', label: 'Amazonas' },
-  { value: 'BA', label: 'Bahia' },
-  { value: 'CE', label: 'Ceará' },
-  { value: 'DF', label: 'Distrito Federal' },
-  { value: 'ES', label: 'Espírito Santo' },
-  { value: 'GO', label: 'Goiás' },
-  { value: 'MA', label: 'Maranhão' },
-  { value: 'MT', label: 'Mato Grosso' },
-  { value: 'MS', label: 'Mato Grosso do Sul' },
-  { value: 'MG', label: 'Minas Gerais' },
-  { value: 'PA', label: 'Pará' },
-  { value: 'PB', label: 'Paraíba' },
-  { value: 'PR', label: 'Paraná' },
-  { value: 'PE', label: 'Pernambuco' },
-  { value: 'PI', label: 'Piauí' },
-  { value: 'RJ', label: 'Rio de Janeiro' },
-  { value: 'RN', label: 'Rio Grande do Norte' },
-  { value: 'RS', label: 'Rio Grande do Sul' },
-  { value: 'RO', label: 'Rondônia' },
-  { value: 'RR', label: 'Roraima' },
-  { value: 'SC', label: 'Santa Catarina' },
-  { value: 'SP', label: 'São Paulo' },
-  { value: 'SE', label: 'Sergipe' },
-  { value: 'TO', label: 'Tocantins' },
-]
 
 export type DeliveryFormType = z.infer<typeof DeliveryFormSchema>
 
@@ -135,10 +106,10 @@ export function DeliveryForm({ purchaseId }: { purchaseId: number }) {
       customerWhatsapp: data.customerWhatsapp ? formatToNumber(data.customerWhatsapp) : '',
     }
 
-    await setDeliveryData(newDeliveryData)
+    setDeliveryData(newDeliveryData)
 
     //const receivedInsertedValue: IDBResponse = await insertPurchase({ deliveryData: newDeliveryData, cartData: cart })
-    await savePurchaseDelivery({ data: newDeliveryData, purchaseId })
+    savePurchaseDelivery({ data: newDeliveryData, purchaseId })
 
     setCurrentStep('payment')
   }
@@ -189,10 +160,11 @@ export function DeliveryForm({ purchaseId }: { purchaseId: number }) {
     const value: string = e.currentTarget.value
     //
     const cep = formatCEP(value)
-
+    console.log('cep', cep)
     setValue('cep', cep)
 
-    if (value.length === 9) {
+    console.log('value.length', value.length)
+    if (cep.length === 9) {
       setIsLoadingAddress(true)
 
       await getDeliveryPrice()

@@ -137,8 +137,9 @@ export function PaymentBrick({ amount, setPaymentId, purchaseId }: IPaymentBrick
       })
         .then((response) => response.json())
         .then((response) => {
-          console.log('response', response)
-          setPaymentId(response.paymentId)
+          console.log('response.id', response.id)
+          console.log('response2', response)
+          setPaymentId(response.id)
           if (response.status === 500) {
             sendAlert({ type: 'error', message: response.message })
             reject()
@@ -160,7 +161,7 @@ export function PaymentBrick({ amount, setPaymentId, purchaseId }: IPaymentBrick
   // eslint-disable-next-line
   const onError = async (error: any) => {
     // callback chamado para todos os casos de erro do Brick
-    alert('Erro não esperado. ')
+    alert('Erro não esperado. ' + error.message)
   }
 
   const onReady = async () => {

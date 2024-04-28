@@ -32,6 +32,14 @@ export function ProductsList({ purchaseId, setPurchaseId }: IProductList) {
   async function goToDeliveryForm() {
     if (!purchaseId) {
       const result = await openPurchase(cart)
+
+      if (result.isError) {
+        sendAlert({
+          message: 'Ocorreu um erro ao tentar abrir a compra.' + result.message,
+          type: 'error',
+        })
+        return
+      }
       setPurchaseId(result.insertId)
     }
 

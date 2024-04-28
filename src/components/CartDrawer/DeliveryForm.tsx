@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '../Button/Button'
 import { formatCEP, formatPhone, formatToNumber } from '@/utils/maskFunctions/'
 
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useState } from 'react'
 import { PurchaseContext } from '@/contexts/PurchaseContext'
 import { AlertDialogContext } from '@/contexts/AlertDialogContext'
 import { TotalsContainer } from './TotalsContainer'
@@ -14,10 +14,9 @@ import { RadioGroup, RadioGroupItem } from '../ui/radio-group'
 import { Label } from '../ui/label'
 import { Skeleton } from '../ui/skeleton'
 import { TDelivery } from '@/models/deliveries'
-import { getCitiesByUF, savePurchaseDelivery } from './functions'
+import { savePurchaseDelivery } from './functions'
 import { getDeliveryPrices } from '@/app/[itemId]/functions'
 import { IAddress } from '@mercadopago/sdk-react/bricks/payment/type'
-import { ufs } from '@/data/UFs'
 
 const DeliveryFormSchema = z.object({
   customerName: z.string({ required_error: 'O nome é necessário para a entrega.' }),
@@ -57,8 +56,8 @@ export function DeliveryForm({ purchaseId }: { purchaseId: number }) {
 
   const { setCurrentStep, deliveryData, setDeliveryData, currentStep } = useContext(PurchaseContext)
   const { sendAlert } = useContext(AlertDialogContext)
-  const [cities, setCities] = useState<string[]>([])
   const [isLoadingAddress, setIsLoadingAddress] = useState(false)
+  const [getDeliveryPriceTries, setGetDeliveryPriceTries] = useState(0)
 
   //const [chosenDelivery, setChosenDelivery] = useState<TDelivery>('')
   const [deliveriesPricesData, setDeliveriesPricesData] = useState<IGetFreteResponse | null>({
@@ -68,21 +67,8 @@ export function DeliveryForm({ purchaseId }: { purchaseId: number }) {
     sedexDeliveryTime: '',
   })
 
-  useEffect(() => {
-    handleStateChange()
-    // eslint-disable-next-line
-  }, [watch('state')])
-
   function goBackToCart() {
     setCurrentStep('cart')
-  }
-
-  async function handleStateChange() {
-    setValue('city', '')
-    setCities([])
-    await getCitiesByUF(watch('state')).then((data) => {
-      setCities(data.data)
-    })
   }
 
   async function onSubmit(data: DeliveryFormType) {
@@ -127,8 +113,13 @@ export function DeliveryForm({ purchaseId }: { purchaseId: number }) {
         setDeliveriesPricesData(data.data)
       })
       .catch((error) => {
-        console.error(error)
-        alert('Erro ao calcular frete: ' + error)
+        setGetDeliveryPriceTries(getDeliveryPriceTries + 1)
+        if (getDeliveryPriceTries < 3) {
+          getDeliveryPrice()
+        } else {
+          console.error(error)
+          alert('Erro ao calcular frete: ' + error)
+        }
       })
   }
 
@@ -140,16 +131,18 @@ export function DeliveryForm({ purchaseId }: { purchaseId: number }) {
         headers: {
           'Content-Type': 'application/json',
         },
-      })
-      if (!response.ok) {
+      }).then((res) => res.json())
+
+      if (!response) {
         sendAlert({
           message:
-            'Ué. Está parecendo que não estamos conseguindo conectar ao serviço dos Correios. Entre com seu endereço manualmente, por gentileza.',
+            'Ué. Está parecendo que não estamos conseguindo conectar ao serviço dos Correios. Por favo, entre em contato pelo Whatsapp para que possamos te ajudar.',
           type: 'error',
         })
       }
-      const data = await response.json()
-      return data
+
+      console.log('response', response)
+      return response
     } catch (error) {
       console.error(error)
       return { error: 'Error fetching data: ' + error }
@@ -167,9 +160,11 @@ export function DeliveryForm({ purchaseId }: { purchaseId: number }) {
     if (cep.length === 9) {
       setIsLoadingAddress(true)
 
-      await getDeliveryPrice()
-
+      getDeliveryPrice()
+      console.log('Calculando frete...')
+      console.log('formatToNumber(cep)', formatToNumber(cep))
       const address = await getAddressByCep(formatToNumber(cep))
+      console.log('address', address)
 
       if (address.error) {
         //return alert('CEP não encontrado. Ele está certo?')
@@ -183,7 +178,9 @@ export function DeliveryForm({ purchaseId }: { purchaseId: number }) {
       setValue('address', address.logradouro)
       setValue('neighborhood', address.bairro)
       setFocus('number')
+      setValue('city', address.localidade)
       setIsLoadingAddress(false)
+
       setTimeout(() => {
         setValue('city', address.localidade)
       }, 500)
@@ -214,85 +211,91 @@ export function DeliveryForm({ purchaseId }: { purchaseId: number }) {
 
         <div className="flex flex-col items-start  gap-3">
           <label htmlFor="address">Endereço</label>
-          <input
-            type="text"
-            id="address"
-            className="w-full rounded-lg border border-gray-300 p-3"
-            disabled={(watch('cep') && watch('cep').length === 9) || true}
-            {...register('address')}
-          />
+          {isLoadingAddress ? (
+            <Skeleton className="h-12 w-72" />
+          ) : (
+            <input
+              type="text"
+              id="address"
+              className="w-full rounded-lg border border-gray-300 p-3"
+              {...register('address')}
+            />
+          )}
           {errors.address && <p className="text-destructive">{errors.address.message}</p>}
         </div>
         <div className="flex gap-2">
           <div className="flex flex-col items-start  gap-3">
             <label htmlFor="number">Número</label>
-            <input
-              type="text"
-              id="number"
-              className="w-32 rounded-lg border border-gray-300 p-3"
-              {...register('number')}
-            />
+            {isLoadingAddress ? (
+              <Skeleton className="h-12 w-36" />
+            ) : (
+              <input
+                type="text"
+                id="number"
+                className="w-32 rounded-lg border border-gray-300 p-3"
+                {...register('number')}
+              />
+            )}
             {errors.number && <p className="text-destructive">{errors.number.message}</p>}
           </div>
 
           <div className="flex flex-col items-start  gap-3">
             <label htmlFor="complement">Complemento</label>
-            <input
-              type="text"
-              id="complement"
-              className="w-full rounded-lg border border-gray-300 p-3"
-              {...register('complement')}
-            />
+            {isLoadingAddress ? (
+              <Skeleton className="h-12 w-36" />
+            ) : (
+              <input
+                type="text"
+                id="complement"
+                className="w-full rounded-lg border border-gray-300 p-3"
+                {...register('complement')}
+              />
+            )}
           </div>
         </div>
 
         <div className="flex flex-col items-start  gap-3">
           <label htmlFor="neighborhood">Bairro</label>
-          <input
-            type="text"
-            id="neighborhood"
-            className="w-full rounded-lg border border-gray-300 p-3"
-            {...register('neighborhood')}
-          />
+          {isLoadingAddress ? (
+            <Skeleton className="h-12 w-72" />
+          ) : (
+            <input
+              type="text"
+              id="neighborhood"
+              className="w-full rounded-lg border border-gray-300 p-3"
+              {...register('neighborhood')}
+            />
+          )}
           {errors.neighborhood && <p className="text-destructive">{errors.neighborhood.message}</p>}
         </div>
-        <div className="flex flex-col items-start  gap-3">
+        <div className="flex flex-col">
           <label htmlFor="state">Estado</label>
-          <select
-            id="state"
-            className="w-full cursor-not-allowed rounded-lg border border-gray-300 p-3 disabled:opacity-100"
-            title="Preencha o CEP para preencher este campo"
-            disabled
-            {...register('state')}
-            onChange={handleStateChange}
-          >
-            <option value="">Selecione o estado</option>
-            {ufs.map((estado) => (
-              <option key={estado.value} value={estado.value}>
-                {estado.value} - {estado.label}
-              </option>
-            ))}
-          </select>
-          {errors.state && <p className="text-destructive">{errors.state.message}</p>}
+          {isLoadingAddress ? (
+            <Skeleton className="h-12 w-72" />
+          ) : (
+            <input
+              id="state"
+              className="w-full border-none outline-none"
+              disabled
+              {...register('state')}
+              placeholder="Digite o cep para preencher"
+            />
+          )}
         </div>
-        <div className="flex flex-col items-start  gap-3">
+        <div className="flex flex-col">
           <label htmlFor="city">Cidade</label>
-          <select
-            id="city"
-            className="w-full cursor-not-allowed rounded-lg border border-gray-300 p-3 disabled:opacity-100"
-            disabled
-            title="Preencha o CEP para preencher este campo"
-            {...register('city')}
-          >
-            <option value="">Selecione a cidade</option>
-            {cities.length > 0 &&
-              cities.map((city) => (
-                <option key={city} value={city}>
-                  {city}
-                </option>
-              ))}
-          </select>
-          {errors.city && <p className="text-destructive">{errors.city.message}</p>}
+
+          {isLoadingAddress ? (
+            <Skeleton className="h-12 w-72" />
+          ) : (
+            <input
+              id="city"
+              className="border-none outline-none"
+              disabled
+              {...register('city')}
+              placeholder="Digite o cep para preencher"
+            />
+          )}
         </div>
 
         <div className="flex flex-col items-start  gap-3">

@@ -86,7 +86,7 @@ interface ISavePurchaseDelivery {
   data: IPurchaseDelivery
 }
 
-export async function savePurchaseDelivery({ purchaseId, data }: ISavePurchaseDelivery): Promise<void> {
+export async function savePurchaseDelivery({ purchaseId, data }: ISavePurchaseDelivery): Promise<IDBResponse> {
   const Conn = await getDatabaseConnection()
   const insertDeliveryDataQuery = `
     INSERT INTO purchaseDeliveries(
@@ -108,7 +108,7 @@ export async function savePurchaseDelivery({ purchaseId, data }: ISavePurchaseDe
     VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?);
   `
 
-  Conn.execute(insertDeliveryDataQuery, [
+  await Conn.execute(insertDeliveryDataQuery, [
     purchaseId,
     data.type,
     data.price,
@@ -123,10 +123,16 @@ export async function savePurchaseDelivery({ purchaseId, data }: ISavePurchaseDe
     data.neighborhood,
     data.city,
     data.state,
-  ]).catch((error) => {
-    console.error(`Error inserting purchase delivery data: ${error}`)
-    return new Error('Database error inserting purchase delivery data: ' + error)
-  })
+  ])
+    .catch((error) => {
+      console.error(`Error inserting purchase delivery data: ${error}`)
+      return { isError: true, message: 'Database error inserting purchase delivery data: ' + error }
+    })
+    .finally(() => {
+      Conn.end()
+    })
+
+  return { isError: false, message: 'Delivery data inserted successfully' }
 }
 
 export async function getCitiesByUF(uf: string) {

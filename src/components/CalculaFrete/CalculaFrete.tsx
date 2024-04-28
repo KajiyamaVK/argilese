@@ -25,7 +25,6 @@ export function CalculaFrete({ height, width, length, weight }: ICalculaFrete) {
   const [showSkeleton, setShowSkeleton] = useState<boolean>(false)
 
   function handleChangeCep(value: string) {
-    console.log('shazam!!!!!!!!')
     const formattedCep = formatCEP(value)
     setCep(formattedCep)
   }

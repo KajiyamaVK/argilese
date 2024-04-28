@@ -20,9 +20,8 @@ interface ISavePayment {
 }
 
 export async function savePayment(data: ISavePayment): Promise<IDBResponse> {
-  console.log('entrei aqui')
   const Conn = await getDatabaseConnection()
-  console.log('entrei aqui 2')
+
   const savePaymentQuery = `
   INSERT INTO purchasePayments(
     purchaseIdFK,
@@ -36,7 +35,7 @@ export async function savePayment(data: ISavePayment): Promise<IDBResponse> {
     paidAmount,
     netAmount)
     VALUES(?,?,?,?,?,?,?,?,?,?,?)`
-  console.log('entrei aqui 3')
+
   await Conn.query(savePaymentQuery, [
     data.purchaseId,
     data.paymentId,

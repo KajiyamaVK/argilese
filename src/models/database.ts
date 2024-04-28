@@ -4,6 +4,6 @@ export interface IDBResponse<T = any> {
   message: string
   isError: boolean
 
-  affectedRows: number
-  insertId: number
+  affectedRows?: number
+  insertId?: number
 }

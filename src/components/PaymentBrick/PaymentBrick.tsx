@@ -1,15 +1,13 @@
 'use client'
 import { AlertDialogContext } from '@/contexts/AlertDialogContext'
 import { PurchaseContext } from '@/contexts/PurchaseContext'
-import { Payment } from '@mercadopago/sdk-react'
+import { Payment as PaymentComponent } from '@mercadopago/sdk-react'
 import { IPaymentBrickCustomization } from '@mercadopago/sdk-react/bricks/payment/type'
 import { Dispatch, SetStateAction, useContext } from 'react'
-import { savePayment } from './functions'
+
 import { GeneralContext } from '@/contexts/GeneralContext'
 import { formatCEP } from '@/utils/maskFunctions'
 import { ufs } from '@/data/UFs'
-import MercadoPagoConfig from 'mercadopago'
-import { randomUUID } from 'crypto'
 
 export interface AdditionalInfo {
   items: Item[]
@@ -65,6 +63,8 @@ export function PaymentBrick({ amount, setPaymentId, purchaseId }: IPaymentBrick
   const { cart, deliveryData, setCurrentStep } = useContext(PurchaseContext)
   const { isAdmin } = useContext(GeneralContext)
   const { sendAlert } = useContext(AlertDialogContext)
+
+  setPaymentId(purchaseId.toString()) // TIRAAAAAAAAAAAAAAAAAAAAAAA
 
   const initialization = {
     amount: isAdmin ? 1 : amount,
@@ -124,96 +124,44 @@ export function PaymentBrick({ amount, setPaymentId, purchaseId }: IPaymentBrick
       ...formData,
       //additional_info,
     }
+    console.log('formData', formData)
     console.log('body', body)
-    const client = new MercadoPagoConfig({ accessToken: process.env.MERCADO_PAGO_TOKEN!, options: { timeout: 5000 } })
-    const payment:any = new (Payment as any)(client) //eslint-disable-line
 
-
-
-    try {
-      payment
-        .create({
-          body,
-          requestOptions: {
-            idempotency: randomUUID(),
-          },
-        })
-        .then((response: any) => { //eslint-disable-line
-          console.log('response', response)
-          return new Response(JSON.stringify(response), {
-            status: 200,
-            headers: {
-              'Access-Control-Allow-Origin': '*',
-              'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-              'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-            },
-          })
-          // eslint-disable-next-line
-        }).then(async (response: any) => { 
-          // eslint-disable-next-line
-          const financeFeeResult = response.fee_details.find((fee: any) => fee.type === 'financing_fee')
-          const financeFee = financeFeeResult ? financeFeeResult.amount : 0
-          console.log('financeFee', financeFee)
-
-          // eslint-disable-next-line
-          const MLFeeResult = response.fee_details.find((fee: any) => fee.type === 'mercadopago_fee')
-          const MLFee = MLFeeResult ? MLFeeResult.amount : 0
-
-          console.log('MLFee', MLFee)
-          try {
-            await savePayment({
-              purchaseId: purchaseId,
-              paymentId: response.id,
-              paymentMethdod: response.payment_method.id,
-              paymentType: response.payment_method.type === 'bank_transfer' ? 'pix' : response.payment_method.type,
-              status: response.status,
-              productsPaidAmount: response.transaction_amount,
-              // eslint-disable-next-line
-            financeFee,
-              // eslint-disable-next-line
-            MLFee,
-              paidAmount: response.transaction_details.total_paid_amount,
-              netAmount: response.transaction_details.net_received_amount,
-              installments: response.installments,
-            })
-            console.log('response.id', response.id)
-            setPaymentId(response.id)
-            console.log('2')
-
-            setCurrentStep('paymentStatus')
-          } catch (error) {
-            console.log('error', error)
-            sendAlert({ message: 'Erro ao salvar o pagamento!', type: 'error' })
-          }
-        })
-        .catch((error: any) => {// eslint-disable-line
-          console.error('Eita', error)
-          return new Response(JSON.stringify(error), {
-            status: 400,
-            headers: {
-              'Access-Control-Allow-Origin': '*',
-              'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-              'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-            },
-          })
-        })
-    } catch (error) {
-      console.error('Eita', error)
-      return new Response(JSON.stringify(error), {
-        status: 400,
+    return new Promise<void>(async (resolve, reject) => {
+      await fetch('/api/purchases/process_payment', {
+        method: 'POST',
         headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+          'Content-Type': 'application/json',
         },
+        body: JSON.stringify(body),
       })
-    }
+        .then((response) => response.json())
+        .then((response) => {
+          console.log('response', response)
+          if (response.status === 500) {
+            sendAlert({ type: 'error', message: response.message })
+            reject()
+            return
+          }
+
+          resolve()
+
+          setCurrentStep('paymentStatus')
+          // receber o resultado do pagamento
+        })
+        .catch(() => {
+          // lidar com a resposta de erro ao tentar criar o pagamento
+          reject()
+        })
+    })
   }
+
   // eslint-disable-next-line
   const onError = async (error: any) => {
     // callback chamado para todos os casos de erro do Brick
     alert('Erro não esperado. ')
   }
+
   const onReady = async () => {
     /*
     Callback chamado quando o Brick estiver pronto.
@@ -223,7 +171,7 @@ export function PaymentBrick({ amount, setPaymentId, purchaseId }: IPaymentBrick
 
   return (
     <div>
-      <Payment
+      <PaymentComponent
         initialization={initialization}
         customization={customization as IPaymentBrickCustomization}
         onSubmit={onSubmit}

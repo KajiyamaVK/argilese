@@ -40,7 +40,7 @@ export function ProductsList({ purchaseId, setPurchaseId }: IProductList) {
         })
         return
       }
-      setPurchaseId(result.insertId)
+      setPurchaseId(result.insertId!)
     }
 
     setCurrentStep('delivery')
@@ -78,7 +78,7 @@ export function ProductsList({ purchaseId, setPurchaseId }: IProductList) {
             </div>
           ))}
         </div>
-        <TotalsContainer />
+        <TotalsContainer deliveryPrice={'0'} />
         <Button className="float-right mt-10 w-full bg-yellow-700" onClick={goToDeliveryForm}>
           Ir para os dados de entrega
         </Button>

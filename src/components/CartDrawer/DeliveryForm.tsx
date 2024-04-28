@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '../Button/Button'
 import { formatCEP, formatPhone, formatToNumber } from '@/utils/maskFunctions/'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { PurchaseContext } from '@/contexts/PurchaseContext'
 import { AlertDialogContext } from '@/contexts/AlertDialogContext'
 import { TotalsContainer } from './TotalsContainer'
@@ -13,6 +13,7 @@ import { Skeleton } from '../ui/skeleton'
 import { savePurchaseDelivery } from './functions'
 import { getDeliveryPrices } from '@/app/[itemId]/functions'
 import { IAddress } from '@mercadopago/sdk-react/bricks/payment/type'
+import { IPurchaseDelivery, TDelivery } from '@/models/deliveries'
 
 const DeliveryFormSchema = z.object({
   customerName: z.string({ required_error: 'O nome é necessário para a entrega.' }),
@@ -28,6 +29,7 @@ const DeliveryFormSchema = z.object({
   state: z.string({ required_error: 'Selecione o estado da lista acima' }),
   customerWhatsapp: z.string().nullable(),
   deliveryType: z.string(),
+  deliveryPrice: z.string(),
 })
 
 export type DeliveryFormType = z.infer<typeof DeliveryFormSchema>
@@ -64,16 +66,31 @@ export function DeliveryForm({ purchaseId }: { purchaseId: number }) {
     sedexDeliveryTime: '',
   })
 
+  useEffect(() => {
+    setValue(
+      'deliveryPrice',
+      watch('deliveryType') === 'SEDEX' ? deliveriesPricesData!.sedexPrice : deliveriesPricesData!.pacPrice,
+    )
+    // eslint-disable-next-line
+  }, [watch('deliveryType')])
+
   function goBackToCart() {
     setCurrentStep('cart')
   }
 
   async function onSubmit(data: DeliveryFormType) {
-    const newDeliveryData = {
+    console.log('deliveryPricesData', deliveriesPricesData)
+
+    const newDeliveryData: IPurchaseDelivery = {
       ...deliveryData,
       cep: formatToNumber(data.cep),
-      deliveryPrice: data.deliveryType === 'SEDEX' ? deliveriesPricesData?.sedexPrice : deliveriesPricesData?.pacPrice,
-      deliveryTime: parseInt(
+      type: data.deliveryType as TDelivery,
+
+      price:
+        data.deliveryType === 'SEDEX'
+          ? Number(deliveriesPricesData?.sedexPrice.replace(',', '.'))
+          : Number(deliveriesPricesData?.pacPrice.replace(',', '.')),
+      deliveryDays: parseInt(
         data.deliveryType === 'PAC'
           ? deliveriesPricesData?.pacDeliveryTime || '0'
           : deliveriesPricesData?.sedexDeliveryTime || '0',
@@ -92,7 +109,10 @@ export function DeliveryForm({ purchaseId }: { purchaseId: number }) {
     setDeliveryData(newDeliveryData)
 
     //const receivedInsertedValue: IDBResponse = await insertPurchase({ deliveryData: newDeliveryData, cartData: cart })
-    savePurchaseDelivery({ data: newDeliveryData, purchaseId })
+    savePurchaseDelivery({ data: newDeliveryData, purchaseId }).then((response) => {
+      if (response.isError)
+        sendAlert({ message: 'Erro ao salvar dados de entrega: ' + response.message, type: 'error' })
+    })
 
     setCurrentStep('payment')
   }
@@ -112,7 +132,9 @@ export function DeliveryForm({ purchaseId }: { purchaseId: number }) {
       .catch((error) => {
         setGetDeliveryPriceTries(getDeliveryPriceTries + 1)
         if (getDeliveryPriceTries < 3) {
-          getDeliveryPrice()
+          getDeliveryPrice().then(() => {
+            setGetDeliveryPriceTries(0)
+          })
         } else {
           console.error(error)
           alert('Erro ao calcular frete: ' + error)
@@ -138,7 +160,6 @@ export function DeliveryForm({ purchaseId }: { purchaseId: number }) {
         })
       }
 
-      console.log('response', response)
       return response
     } catch (error) {
       console.error(error)
@@ -150,18 +171,15 @@ export function DeliveryForm({ purchaseId }: { purchaseId: number }) {
     const value: string = e.currentTarget.value
     //
     const cep = formatCEP(value)
-    console.log('cep', cep)
+
     setValue('cep', cep)
 
-    console.log('value.length', value.length)
     if (cep.length === 9) {
       setIsLoadingAddress(true)
 
       getDeliveryPrice()
-      console.log('Calculando frete...')
-      console.log('formatToNumber(cep)', formatToNumber(cep))
+
       const address = await getAddressByCep(formatToNumber(cep))
-      console.log('address', address)
 
       if (address.error) {
         //return alert('CEP não encontrado. Ele está certo?')
@@ -335,18 +353,18 @@ export function DeliveryForm({ purchaseId }: { purchaseId: number }) {
         {watch('cep') && watch('cep').length === 9 && (
           <div className="flex flex-col justify-start gap-3">
             <b>Escolha o frete:</b>
-            <div className="flex justify-evenly gap-5">
+            <div className="flex flex-col justify-evenly gap-5">
               <div
-                className={`w-20 cursor-pointer rounded-lg   border p-2  text-center ${deliveryData.type === 'SEDEX' ? 'border-white bg-yellow-700 text-white' : 'border-yellow-700 text-yellow-700 hover:border-white hover:bg-yellow-600 hover:text-white'}`}
+                className={`w-full cursor-pointer rounded-lg   border p-2  text-center ${watch('deliveryType') === 'SEDEX' ? 'border-white bg-yellow-700 text-white' : 'border-yellow-700 text-yellow-700 hover:border-white hover:bg-yellow-600 hover:text-white'}`}
                 onClick={() => setValue('deliveryType', 'SEDEX')}
               >
-                SEDEX
+                SEDEX - R$ {deliveriesPricesData?.sedexPrice} ({Number(deliveriesPricesData?.sedexDeliveryTime)} dia(s))
               </div>
               <div
-                className={`w-20 cursor-pointer rounded-lg   border p-2  text-center ${deliveryData.type === 'PAC' ? 'border-white bg-yellow-700 text-white' : 'border-yellow-700 text-yellow-700 hover:border-white hover:bg-yellow-600 hover:text-white'}`}
+                className={`w-full cursor-pointer rounded-lg   border p-2  text-center ${watch('deliveryType') === 'PAC' ? 'border-white bg-yellow-700 text-white' : 'border-yellow-700 text-yellow-700 hover:border-white hover:bg-yellow-600 hover:text-white'}`}
                 onClick={() => setValue('deliveryType', 'PAC')}
               >
-                PAC
+                PAC - R$ {deliveriesPricesData?.pacPrice} ({deliveriesPricesData?.pacDeliveryTime} dias)
               </div>
             </div>
             {/* <div>
@@ -413,9 +431,7 @@ export function DeliveryForm({ purchaseId }: { purchaseId: number }) {
           </div>
         )}
 
-        <TotalsContainer />
-
-        {}
+        {watch('deliveryType') && <TotalsContainer deliveryPrice={watch('deliveryPrice')} />}
 
         <Button type="button" className="w-full" onClick={goBackToCart}>
           Voltar para os itens

@@ -424,7 +424,7 @@ export function DeliveryForm({ purchaseId }: { purchaseId: number }) {
           type="submit"
           className="w-full"
           disabled={
-            !deliveryData.type ||
+            !watch('deliveryType') ||
             !watch('customerName') ||
             !watch('email') ||
             !watch('cep') ||

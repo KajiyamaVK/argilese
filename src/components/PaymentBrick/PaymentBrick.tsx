@@ -8,6 +8,7 @@ import { Dispatch, SetStateAction, useContext } from 'react'
 import { GeneralContext } from '@/contexts/GeneralContext'
 import { formatCEP } from '@/utils/maskFunctions'
 import { ufs } from '@/data/UFs'
+import { savePayment } from './functions'
 
 export interface AdditionalInfo {
   items: Item[]
@@ -147,6 +148,21 @@ export function PaymentBrick({ amount, setPaymentId, purchaseId }: IPaymentBrick
           }
 
           resolve()
+
+          sendAlert({ type: 'OK', message: 'Pagamento efetuado com sucesso!' })
+          savePayment({
+            purchaseId,
+            paymentId: response.id,
+            paymentMethdod: response.payment_method_id,
+            paymentType: response.payment_type_id,
+            status: response.status,
+            productsPaidAmount: amount,
+            financeFee: response.fee_details.find((fee: any) => fee.type === 'financing_fee')?.amount ?? 0, //eslint-disable-line
+            MLFee: response.fee_details.find((fee: any) => fee.type === 'mercadopago_fee')?.amount ?? 0, //eslint-disable-line
+            paidAmount: response.transaction_details.total_paid_amount ?? 0,
+            netAmount: response.transaction_details.net_received_amount ?? 0,
+            installments: response.installments,
+          })
 
           setCurrentStep('paymentStatus')
           // receber o resultado do pagamento

@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto'
 import { MercadoPagoConfig, Payment } from 'mercadopago'
 
 export async function POST(req) {
@@ -13,7 +14,7 @@ export async function POST(req) {
 
   const client = new MercadoPagoConfig({
     accessToken: process.env.MERCADO_PAGO_TOKEN,
-    options: { timeout: 10000, idempotencyKey: 'abcas' },
+    options: { timeout: 10000, idempotencyKey: randomUUID() },
   })
   console.log('process.env.MERCADO_PAGO_TOKEN', process.env.MERCADO_PAGO_TOKEN)
 

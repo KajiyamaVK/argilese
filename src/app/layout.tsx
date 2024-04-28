@@ -38,7 +38,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </AlertDialogProvider>
         </GeneralProvider>
         <Link href={'https://wa.me/+5511978852047'} target="_blank">
-          <Image src={whatsappLogo} width={100} height={100} alt="" className="fixed bottom-20 right-8 z-50" />
+          <Image
+            src={whatsappLogo}
+            width={75}
+            height={75}
+            alt=""
+            className="fixed bottom-10 z-50 md:bottom-20 md:right-8 "
+          />
         </Link>
       </body>
     </html>

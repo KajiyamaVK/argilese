@@ -14,7 +14,7 @@ export async function POST(req) {
 
   const client = new MercadoPagoConfig({
     accessToken: process.env.MERCADO_PAGO_TOKEN,
-    options: { timeout: 10000, idempotencyKey: randomUUID() },
+    options: { timeout: 20000, idempotencyKey: randomUUID() },
   })
   console.log('process.env.MERCADO_PAGO_TOKEN', process.env.MERCADO_PAGO_TOKEN)
 

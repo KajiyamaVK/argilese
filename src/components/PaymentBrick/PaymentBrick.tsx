@@ -1,4 +1,5 @@
 'use client'
+import { sendEmail } from '@/utils/emailFunctions/sendEmail'
 import { AlertDialogContext } from '@/contexts/AlertDialogContext'
 import { PurchaseContext } from '@/contexts/PurchaseContext'
 import { Payment as PaymentComponent } from '@mercadopago/sdk-react'
@@ -9,6 +10,7 @@ import { GeneralContext } from '@/contexts/GeneralContext'
 import { formatCEP } from '@/utils/maskFunctions'
 import { ufs } from '@/data/UFs'
 import { savePayment } from './functions'
+import { AfterPurchaseEmailHTML } from '@/utils/emailFunctions/AfterPurchaseEmail'
 
 export interface AdditionalInfo {
   items: Item[]
@@ -64,8 +66,6 @@ export function PaymentBrick({ amount, setPaymentId, purchaseId }: IPaymentBrick
   const { cart, deliveryData, setCurrentStep } = useContext(PurchaseContext)
   const { isAdmin } = useContext(GeneralContext)
   const { sendAlert } = useContext(AlertDialogContext)
-
-  console.log(purchaseId) // Tiraaaaaaaaaaaaa
 
   const initialization = {
     amount: isAdmin ? 1 : amount,
@@ -156,12 +156,21 @@ export function PaymentBrick({ amount, setPaymentId, purchaseId }: IPaymentBrick
             paymentMethdod: response.payment_method_id,
             paymentType: response.payment_type_id,
             status: response.status,
-            productsPaidAmount: amount,
+            productsPaidAmount: response.transaction_amount,
             financeFee: response.fee_details.find((fee: any) => fee.type === 'financing_fee')?.amount ?? 0, //eslint-disable-line
             MLFee: response.fee_details.find((fee: any) => fee.type === 'mercadopago_fee')?.amount ?? 0, //eslint-disable-line
             paidAmount: response.transaction_details.total_paid_amount ?? 0,
             netAmount: response.transaction_details.net_received_amount ?? 0,
             installments: response.installments,
+          })
+
+          sendEmail({
+            to: response.payer.email,
+            subject: 'Compra realizada com sucesso!',
+            html: AfterPurchaseEmailHTML({
+              name: deliveryData.customerName.split(' ')[0],
+              order: purchaseId.toString(),
+            }),
           })
 
           setCurrentStep('paymentStatus')

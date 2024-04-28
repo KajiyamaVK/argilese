@@ -27,6 +27,7 @@ const DeliveryFormSchema = z.object({
   city: z.string({ required_error: 'Selecione a cidade da lista acima' }),
   state: z.string({ required_error: 'Selecione o estado da lista acima' }),
   customerWhatsapp: z.string().nullable(),
+  deliveryType: z.string(),
 })
 
 export type DeliveryFormType = z.infer<typeof DeliveryFormSchema>
@@ -71,9 +72,9 @@ export function DeliveryForm({ purchaseId }: { purchaseId: number }) {
     const newDeliveryData = {
       ...deliveryData,
       cep: formatToNumber(data.cep),
-      deliveryPrice: deliveryData.price,
+      deliveryPrice: data.deliveryType === 'SEDEX' ? deliveriesPricesData?.sedexPrice : deliveriesPricesData?.pacPrice,
       deliveryTime: parseInt(
-        deliveryData.type === 'PAC'
+        data.deliveryType === 'PAC'
           ? deliveriesPricesData?.pacDeliveryTime || '0'
           : deliveriesPricesData?.sedexDeliveryTime || '0',
       ),
@@ -337,25 +338,13 @@ export function DeliveryForm({ purchaseId }: { purchaseId: number }) {
             <div className="flex justify-evenly gap-5">
               <div
                 className={`w-20 cursor-pointer rounded-lg   border p-2  text-center ${deliveryData.type === 'SEDEX' ? 'border-white bg-yellow-700 text-white' : 'border-yellow-700 text-yellow-700 hover:border-white hover:bg-yellow-600 hover:text-white'}`}
-                // onClick={() =>
-                //   setDeliveryData({
-                //     ...deliveryData,
-                //     price: Number(deliveriesPricesData?.sedexPrice.replace(',', '.')),
-                //     type: 'SEDEX',
-                //   })
-                // }
+                onClick={() => setValue('deliveryType', 'SEDEX')}
               >
                 SEDEX
               </div>
               <div
                 className={`w-20 cursor-pointer rounded-lg   border p-2  text-center ${deliveryData.type === 'PAC' ? 'border-white bg-yellow-700 text-white' : 'border-yellow-700 text-yellow-700 hover:border-white hover:bg-yellow-600 hover:text-white'}`}
-                // onClick={() =>
-                //   setDeliveryData({
-                //     ...deliveryData,
-                //     price: Number(deliveriesPricesData?.pacPrice.replace(',', '.')),
-                //     type: 'PAC',
-                //   })
-                // }
+                onClick={() => setValue('deliveryType', 'PAC')}
               >
                 PAC
               </div>

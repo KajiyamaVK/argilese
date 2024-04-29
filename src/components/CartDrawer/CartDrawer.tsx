@@ -38,23 +38,21 @@ export function CartDrawer({ isOpen, setIsOpen }: ICartDrawer) {
   }, [isOpen])
 
   useEffect(() => {
-    switch (currentStep) {
-      case 'payment':
-        if (mercadoPagoPublicToken) {
-          initMercadoPago(mercadoPagoPublicToken)
+    if (currentStep === 'payment') {
+      initMercadoPago(mercadoPagoPublicToken!)
+    } else if (currentStep === 'paymentStatus') {
+      const interval = setInterval(async () => {
+        const response = await getPurchasePaymentStatus(paymentId)
+        if (response.status === 'approved') {
+          clearInterval(interval)
+          setPaymentStatus('approved') // Atualiza o estado para refletir o status aprovado
         }
-        break
+      }, 5000)
 
-      case 'paymentStatus':
-        setInterval(async () => {
-          await getPurchasePaymentStatus(paymentId).then((response) => {
-            setPaymentStatus(response.status)
-          })
-        }, 5000)
-        break
+      return () => clearInterval(interval) // Limpeza do intervalo
     }
     // eslint-disable-next-line
-  }, [currentStep])
+  }, [currentStep, paymentId])
 
   useEffect(() => {
     if (totalCartQty === 0) {

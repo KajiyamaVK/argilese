@@ -34,7 +34,7 @@ export async function savePayment(data: ISavePayment): Promise<IDBResponse> {
     MLFee,
     paidAmount,
     netAmount)
-    VALUES(?,?,?,?,?,?,?,?,?,?,?)`
+    VALUES(?,?,?,?,?,?,?,?,?,?)`
 
   await Conn.query(savePaymentQuery, [
     data.purchaseId,

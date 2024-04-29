@@ -160,7 +160,6 @@ export function PaymentBrick({ amount, setPaymentId, purchaseId }: IPaymentBrick
           })
 
           if (response.status === 'approved') {
-            sendAlert({ type: 'OK', message: 'Pagamento efetuado com sucesso!' })
             sendEmail({
               to: deliveryData.customerEmail,
               subject: 'Compra realizada com sucesso!',

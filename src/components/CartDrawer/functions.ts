@@ -1,11 +1,32 @@
 'use server'
-import { RowDataPacket } from 'mysql2'
+import { FieldPacket, QueryResult, RowDataPacket } from 'mysql2'
 import { getDatabaseConnection } from '@/utils/databaseFunctions/createConnection'
 import { ResultSetHeader } from 'mysql2'
 import mysql from 'mysql2/promise'
 import { IPurchaseDelivery } from '@/models/deliveries'
 import { IDBResponse } from '@/models/database'
 import { IProduct } from '@/models/products'
+
+export async function getPurchasePaymentStatus(paymentId: string) {
+  const Conn = await getDatabaseConnection()
+  const query = `
+    SELECT status
+    FROM purchasePayments
+    WHERE paymentId = ?
+  `
+
+  const status = await Conn.query(query, [paymentId])
+    .then(([results]: [QueryResult, FieldPacket[]]) => {
+      return results as { status: string }[]
+    })
+    .catch((error) => {
+      console.error('Failed to fetch payment status:', error)
+      return []
+    })
+    .finally(() => Conn.end())
+
+  return status[0]
+}
 
 export async function openPurchase(cartData: IProduct[]): Promise<IDBResponse> {
   const Conn = await getDatabaseConnection()

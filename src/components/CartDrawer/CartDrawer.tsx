@@ -11,6 +11,7 @@ import { PurchaseContext } from '@/contexts/PurchaseContext'
 import { DeliveryForm } from './DeliveryForm'
 import { PaymentStatusBrick } from '../PaymentStatusBrick/PaymentStatusBrick'
 import { Button } from '../Button/Button'
+import { getPurchasePaymentStatus } from './functions'
 
 interface ICartDrawer {
   isOpen: boolean
@@ -21,6 +22,7 @@ export function CartDrawer({ isOpen, setIsOpen }: ICartDrawer) {
   const { currentStep, totalCartQty, setCurrentStep, totalPurchaseAmount, resetCart } = useContext(PurchaseContext)
   const [paymentId, setPaymentId] = useState<string>('')
   const [purchaseId, setPurchaseId] = useState<number>(0)
+  const [paymentStatus, setPaymentStatus] = useState<string>('pending')
   const mercadoPagoPublicToken = process.env.NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY
 
   useEffect(() => {
@@ -36,8 +38,20 @@ export function CartDrawer({ isOpen, setIsOpen }: ICartDrawer) {
   }, [isOpen])
 
   useEffect(() => {
-    if (mercadoPagoPublicToken && currentStep === 'payment') {
-      initMercadoPago(mercadoPagoPublicToken)
+    switch (currentStep) {
+      case 'payment':
+        if (mercadoPagoPublicToken) {
+          initMercadoPago(mercadoPagoPublicToken)
+        }
+        break
+
+      case 'paymentStatus':
+        setInterval(async () => {
+          await getPurchasePaymentStatus(paymentId).then((response) => {
+            setPaymentStatus(response.status)
+          })
+        }, 5000)
+        break
     }
     // eslint-disable-next-line
   }, [currentStep])
@@ -64,7 +78,7 @@ export function CartDrawer({ isOpen, setIsOpen }: ICartDrawer) {
         )}
         {currentStep === 'paymentStatus' && (
           <div className="flex flex-col justify-center">
-            <PaymentStatusBrick paymentId={paymentId} setPaymentId={setPaymentId} />
+            <PaymentStatusBrick paymentId={paymentId} paymentStatus={paymentStatus} />
             <Button className="border border-black bg-white text-black" onClick={resetCart}>
               Ok
             </Button>

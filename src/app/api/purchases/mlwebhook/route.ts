@@ -28,14 +28,16 @@ export async function POST(req: Request) {
   const customerData = await getCustomerData(returnValue.id)
   console.log('customerData', customerData)
 
-  sendEmail({
-    to: customerData[0].customerEmail,
-    subject: 'Pagamento registrado! Muito obrigado! ^^ ',
-    html: AfterPurchaseEmailHTML({
-      name: customerData[0].customerName.split(' ')[0],
-      order: customerData[0].purchaseIdFK.toString(),
-    }),
-  })
+  if (returnValue.status === 'approved') {
+    sendEmail({
+      to: customerData[0].customerEmail,
+      subject: 'Pagamento registrado! Muito obrigado! ^^ ',
+      html: AfterPurchaseEmailHTML({
+        name: customerData[0].customerName.split(' ')[0],
+        order: customerData[0].purchaseIdFK.toString(),
+      }),
+    })
+  }
   return new Response('ok')
 }
 

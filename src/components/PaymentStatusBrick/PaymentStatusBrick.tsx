@@ -25,6 +25,7 @@ export function PaymentStatusBrick({ paymentId, paymentStatus }: IPaymentStatusB
       console.info('successful payment')
       resetCart()
     }
+    // eslint-disable-next-line
   }, [paymentStatus])
 
   const initialization = {

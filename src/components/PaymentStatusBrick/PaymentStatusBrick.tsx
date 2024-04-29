@@ -1,8 +1,8 @@
-'use Client'
+'use client'
 
 import { StatusScreen } from '@mercadopago/sdk-react'
-import { useContext, useEffect, useRef } from 'react'
-import { AlertDialogContext } from '@/contexts/AlertDialogContext'
+import { useEffect, useRef } from 'react'
+
 interface IPaymentStatusBrick {
   paymentId: string
   paymentStatus: string
@@ -10,17 +10,19 @@ interface IPaymentStatusBrick {
 }
 
 export function PaymentStatusBrick({ paymentId, paymentStatus }: IPaymentStatusBrick) {
-  const { sendAlert, setIsAlertOpen } = useContext(AlertDialogContext)
+  //const { sendAlert, setIsAlertOpen } = useContext(AlertDialogContext)
   const alertSentRef = useRef(false)
   useEffect(() => {
     if (paymentStatus === 'approved' && !alertSentRef.current) {
-      sendAlert({
-        message: 'Seu pagamento foi aprovado com sucesso. Muito obrigado! ^^',
-        type: 'OK',
-        onConfirm: () => {
-          setIsAlertOpen(false)
-        },
-      })
+      // sendAlert({
+      //   message: 'Seu pagamento foi aprovado com sucesso. Muito obrigado! ^^',
+      //   type: 'OK',
+      //   onConfirm: () => {
+      //     setIsAlertOpen(false)
+      //   },
+      // })
+
+      console.info('successful payment')
       alertSentRef.current = true
     }
   }, [paymentStatus])

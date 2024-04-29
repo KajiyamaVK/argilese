@@ -79,8 +79,6 @@ export function DeliveryForm({ purchaseId }: { purchaseId: number }) {
   }
 
   async function onSubmit(data: DeliveryFormType) {
-    
-
     const newDeliveryData: IPurchaseDelivery = {
       ...deliveryData,
       cep: formatToNumber(data.cep),

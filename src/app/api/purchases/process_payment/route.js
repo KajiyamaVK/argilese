@@ -16,18 +16,14 @@ export async function POST(req) {
     accessToken: process.env.MERCADO_PAGO_TOKEN,
     options: { timeout: 20000, idempotencyKey: randomUUID() },
   })
-  
 
   const payment = new Payment(client)
-  
 
   return await payment
     .create({
       body,
     })
     .then((response) => {
-      
-
       return new Response(JSON.stringify(response))
     })
     .catch((error) => {

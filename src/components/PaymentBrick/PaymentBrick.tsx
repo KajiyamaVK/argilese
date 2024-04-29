@@ -149,7 +149,6 @@ export function PaymentBrick({ amount, setPaymentId, purchaseId }: IPaymentBrick
 
           resolve()
 
-          sendAlert({ type: 'OK', message: 'Pagamento efetuado com sucesso!' })
           savePayment({
             purchaseId,
             paymentId: response.id,
@@ -164,7 +163,8 @@ export function PaymentBrick({ amount, setPaymentId, purchaseId }: IPaymentBrick
             installments: response.installments,
           })
 
-          if (response.status === 'approved')
+          if (response.status === 'approved') {
+            sendAlert({ type: 'OK', message: 'Pagamento efetuado com sucesso!' })
             sendEmail({
               to: deliveryData.customerEmail,
               subject: 'Compra realizada com sucesso!',
@@ -173,6 +173,7 @@ export function PaymentBrick({ amount, setPaymentId, purchaseId }: IPaymentBrick
                 order: purchaseId.toString(),
               }),
             })
+          }
 
           setCurrentStep('paymentStatus')
           // receber o resultado do pagamento

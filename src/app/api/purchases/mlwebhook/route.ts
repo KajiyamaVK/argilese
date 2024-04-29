@@ -15,8 +15,10 @@ interface PaymentUpdate {
 
 export async function POST(req: Request): Promise<void> {
   const body: PaymentUpdate = await req.json()
+  console.log('body', body)
 
-  await getPaymentData(body.id)
+  const returnValue = await getPaymentData(body.id)
+  console.log('returnValue', returnValue)
 }
 
 export async function GET() {

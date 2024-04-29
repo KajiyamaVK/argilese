@@ -1,29 +1,27 @@
 'use client'
 
 import { AlertDialogContext } from '@/contexts/AlertDialogContext'
-import { PurchaseContext } from '@/contexts/PurchaseContext'
+
 import { StatusScreen } from '@mercadopago/sdk-react'
 import { useContext, useEffect } from 'react'
 
 interface IPaymentStatusBrick {
   paymentId: string
   paymentStatus: string
-  //setPaymentId: Dispatch<SetStateAction<string>>
+  paymentMethod: string
 }
 
-export function PaymentStatusBrick({ paymentId, paymentStatus }: IPaymentStatusBrick) {
+export function PaymentStatusBrick({ paymentId, paymentStatus, paymentMethod }: IPaymentStatusBrick) {
   const { sendAlert } = useContext(AlertDialogContext)
-  const { resetCart } = useContext(PurchaseContext)
 
   useEffect(() => {
-    if (paymentStatus === 'approved') {
+    if (paymentStatus === 'approved' && paymentMethod === 'pix') {
       sendAlert({
         message: 'Seu pagamento foi aprovado com sucesso. Muito obrigado! ^^',
         type: 'OK',
       })
 
       console.info('successful payment')
-      resetCart()
     }
     // eslint-disable-next-line
   }, [paymentStatus])

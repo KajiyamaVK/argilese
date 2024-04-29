@@ -60,9 +60,10 @@ interface IPaymentBrick {
   amount: number
   setPaymentId: Dispatch<SetStateAction<string>>
   purchaseId: number
+  setPaymentMethod: Dispatch<SetStateAction<string>>
 }
 
-export function PaymentBrick({ amount, setPaymentId, purchaseId }: IPaymentBrick) {
+export function PaymentBrick({ amount, setPaymentId, purchaseId, setPaymentMethod }: IPaymentBrick) {
   const { cart, deliveryData, setCurrentStep } = useContext(PurchaseContext)
   const { isAdmin } = useContext(GeneralContext)
   const { sendAlert } = useContext(AlertDialogContext)
@@ -159,6 +160,7 @@ export function PaymentBrick({ amount, setPaymentId, purchaseId }: IPaymentBrick
             installments: response.installments,
           })
           console.log('Payment saved')
+          setPaymentMethod(response.payment_method_id)
           if (response.status === 'approved') {
             console.log('Sending post purchase email')
             console.log(

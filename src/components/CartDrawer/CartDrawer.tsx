@@ -23,6 +23,7 @@ export function CartDrawer({ isOpen, setIsOpen }: ICartDrawer) {
   const [paymentId, setPaymentId] = useState<string>('')
   const [purchaseId, setPurchaseId] = useState<number>(0)
   const [paymentStatus, setPaymentStatus] = useState<string>('pending')
+  const [paymentMethod, setPaymentMethod] = useState<string>('')
   const mercadoPagoPublicToken = process.env.NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY
 
   useEffect(() => {
@@ -72,11 +73,16 @@ export function CartDrawer({ isOpen, setIsOpen }: ICartDrawer) {
         <ProductsList setPurchaseId={setPurchaseId} purchaseId={purchaseId} />
         <DeliveryForm purchaseId={purchaseId} />
         {currentStep === 'payment' && (
-          <PaymentBrick amount={totalPurchaseAmount} setPaymentId={setPaymentId} purchaseId={purchaseId} />
+          <PaymentBrick
+            amount={totalPurchaseAmount}
+            setPaymentId={setPaymentId}
+            purchaseId={purchaseId}
+            setPaymentMethod={setPaymentMethod}
+          />
         )}
         {currentStep === 'paymentStatus' && (
           <div className="flex flex-col justify-center">
-            <PaymentStatusBrick paymentId={paymentId} paymentStatus={paymentStatus} />
+            <PaymentStatusBrick paymentId={paymentId} paymentStatus={paymentStatus} paymentMethod={paymentMethod} />
             <Button className="border border-black bg-white text-black" onClick={resetCart}>
               Ok
             </Button>

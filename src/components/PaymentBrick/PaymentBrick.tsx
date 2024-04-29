@@ -158,7 +158,7 @@ export function PaymentBrick({ amount, setPaymentId, purchaseId }: IPaymentBrick
             netAmount: response.transaction_details.net_received_amount ?? 0,
             installments: response.installments,
           })
-
+          alert(response.status)
           if (response.status === 'approved') {
             sendEmail({
               to: deliveryData.customerEmail,

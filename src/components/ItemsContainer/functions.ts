@@ -1,3 +1,4 @@
+'use server'
 import { IDBResponse } from '@/models/database'
 import { IProduct } from '@/models/products'
 import { getDatabaseConnection } from '@/utils/databaseFunctions/createConnection'
@@ -25,8 +26,7 @@ export async function getProducts(id?: number) {
         milliliters,
         isSold
       FROM products
-      WHERE isSold = 0
-      ${id ? 'AND id = ?' : ''}
+      ${id ? 'WHERE id = ?' : ''}
     `
 
     await Conn.query(

@@ -1,9 +1,11 @@
 'use client'
 
 import { AlertDialogContext } from '@/contexts/AlertDialogContext'
+import { PurchaseContext } from '@/contexts/PurchaseContext'
 
 import { StatusScreen } from '@mercadopago/sdk-react'
 import { useContext, useEffect } from 'react'
+import { removeProductFromShelf } from '../PaymentBrick/functions'
 
 interface IPaymentStatusBrick {
   paymentId: string
@@ -14,6 +16,7 @@ interface IPaymentStatusBrick {
 
 export function PaymentStatusBrick({ paymentId, paymentStatus, paymentMethod, setPaymentId }: IPaymentStatusBrick) {
   const { sendAlert } = useContext(AlertDialogContext)
+  const { resetCart, cart } = useContext(PurchaseContext)
 
   useEffect(() => {
     if (paymentStatus === 'approved' && paymentMethod === 'pix' && paymentId) {
@@ -21,9 +24,14 @@ export function PaymentStatusBrick({ paymentId, paymentStatus, paymentMethod, se
         message: 'Seu pagamento foi aprovado com sucesso. Muito obrigado! ^^',
         type: 'OK',
       })
+      cart.map((product) => {
+        removeProductFromShelf(product.id)
+      })
 
       console.info('successful payment')
+
       setPaymentId('')
+      resetCart()
     }
     // eslint-disable-next-line
   }, [paymentStatus])

@@ -19,6 +19,8 @@ export async function getPaymentData(paymentId: string) {
 }
 
 export async function updatePaymentStatus({ paymentId, status }: { paymentId: string; status: string }) {
+  console.log('status', status)
+  console.log('paymentId', paymentId)
   const Conn = await getDatabaseConnection()
 
   const updateQuery = `

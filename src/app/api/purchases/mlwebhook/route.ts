@@ -19,10 +19,11 @@ export async function POST(req: Request) {
   const body: PaymentUpdate = await req.json()
   console.log('body', body)
 
-  const returnValue = await getPaymentData(body.id)
+  const returnValue = await getPaymentData(body.data.id)
+  console.log('body.data.id', body.data.id)
   console.log('returnValue', returnValue)
 
-  updatePaymentStatus({ paymentId: body.id, status: returnValue.status })
+  updatePaymentStatus({ paymentId: body.data.id, status: returnValue.status })
 
   const customerData = await getCustomerData(returnValue.id)
   console.log('customerData', customerData)

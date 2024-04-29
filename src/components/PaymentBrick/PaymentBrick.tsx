@@ -9,7 +9,7 @@ import { Dispatch, SetStateAction, useContext } from 'react'
 import { GeneralContext } from '@/contexts/GeneralContext'
 import { formatCEP } from '@/utils/maskFunctions'
 import { ufs } from '@/data/UFs'
-import { savePayment } from './functions'
+import { removeProductFromShelf, savePayment } from './functions'
 import { AfterPurchaseEmailHTML } from '@/utils/emailFunctions/AfterPurchaseEmail'
 
 export interface AdditionalInfo {
@@ -163,6 +163,9 @@ export function PaymentBrick({ amount, setPaymentId, purchaseId, setPaymentMetho
           console.log('Payment saved')
           setPaymentMethod(response.payment_method_id)
           if (response.status === 'approved') {
+            cart.map((product) => {
+              removeProductFromShelf(product.id)
+            })
             console.log('Sending post purchase email')
             console.log(
               'Email data:',

@@ -77,7 +77,13 @@ export default async function ItemPage({ params }: { params: { itemId: number } 
             weight={product.weight.toString()}
           />
         </div>
-        <AddToCartButton product={product} />
+        {!product.isSold ? (
+          <AddToCartButton product={product} />
+        ) : (
+          <p>
+            <b>ESGOTADO</b>
+          </p>
+        )}
       </div>
     </div>
   )

@@ -22,9 +22,11 @@ export async function getProducts(id?: number) {
         length,
         diameter,
         hasHandle,
-        milliliters
+        milliliters,
+        isSold
       FROM products
-      ${id ? 'WHERE id = ?' : ''}
+      WHERE isSold = 0
+      ${id ? 'AND id = ?' : ''}
     `
 
     await Conn.query(

@@ -40,20 +40,26 @@ export function ItemCard({ product }: IItemCard) {
             <p className="-mb-1 ml-3 text-3xl">{product.price.toFixed(2)}</p>
           </div>
           <div className="mt-5 flex  flex-col justify-end gap-2">
-            <button
-              className="mx-auto w-full cursor-pointer rounded-lg  bg-yellow-700 p-2 text-white hover:opacity-50"
-              onClick={() => {
-                if (checkIfAlreadyInCart(product.id))
-                  return sendAlert({
-                    message: `Ué... mas você já adicionou esse produto ao carrinho! `,
-                    type: 'error',
-                  })
-                sendAlert({ message: `Produto adicionado ao carrinho. A Argile-se agradece! ^^`, type: 'OK' })
-                addToCart(product)
-              }}
-            >
-              Adicionar ao carrinho
-            </button>
+            {!product.isSold ? (
+              <button
+                className="mx-auto w-full cursor-pointer rounded-lg  bg-yellow-700 p-2 text-white hover:opacity-50"
+                onClick={() => {
+                  if (checkIfAlreadyInCart(product.id))
+                    return sendAlert({
+                      message: `Ué... mas você já adicionou esse produto ao carrinho! `,
+                      type: 'error',
+                    })
+                  sendAlert({ message: `Produto adicionado ao carrinho. A Argile-se agradece! ^^`, type: 'OK' })
+                  addToCart(product)
+                }}
+              >
+                Adicionar ao carrinho
+              </button>
+            ) : (
+              <p>
+                <b>ESGOTADO</b>
+              </p>
+            )}
             <button
               className="mx-auto w-full cursor-pointer rounded-lg  bg-yellow-700 p-2 text-white hover:opacity-50"
               onClick={() => goToProductPage(product.id)}

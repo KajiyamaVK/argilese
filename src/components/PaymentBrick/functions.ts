@@ -94,3 +94,20 @@ export async function updatePayment(data: ISavePayment): Promise<IDBResponse> {
     })
   return { message: 'Atualizado com sucesso', isError: false } as IDBResponse
 }
+
+export async function removeProductFromShelf(productId: number): Promise<IDBResponse> {
+  const Conn = await getDatabaseConnection()
+  const updateProductQuery = `
+    UPDATE products
+    SET isSold = 1
+    WHERE id = ?`
+
+  await Conn.query(updateProductQuery, [productId])
+    .catch((err) => {
+      return { message: err.message, isError: true } as IDBResponse
+    })
+    .finally(() => {
+      Conn.end()
+    })
+  return { message: 'Removido com sucesso', isError: false } as IDBResponse
+}

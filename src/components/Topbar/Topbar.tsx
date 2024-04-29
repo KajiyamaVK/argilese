@@ -1,5 +1,4 @@
 'use client'
-//import { sendEmail } from '@/utils/emailFunctions/sendEmail'
 import Image from 'next/image'
 import logo from '/public/topbar_logo.png'
 import { baloo } from '@/utils/fontsExports/fonts'
@@ -48,21 +47,6 @@ export function Topbar() {
           )}
         </div>
       </div>
-      {/* <p
-        onClick={() => {
-          sendEmail({
-            to: 'marianatande@gmail.com',
-            subject: 'Teste de email',
-            html: AfterPurchaseEmailHTML({
-              name: 'Mariana',
-              order: '1234',
-            }),
-          })
-          alert('email enviado')
-        }}
-      >
-        enviar
-      </p> */}
       <CartDrawer isOpen={isCartOpen} setIsOpen={setIsCartOpen} />
     </div>
   )

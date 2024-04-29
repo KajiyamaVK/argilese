@@ -158,8 +158,20 @@ export function PaymentBrick({ amount, setPaymentId, purchaseId }: IPaymentBrick
             netAmount: response.transaction_details.net_received_amount ?? 0,
             installments: response.installments,
           })
-          alert(response.status)
+          console.log('Payment saved')
           if (response.status === 'approved') {
+            console.log('Sending post purchase email')
+            console.log(
+              'Email data:',
+              JSON.stringify({
+                to: deliveryData.customerEmail,
+                subject: 'Compra realizada com sucesso!',
+                html: AfterPurchaseEmailHTML({
+                  name: deliveryData.customerName.split(' ')[0],
+                  order: purchaseId.toString(),
+                }),
+              }),
+            )
             sendEmail({
               to: deliveryData.customerEmail,
               subject: 'Compra realizada com sucesso!',
@@ -169,7 +181,7 @@ export function PaymentBrick({ amount, setPaymentId, purchaseId }: IPaymentBrick
               }),
             })
           }
-
+          console.log('Changing current step to paymentStatus')
           setCurrentStep('paymentStatus')
           // receber o resultado do pagamento
         })

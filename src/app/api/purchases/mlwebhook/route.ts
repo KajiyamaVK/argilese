@@ -24,7 +24,7 @@ export async function POST(req: Request) {
 
   updatePaymentStatus({ paymentId: body.id, status: returnValue.status })
 
-  const customerData = await getCustomerData(returnValue.payer.id)
+  const customerData = await getCustomerData(returnValue.id)
   console.log('customerData', customerData)
 
   sendEmail({

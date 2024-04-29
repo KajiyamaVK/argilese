@@ -48,8 +48,8 @@ export async function getCustomerData(paymentId: number) {
     SELECT pd.customerEmail, pp.purchaseIdFK, pd.customerName
     FROM purchaseDeliveries pd 
     JOIN purchasePayments pp  
-      ON pd.purchaseIdFK = pd.purchaseIdFK = pp.purchaseIdFK
-    WHERE pp.id = ?;
+      ON pd.purchaseIdFK = pp.purchaseIdFK
+    WHERE pp.paymentId = ?;
   `
 
   const customerData: IGetCustomerDataResponse[] = await Conn.query(query, [paymentId])

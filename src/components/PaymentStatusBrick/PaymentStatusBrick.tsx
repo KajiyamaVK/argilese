@@ -10,13 +10,16 @@ interface IPaymentStatusBrick {
 }
 
 export function PaymentStatusBrick({ paymentId, paymentStatus }: IPaymentStatusBrick) {
-  const { sendAlert } = useContext(AlertDialogContext)
+  const { sendAlert, setIsAlertOpen } = useContext(AlertDialogContext)
   const alertSentRef = useRef(false)
   useEffect(() => {
     if (paymentStatus === 'approved' && !alertSentRef.current) {
       sendAlert({
         message: 'Seu pagamento foi aprovado com sucesso. Muito obrigado! ^^',
         type: 'OK',
+        onConfirm: () => {
+          setIsAlertOpen(false)
+        },
       })
       alertSentRef.current = true
     }

@@ -9,19 +9,21 @@ interface IPaymentStatusBrick {
   paymentId: string
   paymentStatus: string
   paymentMethod: string
+  setPaymentId: (paymentId: string) => void
 }
 
-export function PaymentStatusBrick({ paymentId, paymentStatus, paymentMethod }: IPaymentStatusBrick) {
+export function PaymentStatusBrick({ paymentId, paymentStatus, paymentMethod, setPaymentId }: IPaymentStatusBrick) {
   const { sendAlert } = useContext(AlertDialogContext)
 
   useEffect(() => {
-    if (paymentStatus === 'approved' && paymentMethod === 'pix') {
+    if (paymentStatus === 'approved' && paymentMethod === 'pix' && paymentId) {
       sendAlert({
         message: 'Seu pagamento foi aprovado com sucesso. Muito obrigado! ^^',
         type: 'OK',
       })
 
       console.info('successful payment')
+      setPaymentId('')
     }
     // eslint-disable-next-line
   }, [paymentStatus])

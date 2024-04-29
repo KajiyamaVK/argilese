@@ -82,7 +82,12 @@ export function CartDrawer({ isOpen, setIsOpen }: ICartDrawer) {
         )}
         {currentStep === 'paymentStatus' && (
           <div className="flex flex-col justify-center">
-            <PaymentStatusBrick paymentId={paymentId} paymentStatus={paymentStatus} paymentMethod={paymentMethod} />
+            <PaymentStatusBrick
+              paymentId={paymentId}
+              paymentStatus={paymentStatus}
+              paymentMethod={paymentMethod}
+              setPaymentId={setPaymentId}
+            />
             <Button className="border border-black bg-white text-black" onClick={resetCart}>
               Ok
             </Button>

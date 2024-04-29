@@ -185,6 +185,7 @@ export function PaymentBrick({ amount, setPaymentId, purchaseId, setPaymentMetho
           }
           console.log('Changing current step to paymentStatus')
           setCurrentStep('paymentStatus')
+          setPaymentId('')
           // receber o resultado do pagamento
         })
         .catch(() => {

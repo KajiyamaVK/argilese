@@ -7,6 +7,7 @@ export async function getPaymentData(paymentId) {
     },
   }).then((response) => {
     if (response.status === 200) {
+      console.log('123123')
       return response.json()
     }
     throw new Error('Failed to fetch payment data')

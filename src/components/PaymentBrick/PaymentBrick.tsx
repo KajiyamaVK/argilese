@@ -125,8 +125,6 @@ export function PaymentBrick({ amount, setPaymentId, purchaseId }: IPaymentBrick
       ...formData,
       additional_info,
     }
-    console.log('formData', formData)
-    console.log('body', body)
 
     return new Promise<void>(async (resolve, reject) => {
       await fetch('/api/purchases/process_payment', {
@@ -138,8 +136,6 @@ export function PaymentBrick({ amount, setPaymentId, purchaseId }: IPaymentBrick
       })
         .then((response) => response.json())
         .then((response) => {
-          console.log('response.id', response.id)
-          console.log('response2', response)
           setPaymentId(response.id)
           if (response.status === 500) {
             sendAlert({ type: 'error', message: response.message })

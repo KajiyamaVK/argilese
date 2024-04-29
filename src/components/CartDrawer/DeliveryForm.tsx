@@ -79,7 +79,7 @@ export function DeliveryForm({ purchaseId }: { purchaseId: number }) {
   }
 
   async function onSubmit(data: DeliveryFormType) {
-    console.log('deliveryPricesData', deliveriesPricesData)
+    
 
     const newDeliveryData: IPurchaseDelivery = {
       ...deliveryData,

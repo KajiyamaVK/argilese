@@ -164,14 +164,15 @@ export function PaymentBrick({ amount, setPaymentId, purchaseId }: IPaymentBrick
             installments: response.installments,
           })
 
-          sendEmail({
-            to: response.payer.email,
-            subject: 'Compra realizada com sucesso!',
-            html: AfterPurchaseEmailHTML({
-              name: deliveryData.customerName.split(' ')[0],
-              order: purchaseId.toString(),
-            }),
-          })
+          if (response.status === 'approved')
+            sendEmail({
+              to: deliveryData.customerEmail,
+              subject: 'Compra realizada com sucesso!',
+              html: AfterPurchaseEmailHTML({
+                name: deliveryData.customerName.split(' ')[0],
+                order: purchaseId.toString(),
+              }),
+            })
 
           setCurrentStep('paymentStatus')
           // receber o resultado do pagamento

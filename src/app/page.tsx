@@ -4,7 +4,7 @@ import { MainBanner } from '@/components/MainBanner/MainBanner'
 export default function Home() {
   const inMaintenance = true
   if (inMaintenance) {
-    return <div className="bg-yellow-700 text-center">Em manutenção</div>
+    return <div className="text-center">Em manutenção</div>
   } else {
     return (
       <div>

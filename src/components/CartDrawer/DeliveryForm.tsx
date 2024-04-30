@@ -12,9 +12,8 @@ import { TotalsContainer } from './TotalsContainer'
 import { Skeleton } from '../ui/skeleton'
 import { savePurchaseDelivery } from './functions'
 import { getDeliveryPrices } from '@/app/[itemId]/functions'
-import { IAddress } from '@mercadopago/sdk-react/bricks/payment/type'
 import { IPurchaseDelivery, TDelivery } from '@/models/deliveries'
-
+import { getAddressByCep } from './functions'
 const DeliveryFormSchema = z.object({
   customerName: z.string({ required_error: 'O nome é necessário para a entrega.' }),
   email: z
@@ -49,6 +48,7 @@ export function DeliveryForm({ purchaseId }: { purchaseId: number }) {
     setValue,
     setFocus,
     watch,
+    getValues,
   } = useForm<DeliveryFormType>({
     resolver: zodResolver(DeliveryFormSchema),
   })
@@ -67,6 +67,13 @@ export function DeliveryForm({ purchaseId }: { purchaseId: number }) {
   })
 
   useEffect(() => {
+    if (currentStep === 'delivery') {
+      resetDeliveryForm()
+    }
+    // eslint-disable-next-line
+  }, [currentStep])
+
+  useEffect(() => {
     setValue(
       'deliveryPrice',
       watch('deliveryType') === 'SEDEX' ? deliveriesPricesData!.sedexPrice : deliveriesPricesData!.pacPrice,
@@ -76,6 +83,30 @@ export function DeliveryForm({ purchaseId }: { purchaseId: number }) {
 
   function goBackToCart() {
     setCurrentStep('cart')
+  }
+
+  function resetDeliveryForm() {
+    setValue('customerName', '')
+    setValue('email', '')
+    setValue('cep', '')
+    setValue('address', '')
+    setValue('number', '')
+    setValue('complement', '')
+    setValue('neighborhood', '')
+    setValue('city', '')
+    setValue('state', '')
+    setValue('customerWhatsapp', '')
+    setValue('deliveryType', '')
+    setValue('deliveryPrice', '')
+
+    setDeliveriesPricesData({
+      pacPrice: '',
+      pacDeliveryTime: '',
+      sedexPrice: '',
+      sedexDeliveryTime: '',
+    })
+
+    console.log(getValues())
   }
 
   async function onSubmit(data: DeliveryFormType) {
@@ -140,31 +171,6 @@ export function DeliveryForm({ purchaseId }: { purchaseId: number }) {
       })
   }
 
-  // eslint-disable-next-line
-  async function getAddressByCep(cep: string): Promise<IAddress | any> {
-    try {
-      const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }).then((res) => res.json())
-
-      if (!response) {
-        sendAlert({
-          message:
-            'Ué. Está parecendo que não estamos conseguindo conectar ao serviço dos Correios. Por favo, entre em contato pelo Whatsapp para que possamos te ajudar.',
-          type: 'error',
-        })
-      }
-
-      return response
-    } catch (error) {
-      console.error(error)
-      return { error: 'Error fetching data: ' + error }
-    }
-  }
-
   async function handleCepChange(e: React.ChangeEvent<HTMLInputElement>) {
     const value: string = e.currentTarget.value
     //
@@ -173,6 +179,7 @@ export function DeliveryForm({ purchaseId }: { purchaseId: number }) {
     setValue('cep', cep)
 
     if (cep.length === 9) {
+      setValue('state', '') // Reset state since its value controls the SEDEX and PAC visibility.
       setIsLoadingAddress(true)
 
       getDeliveryPrice()
@@ -180,7 +187,6 @@ export function DeliveryForm({ purchaseId }: { purchaseId: number }) {
       const address = await getAddressByCep(formatToNumber(cep))
 
       if (address.error) {
-        //return alert('CEP não encontrado. Ele está certo?')
         sendAlert({
           message: 'CEP não encontrado. Ele está correto?',
           type: 'OK',
@@ -352,80 +358,37 @@ export function DeliveryForm({ purchaseId }: { purchaseId: number }) {
           <div className="flex flex-col justify-start gap-3">
             <b>Escolha o frete:</b>
             <div className="flex flex-col justify-evenly gap-5">
-              <div
-                className={`w-full cursor-pointer rounded-lg   border p-2  text-center ${watch('deliveryType') === 'SEDEX' ? 'border-white bg-yellow-700 text-white' : 'border-yellow-700 text-yellow-700 hover:border-white hover:bg-yellow-600 hover:text-white'}`}
-                onClick={() => setValue('deliveryType', 'SEDEX')}
-              >
-                SEDEX - R$ {deliveriesPricesData?.sedexPrice} ({Number(deliveriesPricesData?.sedexDeliveryTime)} dia(s))
-              </div>
-              <div
-                className={`w-full cursor-pointer rounded-lg   border p-2  text-center ${watch('deliveryType') === 'PAC' ? 'border-white bg-yellow-700 text-white' : 'border-yellow-700 text-yellow-700 hover:border-white hover:bg-yellow-600 hover:text-white'}`}
-                onClick={() => setValue('deliveryType', 'PAC')}
-              >
-                PAC - R$ {deliveriesPricesData?.pacPrice} ({deliveriesPricesData?.pacDeliveryTime} dias)
-              </div>
+              {deliveriesPricesData?.pacPrice ? (
+                <>
+                  <div
+                    className={`w-full cursor-pointer rounded-lg   border p-2  text-center ${watch('deliveryType') === 'SEDEX' ? 'border-white bg-yellow-700 text-white' : 'border-yellow-700 text-yellow-700 hover:border-white hover:bg-yellow-600 hover:text-white'}`}
+                    onClick={() => setValue('deliveryType', 'SEDEX')}
+                  >
+                    SEDEX - R$ {deliveriesPricesData?.sedexPrice} ({Number(deliveriesPricesData?.sedexDeliveryTime)}{' '}
+                    dia(s))
+                  </div>
+                  <div
+                    className={`w-full cursor-pointer rounded-lg   border p-2  text-center ${watch('deliveryType') === 'PAC' ? 'border-white bg-yellow-700 text-white' : 'border-yellow-700 text-yellow-700 hover:border-white hover:bg-yellow-600 hover:text-white'}`}
+                    onClick={() => setValue('deliveryType', 'PAC')}
+                  >
+                    PAC - R$ {deliveriesPricesData?.pacPrice} ({deliveriesPricesData?.pacDeliveryTime} dias)
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div
+                    className={`w-full cursor-pointer rounded-lg   border p-2  text-center ${watch('deliveryType') === 'SEDEX' ? 'border-white bg-yellow-700 text-white' : 'border-yellow-700 text-yellow-700 hover:border-white hover:bg-yellow-600 hover:text-white'}`}
+                  >
+                    <Skeleton className="h-8 w-full bg-gray-300" />
+                  </div>
+                  <div
+                    className={`w-full cursor-pointer rounded-lg   border p-2  text-center ${watch('deliveryType') === 'PAC' ? 'border-white bg-yellow-700 text-white' : 'border-yellow-700 text-yellow-700 hover:border-white hover:bg-yellow-600 hover:text-white'}`}
+                  >
+                    <Skeleton className="h-8 w-full bg-gray-300" />
+                  </div>
+                </>
+              )}
             </div>
-            {/* <div>
-              <RadioGroup
-                value={deliveryData.type}
-                onValueChange={(e: TDelivery) => {
-                  setDeliveryData({
-                    ...deliveryData,
-                    price:
-                      e === 'SEDEX'
-                        ? Number(deliveriesPricesData?.sedexPrice.replace(',', '.'))
-                        : Number(deliveriesPricesData?.pacPrice.replace(',', '.')),
-                    type: e as TDelivery,
-                  })
-                }}
-                disabled={!deliveriesPricesData?.sedexPrice}
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="SEDEX" id="sedexChk" />
-                  <Label htmlFor="sedexChk">
-                    <table>
-                      <tbody>
-                        <tr>
-                          <td className="w-20">SEDEX</td>
-                          <td>
-                            {!deliveriesPricesData?.sedexPrice ? (
-                              <Skeleton className="h-4 w-40 bg-gray-300" />
-                            ) : (
-                              <span>
-                                R$ {deliveriesPricesData?.sedexPrice.replace('.', ',')} -{' '}
-                                {deliveriesPricesData?.sedexDeliveryTime} dias úteis
-                              </span>
-                            )}
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="PAC" id="pacChk" />
-                  <Label htmlFor="pacChk">
-                    <table>
-                      <tbody>
-                        <tr>
-                          <td className="w-20">PAC</td>
-                          <td>
-                            {!deliveriesPricesData?.pacPrice ? (
-                              <Skeleton className="h-4 w-40 bg-gray-300" />
-                            ) : (
-                              <span>
-                                R$ {deliveriesPricesData?.pacPrice.replace('.', ',')} -{' '}
-                                {deliveriesPricesData?.pacDeliveryTime} dias úteis
-                              </span>
-                            )}
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </Label>
-                </div>
-              </RadioGroup>
-            </div> */}
           </div>
         )}
 

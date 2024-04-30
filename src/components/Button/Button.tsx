@@ -1,13 +1,15 @@
 import { cn } from '@/utils/libs/cn'
+import { FaSpinner } from 'react-icons/fa'
 
 interface IButton extends React.HTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode
   className?: string
   disabled?: boolean
+  isLoading?: boolean
   type?: 'button' | 'submit' | 'reset'
 }
 
-export function Button({ children, className, disabled, type, ...props }: IButton) {
+export function Button({ children, className, disabled, type, isLoading, ...props }: IButton) {
   return (
     <button
       className={cn(
@@ -19,7 +21,7 @@ export function Button({ children, className, disabled, type, ...props }: IButto
       disabled={disabled}
       {...props}
     >
-      {children}
+      {isLoading ? <FaSpinner className="m-auto animate-spin" /> : children}
     </button>
   )
 }

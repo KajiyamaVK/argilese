@@ -100,7 +100,8 @@ export async function removeProductFromShelf(productId: number): Promise<IDBResp
   const updateProductQuery = `
     UPDATE products
     SET isSold = 1
-    WHERE id = ?`
+    WHERE productName not like '%teste%' and
+    id = ?`
 
   await Conn.query(updateProductQuery, [productId])
     .catch((err) => {

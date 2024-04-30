@@ -3,10 +3,11 @@ import Image from 'next/image'
 import { baloo } from '@/utils/fontsExports/fonts'
 import { useRouter } from 'next/navigation'
 import { IProduct } from '@/models/products'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { PurchaseContext } from '@/contexts/PurchaseContext'
 import { AlertDialogContext } from '@/contexts/AlertDialogContext'
 import { GeneralContext } from '@/contexts/GeneralContext'
+import { Button } from '../Button/Button'
 
 interface IItemCard {
   product: IProduct
@@ -16,8 +17,12 @@ export function ItemCard({ product }: IItemCard) {
   const { addToCart, checkIfAlreadyInCart } = useContext(PurchaseContext)
   const { sendAlert } = useContext(AlertDialogContext)
   const { isAdmin } = useContext(GeneralContext)
+
+  const [isLoading, setIsLoading] = useState(false)
+
   const router = useRouter()
   function goToProductPage(id: number) {
+    setIsLoading(true)
     router.push(`/${id}`)
   }
 
@@ -60,12 +65,13 @@ export function ItemCard({ product }: IItemCard) {
                 <b>ESGOTADO</b>
               </p>
             )}
-            <button
+            <Button
               className="mx-auto w-full cursor-pointer rounded-lg  bg-yellow-700 p-2 text-white hover:opacity-50"
               onClick={() => goToProductPage(product.id)}
+              isLoading={isLoading}
             >
               Ver mais
-            </button>
+            </Button>
           </div>
         </div>
       </div>

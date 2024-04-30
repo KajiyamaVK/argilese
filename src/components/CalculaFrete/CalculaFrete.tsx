@@ -6,7 +6,6 @@ import { formatCEP } from '@/utils/maskFunctions/formatCep'
 import pacLogo from '/public/logos/pacLogo.png'
 import sedexLogo from '/public/logos/sedexLogo.png'
 import Image from 'next/image'
-import { Skeleton } from '../ui/skeleton'
 import { getDeliveryPrices } from '@/app/[itemId]/functions'
 
 interface ICalculaFrete {
@@ -22,7 +21,7 @@ export function CalculaFrete({ height, width, length, weight }: ICalculaFrete) {
   const [pacDeliveryTime, setPacDeliveryTime] = useState<number>(0)
   const [sedexPrice, setSedexPrice] = useState<number>(0)
   const [sedexDeliveryTime, setSedexDeliveryTime] = useState<number>(0)
-  const [showSkeleton, setShowSkeleton] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   function handleChangeCep(value: string) {
     const formattedCep = formatCEP(value)
@@ -34,22 +33,26 @@ export function CalculaFrete({ height, width, length, weight }: ICalculaFrete) {
     setSedexPrice(0)
     setPacDeliveryTime(0)
     setSedexDeliveryTime(0)
-    setShowSkeleton(true)
+    setIsLoading(true)
 
-    await getDeliveryPrices(cep, Number(height), Number(width), Number(length), Number(weight)).then((data) => {
-      const result = data.data
-      setPacPrice(result.pacPrice)
-      setSedexPrice(result.sedexPrice)
-      setPacDeliveryTime(result.pacDeliveryTime)
-      setSedexDeliveryTime(result.sedexDeliveryTime)
-    })
+    await getDeliveryPrices(cep, Number(height), Number(width), Number(length), Number(weight))
+      .then((data) => {
+        const result = data.data
+        setPacPrice(result.pacPrice)
+        setSedexPrice(result.sedexPrice)
+        setPacDeliveryTime(result.pacDeliveryTime)
+        setSedexDeliveryTime(result.sedexDeliveryTime)
+      })
+      .then(() => {
+        setIsLoading(false)
+      })
   }
 
   useEffect(() => {
-    if ((pacPrice !== 0 || sedexPrice !== 0) && showSkeleton) {
-      setShowSkeleton(false)
+    if ((pacPrice !== 0 || sedexPrice !== 0) && isLoading) {
+      setIsLoading(false)
     }
-  }, [pacPrice, sedexPrice, showSkeleton])
+  }, [pacPrice, sedexPrice, isLoading])
 
   return (
     <div className="mx-auto flex flex-col md:mx-0">
@@ -65,7 +68,7 @@ export function CalculaFrete({ height, width, length, weight }: ICalculaFrete) {
           value={cep}
           onChange={(e) => handleChangeCep(e.target.value)}
         />
-        <Button className="ml-5 " disabled={cep.length < 9} onClick={getDeliveryPrice}>
+        <Button className="ml-5 " disabled={cep.length < 9} onClick={getDeliveryPrice} isLoading={isLoading}>
           Calcular
         </Button>
       </div>
@@ -80,26 +83,13 @@ export function CalculaFrete({ height, width, length, weight }: ICalculaFrete) {
                 <td className="w-[100px]">
                   <b>Preço:</b>
                 </td>
-                <td className="flex items-center">
-                  R${' '}
-                  {showSkeleton ? (
-                    <Skeleton className="ml-2 h-[20px] w-[50px] bg-gray-300" />
-                  ) : (
-                    pacPrice?.toString().replace('.', ',')
-                  )}
-                </td>
+                <td className="flex items-center">R$ {pacPrice?.toString().replace('.', ',')}</td>
               </tr>
               <tr>
                 <td>
                   <b>Prazo:</b>
                 </td>
-                <td>
-                  {showSkeleton ? (
-                    <Skeleton className="ml-2 h-[20px] w-[50px] bg-gray-300" />
-                  ) : (
-                    `${pacDeliveryTime} dias`
-                  )}
-                </td>
+                <td>{pacDeliveryTime} dias</td>
               </tr>
             </tbody>
           </table>
@@ -113,26 +103,13 @@ export function CalculaFrete({ height, width, length, weight }: ICalculaFrete) {
                 <td className="w-[100px]">
                   <b>Preço:</b>
                 </td>
-                <td className="flex items-center">
-                  R${' '}
-                  {showSkeleton ? (
-                    <Skeleton className="ml-2 h-[20px] w-[50px] bg-gray-300" />
-                  ) : (
-                    sedexPrice?.toString().replace('.', ',')
-                  )}
-                </td>
+                <td className="flex items-center">R$ {sedexPrice?.toString().replace('.', ',')}</td>
               </tr>
               <tr>
                 <td>
                   <b>Prazo:</b>
                 </td>
-                <td>
-                  {showSkeleton ? (
-                    <Skeleton className="ml-2 h-[20px] w-[50px] bg-gray-300" />
-                  ) : (
-                    `${sedexDeliveryTime} dias`
-                  )}
-                </td>
+                <td>{sedexDeliveryTime} dias</td>
               </tr>
             </tbody>
           </table>

@@ -69,16 +69,17 @@ export default async function ItemPage({ params }: { params: { itemId: number } 
           <span className="mb-px mt-5">R$</span>
           <span className="text-3xl">{product.price.toFixed(2).replace('.', ',')}</span>
         </div>
-        <div className="flex">
-          <CalculaFrete
-            height={product.height.toString()}
-            width={product.width.toString()}
-            length={product.length.toString()}
-            weight={product.weight.toString()}
-          />
-        </div>
         {!product.isSold ? (
-          <AddToCartButton product={product} />
+          <>
+            <CalculaFrete
+              height={product.height.toString()}
+              width={product.width.toString()}
+              length={product.length.toString()}
+              weight={product.weight.toString()}
+            />
+
+            <AddToCartButton product={product} />
+          </>
         ) : (
           <p>
             <b>ESGOTADO</b>

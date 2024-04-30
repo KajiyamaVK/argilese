@@ -184,3 +184,20 @@ export async function getCitiesByUF(uf: string) {
     connection.end()
   }
 }
+
+// eslint-disable-next-line
+  export async function getAddressByCep(cep: string): Promise<any> {
+  try {
+    const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then((res) => res.json())
+
+    return response
+  } catch (error) {
+    console.error(error)
+    return { error: 'Error fetching data: ' + error }
+  }
+}

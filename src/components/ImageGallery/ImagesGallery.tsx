@@ -14,7 +14,7 @@ export function ImagesGallery({ images }: { images: string[] }) {
           </button>
         ))}
       </div>
-      <Image src={selectedImage} alt="product" width={400} height={400} className=" object-cover" />
+      <Image src={selectedImage} alt="product" width={400} height={400} className=" object-cover" priority />
     </div>
   )
 }

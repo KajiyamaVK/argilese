@@ -31,7 +31,7 @@ export function ItemsContainer() {
       >
         Nossos projetos{'   '}
       </h2>
-      <div className="flex flex-wrap justify-center gap-28 p-20 md:justify-start md:gap-5">
+      <div className="flex flex-wrap justify-center gap-28 p-20 md:justify-start md:gap-x-5 md:gap-y-28">
         {products.length > 0 &&
           products.map((product) => {
             return <ItemCard key={product.id} product={product} />

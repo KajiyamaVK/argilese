@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint --fix",
     "fg": "git add . && git commit -m \"fast commit\" && git push",
-    "bs": "bun run build && bun run start",
+    "bs": "pnpm run build && pnpm run start",
     "prepare": "husky"
   },
   "dependencies": {

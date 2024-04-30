@@ -30,7 +30,7 @@ export function ItemCard({ product }: IItemCard) {
           width={150}
           height={150}
           alt=""
-          className="absolute inset-x-0 -top-20 mx-auto rounded-full border-4 border-white object-cover shadow-lg shadow-gray-500"
+          className="absolute inset-x-0 -top-20 mx-auto max-h-[150px] min-h-[150px] rounded-full border-4 border-white object-cover shadow-lg shadow-gray-500"
         />
         <h3 className={`${baloo.className} mx-auto mb-4 font-extrabold`}>{product.productName}</h3>
         <p>{product.productDescription}</p>

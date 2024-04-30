@@ -1,0 +1,2358 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Integration",
+    "version": "unknown"
+  },
+  "servers": [
+    {
+      "url": "https://sandbox.superfrete.com"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "sec0": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "x-default": "",
+        "x-bearer-format": "bearer"
+      }
+    }
+  },
+  "security": [
+    {
+      "sec0": []
+    }
+  ],
+  "paths": {
+    "/api/v0/calculator": {
+      "post": {
+        "summary": "Cotação de frete",
+        "description": "",
+        "operationId": "cotacao-de-frete",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "from",
+                  "to",
+                  "services"
+                ],
+                "properties": {
+                  "from": {
+                    "type": "object",
+                    "description": "Origem",
+                    "required": [
+                      "postal_code"
+                    ],
+                    "properties": {
+                      "postal_code": {
+                        "type": "string",
+                        "description": "Código postal brasileiro (CEP)",
+                        "default": "01153000"
+                      }
+                    }
+                  },
+                  "to": {
+                    "type": "object",
+                    "description": "Destino",
+                    "required": [
+                      "postal_code"
+                    ],
+                    "properties": {
+                      "postal_code": {
+                        "type": "string",
+                        "description": "Código postal brasileiro (CEP)",
+                        "default": "20020050"
+                      }
+                    }
+                  },
+                  "services": {
+                    "type": "string",
+                    "description": "Serviços que serão calculados. 1: PAC, 2: SEDEX, 17: Mini Envios",
+                    "default": "1,2,17"
+                  },
+                  "options": {
+                    "type": "object",
+                    "description": "Serviços adicionais",
+                    "properties": {
+                      "own_hand": {
+                        "type": "boolean",
+                        "description": "Mão própria",
+                        "default": false
+                      },
+                      "receipt": {
+                        "type": "boolean",
+                        "description": "Confirmação de recebimento",
+                        "default": false
+                      },
+                      "insurance_value": {
+                        "type": "number",
+                        "description": "Valor a ser assegurado",
+                        "default": 0,
+                        "format": "float"
+                      },
+                      "use_insurance_value": {
+                        "type": "boolean",
+                        "description": "Usar valor assegurado",
+                        "default": false
+                      }
+                    }
+                  },
+                  "package": {
+                    "type": "object",
+                    "description": "Pacote para a cotação de frete (Se usado será majoritário à lista de produtos na cotação do frete)",
+                    "required": [
+                      "height",
+                      "width",
+                      "length",
+                      "weight"
+                    ],
+                    "properties": {
+                      "height": {
+                        "type": "number",
+                        "description": "Altura",
+                        "default": 2,
+                        "format": "float"
+                      },
+                      "width": {
+                        "type": "number",
+                        "description": "Largura",
+                        "default": 11,
+                        "format": "float"
+                      },
+                      "length": {
+                        "type": "number",
+                        "description": "Comprimento",
+                        "default": 16,
+                        "format": "float"
+                      },
+                      "weight": {
+                        "type": "number",
+                        "description": "Peso",
+                        "default": 0.3,
+                        "format": "float"
+                      }
+                    }
+                  },
+                  "products": {
+                    "type": "array",
+                    "description": "Listagem dos produtos contidos no pacote",
+                    "items": {
+                      "properties": {
+                        "quantity": {
+                          "type": "integer",
+                          "format": "int32"
+                        },
+                        "height": {
+                          "type": "number",
+                          "format": "float"
+                        },
+                        "width": {
+                          "type": "number",
+                          "format": "float"
+                        },
+                        "length": {
+                          "type": "number",
+                          "format": "float"
+                        },
+                        "weight": {
+                          "type": "number",
+                          "format": "float"
+                        }
+                      },
+                      "required": [
+                        "quantity",
+                        "height",
+                        "width",
+                        "length",
+                        "weight"
+                      ],
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "[\n  {\n    \"id\": 1,\n    \"name\": \"PAC\",\n    \"price\": 21.5,\n    \"discount\": \"3.3\",\n    \"currency\": \"R$\",\n    \"delivery_time\": 5,\n    \"delivery_range\": {\n      \"min\": 5,\n      \"max\": 5\n    },\n    \"packages\": [\n      {\n        \"price\": 19.03,\n        \"discount\": \"3.3\",\n        \"format\": \"box\",\n        \"dimensions\": {\n          \"height\": \"2\",\n          \"width\": \"11\",\n          \"length\": \"16\"\n        },\n        \"weight\": \"0.3\",\n        \"insurance_value\": 100.23\n      }\n    ],\n    \"additional_services\": {\n      \"receipt\": false,\n      \"own_hand\": false\n    },\n    \"company\": {\n      \"id\": 1,\n      \"name\": \"Correios\",\n      \"picture\": \"https://storage.googleapis.com/sandbox-api-superfrete.appspot.com/logos/correios.png\"\n    },\n    \"has_error\": false\n  },\n  {\n    \"id\": 2,\n    \"name\": \"SEDEX\",\n    \"price\": 34.1,\n    \"discount\": \"1\",\n    \"currency\": \"R$\",\n    \"delivery_time\": 1,\n    \"delivery_range\": {\n      \"min\": 1,\n      \"max\": 1\n    },\n    \"packages\": [\n      {\n        \"price\": 30.98,\n        \"discount\": \"1\",\n        \"format\": \"box\",\n        \"dimensions\": {\n          \"height\": \"2\",\n          \"width\": \"11\",\n          \"length\": \"16\"\n        },\n        \"weight\": \"0.3\",\n        \"insurance_value\": 100.32\n      }\n    ],\n    \"additional_services\": {\n      \"receipt\": false,\n      \"own_hand\": false\n    },\n    \"company\": {\n      \"id\": 1,\n      \"name\": \"Correios\",\n      \"picture\": \"https://storage.googleapis.com/sandbox-api-superfrete.appspot.com/logos/correios.png\"\n    },\n    \"has_error\": false\n  }\n]"
+                  }
+                },
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "example": 1,
+                        "default": 0
+                      },
+                      "name": {
+                        "type": "string",
+                        "example": "PAC"
+                      },
+                      "price": {
+                        "type": "number",
+                        "example": 21.5,
+                        "default": 0
+                      },
+                      "discount": {
+                        "type": "string",
+                        "example": "3.3"
+                      },
+                      "currency": {
+                        "type": "string",
+                        "example": "R$"
+                      },
+                      "delivery_time": {
+                        "type": "integer",
+                        "example": 5,
+                        "default": 0
+                      },
+                      "delivery_range": {
+                        "type": "object",
+                        "properties": {
+                          "min": {
+                            "type": "integer",
+                            "example": 5,
+                            "default": 0
+                          },
+                          "max": {
+                            "type": "integer",
+                            "example": 5,
+                            "default": 0
+                          }
+                        }
+                      },
+                      "packages": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "price": {
+                              "type": "number",
+                              "example": 19.03,
+                              "default": 0
+                            },
+                            "discount": {
+                              "type": "string",
+                              "example": "3.3"
+                            },
+                            "format": {
+                              "type": "string",
+                              "example": "box"
+                            },
+                            "dimensions": {
+                              "type": "object",
+                              "properties": {
+                                "height": {
+                                  "type": "string",
+                                  "example": "2"
+                                },
+                                "width": {
+                                  "type": "string",
+                                  "example": "11"
+                                },
+                                "length": {
+                                  "type": "string",
+                                  "example": "16"
+                                }
+                              }
+                            },
+                            "weight": {
+                              "type": "string",
+                              "example": "0.3"
+                            },
+                            "insurance_value": {
+                              "type": "number",
+                              "example": 100.23,
+                              "default": 0
+                            }
+                          }
+                        }
+                      },
+                      "additional_services": {
+                        "type": "object",
+                        "properties": {
+                          "receipt": {
+                            "type": "boolean",
+                            "example": false,
+                            "default": true
+                          },
+                          "own_hand": {
+                            "type": "boolean",
+                            "example": false,
+                            "default": true
+                          }
+                        }
+                      },
+                      "company": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "example": 1,
+                            "default": 0
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "Correios"
+                          },
+                          "picture": {
+                            "type": "string",
+                            "example": "https://storage.googleapis.com/sandbox-api-superfrete.appspot.com/logos/correios.png"
+                          }
+                        }
+                      },
+                      "has_error": {
+                        "type": "boolean",
+                        "example": false,
+                        "default": true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/v0/cart": {
+      "post": {
+        "summary": "Enviar Frete para a SuperFrete",
+        "description": "",
+        "operationId": "adicionar-frete-carrinho",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "from",
+                  "to",
+                  "service",
+                  "volumes"
+                ],
+                "properties": {
+                  "from": {
+                    "type": "object",
+                    "description": "Dados do remetente",
+                    "required": [
+                      "name",
+                      "address",
+                      "district",
+                      "city",
+                      "state_abbr",
+                      "postal_code"
+                    ],
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "address": {
+                        "type": "string"
+                      },
+                      "complement": {
+                        "type": "string"
+                      },
+                      "number": {
+                        "type": "string"
+                      },
+                      "district": {
+                        "type": "string"
+                      },
+                      "city": {
+                        "type": "string"
+                      },
+                      "state_abbr": {
+                        "type": "string"
+                      },
+                      "postal_code": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "to": {
+                    "type": "object",
+                    "description": "Dados do destinatário",
+                    "required": [
+                      "name",
+                      "address",
+                      "district",
+                      "city",
+                      "state_abbr",
+                      "postal_code"
+                    ],
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "address": {
+                        "type": "string"
+                      },
+                      "complement": {
+                        "type": "string"
+                      },
+                      "number": {
+                        "type": "string"
+                      },
+                      "district": {
+                        "type": "string"
+                      },
+                      "city": {
+                        "type": "string"
+                      },
+                      "state_abbr": {
+                        "type": "string"
+                      },
+                      "postal_code": {
+                        "type": "string"
+                      },
+                      "email": {
+                        "type": "string",
+                        "description": "Email para envio de atualização de rastreio"
+                      }
+                    }
+                  },
+                  "service": {
+                    "type": "integer",
+                    "description": "Serviço escolhido pelo cliente. 1: PAC, 2: SEDEX, 17: Mini Envios (Ex: \"service\": \"1,2,17\")",
+                    "format": "int32"
+                  },
+                  "products": {
+                    "type": "array",
+                    "description": "Produtos para a criação da declaração de conteúdo.",
+                    "items": {
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "quantity": {
+                          "type": "string"
+                        },
+                        "unitary_value": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "name"
+                      ],
+                      "type": "object"
+                    }
+                  },
+                  "volumes": {
+                    "type": "object",
+                    "description": "Mesmo pacote enviado na hora de calcular o frete.",
+                    "required": [
+                      "height",
+                      "width",
+                      "length",
+                      "weight"
+                    ],
+                    "properties": {
+                      "height": {
+                        "type": "number",
+                        "format": "float"
+                      },
+                      "width": {
+                        "type": "number",
+                        "format": "float"
+                      },
+                      "length": {
+                        "type": "number",
+                        "format": "float"
+                      },
+                      "weight": {
+                        "type": "number",
+                        "format": "float"
+                      }
+                    }
+                  },
+                  "options": {
+                    "type": "object",
+                    "properties": {
+                      "insurance_value": {
+                        "type": "number",
+                        "format": "float"
+                      },
+                      "receipt": {
+                        "type": "boolean"
+                      },
+                      "own_hand": {
+                        "type": "boolean"
+                      },
+                      "non_commercial": {
+                        "type": "boolean",
+                        "description": "Indicação de declaração de conteúdo (Atenção: Se não for passado ou for false, Nota Fiscal se torna obrigatória)"
+                      },
+                      "invoice": {
+                        "type": "object",
+                        "required": [
+                          "number"
+                        ],
+                        "properties": {
+                          "number": {
+                            "type": "string",
+                            "description": "Atenção: Obrigatório, mesmo com valor vazio."
+                          },
+                          "key": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "tags": {
+                        "type": "array",
+                        "items": {
+                          "properties": {
+                            "tag": {
+                              "type": "string",
+                              "description": "Identificação do pedido na plataforma"
+                            },
+                            "url": {
+                              "type": "string",
+                              "description": "Url da plataforma"
+                            }
+                          },
+                          "type": "object"
+                        }
+                      }
+                    }
+                  },
+                  "platform": {
+                    "type": "string",
+                    "description": "Insira aqui o nome da sua plataforma",
+                    "default": "Documentação"
+                  }
+                }
+              },
+              "examples": {
+                "Request": {
+                  "value": {
+                    "from": {
+                      "name": "Nome do remetente",
+                      "address": "Rua do remetente",
+                      "district": "Bairro",
+                      "state_abbr": "RJ",
+                      "postal_code": "20020050",
+                      "city": "Cidade"
+                    },
+                    "to": {
+                      "name": "Nome do destinatário",
+                      "address": "Rua do destinatário",
+                      "district": "Bairro",
+                      "city": "Cidade",
+                      "state_abbr": "SP",
+                      "postal_code": "01153000",
+                      "email": "email@mail.com"
+                    },
+                    "service": 1,
+                    "products": [
+                      {
+                        "name": "Produto 1",
+                        "quantity": 1,
+                        "unitary_value": 100
+                      },
+                      {
+                        "name": "Produto 2",
+                        "quantity": 2,
+                        "unitary_value": 200
+                      }
+                    ],
+                    "volumes": {
+                      "height": 2,
+                      "width": 11,
+                      "length": 16,
+                      "weight": 0.3
+                    },
+                    "options": {
+                      "invoice": {
+                        "key": "123456"
+                      }
+                    },
+                    "platform": "Insira aqui o nome da sua plataforma"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n   \"id\":\"r8p3dhqjn4I0tBpnvkpU\",\n   \"price\":34.27,\n   \"status\":\"pending\"\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "r8p3dhqjn4I0tBpnvkpU"
+                    },
+                    "price": {
+                      "type": "number",
+                      "example": 34.27,
+                      "default": 0
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "pending"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/v0/checkout": {
+      "post": {
+        "summary": "Finalizar pedido e gerar etiqueta",
+        "description": "",
+        "operationId": "apiintegrationv1checkout",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "orders"
+                ],
+                "properties": {
+                  "orders": {
+                    "type": "array",
+                    "description": "ID do pedido retornado no endpoint de adicionar ao carrinho.",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n   \"success\":true,\n   \"purchase\":{\n      \"status\":\"paid\",\n      \"orders\":[\n         {\n            \"id\":\"r8p3dhqjn4I0tBpnvkpU\",\n            \"price\": 33.33,\n            \"discount\": 1.11,\n            \"service_id\":2,\n            \"tracking\":\"DG048745602BR\",\n            \"print\": {\n              \"url\": \"\"\n            }\n         }\n      ]\n   }\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true,
+                      "default": true
+                    },
+                    "purchase": {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "string",
+                          "example": "paid"
+                        },
+                        "orders": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "example": "r8p3dhqjn4I0tBpnvkpU"
+                              },
+                              "price": {
+                                "type": "number",
+                                "example": 33.33,
+                                "default": 0
+                              },
+                              "discount": {
+                                "type": "number",
+                                "example": 1.11,
+                                "default": 0
+                              },
+                              "service_id": {
+                                "type": "integer",
+                                "example": 2,
+                                "default": 0
+                              },
+                              "tracking": {
+                                "type": "string",
+                                "example": "DG048745602BR"
+                              },
+                              "print": {
+                                "type": "object",
+                                "properties": {
+                                  "url": {
+                                    "type": "string",
+                                    "example": ""
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/v0/order/cancel": {
+      "post": {
+        "summary": "Cancelar pedido",
+        "description": "",
+        "operationId": "cancelar-pedido",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "order": {
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "description"
+                    ],
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string",
+                        "default": "Cancelado pelo usuário"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  'jksafkjashfasf54sf': {\n    canceled: true\n  }\n}"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/v0/order/info/{id}": {
+      "get": {
+        "summary": "Informações do pedido",
+        "description": "",
+        "operationId": "tag-informações-do-pedido",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id do pedido SuperFrete",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  \"id\": \"JlmCKlsK7G471C4ChJYX\",\n  \"format\": \"box\",\n  \"delivery\": 5,\n  \"delivery_min\": 5,\n  \"delivery_max\": 5,\n  \"discount\": 5.01,\n  \"height\": 2,\n  \"width\": 11,\n  \"length\": 16,\n  \"weight\": 0.3,\n  \"from\": {\n    \"address\": \"Rua do remetente\",\n    \"city\": \"Cidade\",\n    \"complement\": null,\n    \"district\": \"Bairro\",\n    \"document\": null,\n    \"name\": \"Nome do remetente\",\n    \"location_number\": \"S/N\",\n    \"postal_code\": \"20020050\",\n    \"state_abbr\": \"RJ\",\n    \"country_id\": \"BR\"\n  },\n  \"to\": {\n    \"address\": \"Rua do destinatário\",\n    \"city\": \"Cidade\",\n    \"complement\": null,\n    \"district\": \"Bairro\",\n    \"document\": null,\n    \"name\": \"Nome do destinatário\",\n    \"location_number\": \"S/N\",\n    \"postal_code\": \"01153000\",\n    \"state_abbr\": \"SP\",\n    \"country_id\": \"BR\"\n  },\n  \"invoice\": \"123456\",\n  \"own_hand\": false,\n  \"receipt\": false,\n  \"price\": 19.79,\n  \"tracking\": \"EC451638075BR\",\n  \"status\": \"pending\",\n  \"service_id\": 1,\n  \"products\": [\n    {\n      \"name\": \"Produto 1\",\n      \"quantity\": \"1\",\n      \"unitary_value\": \"100\"\n    },\n    {\n      \"name\": \"Produto 2\",\n      \"quantity\": \"2\",\n      \"unitary_value\": \"200\"\n    }\n  ],\n  \"insurance_value\": null,\n  \"generated_at\": \"2022-12-03T17:36:01.159Z\",\n  \"posted_at\": \"2022-12-03T17:36:01.159Z\",\n  \"created_at\": \"2022-12-03T17:34:39.399Z\",\n  \"updated_at\": \"2022-12-03T17:36:04.481Z\"\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "JlmCKlsK7G471C4ChJYX"
+                    },
+                    "format": {
+                      "type": "string",
+                      "example": "box"
+                    },
+                    "delivery": {
+                      "type": "integer",
+                      "example": 5,
+                      "default": 0
+                    },
+                    "delivery_min": {
+                      "type": "integer",
+                      "example": 5,
+                      "default": 0
+                    },
+                    "delivery_max": {
+                      "type": "integer",
+                      "example": 5,
+                      "default": 0
+                    },
+                    "discount": {
+                      "type": "number",
+                      "example": 5.01,
+                      "default": 0
+                    },
+                    "height": {
+                      "type": "integer",
+                      "example": 2,
+                      "default": 0
+                    },
+                    "width": {
+                      "type": "integer",
+                      "example": 11,
+                      "default": 0
+                    },
+                    "length": {
+                      "type": "integer",
+                      "example": 16,
+                      "default": 0
+                    },
+                    "weight": {
+                      "type": "number",
+                      "example": 0.3,
+                      "default": 0
+                    },
+                    "from": {
+                      "type": "object",
+                      "properties": {
+                        "address": {
+                          "type": "string",
+                          "example": "Rua do remetente"
+                        },
+                        "city": {
+                          "type": "string",
+                          "example": "Cidade"
+                        },
+                        "complement": {},
+                        "district": {
+                          "type": "string",
+                          "example": "Bairro"
+                        },
+                        "document": {},
+                        "name": {
+                          "type": "string",
+                          "example": "Nome do remetente"
+                        },
+                        "location_number": {
+                          "type": "string",
+                          "example": "S/N"
+                        },
+                        "postal_code": {
+                          "type": "string",
+                          "example": "20020050"
+                        },
+                        "state_abbr": {
+                          "type": "string",
+                          "example": "RJ"
+                        },
+                        "country_id": {
+                          "type": "string",
+                          "example": "BR"
+                        }
+                      }
+                    },
+                    "to": {
+                      "type": "object",
+                      "properties": {
+                        "address": {
+                          "type": "string",
+                          "example": "Rua do destinatário"
+                        },
+                        "city": {
+                          "type": "string",
+                          "example": "Cidade"
+                        },
+                        "complement": {},
+                        "district": {
+                          "type": "string",
+                          "example": "Bairro"
+                        },
+                        "document": {},
+                        "name": {
+                          "type": "string",
+                          "example": "Nome do destinatário"
+                        },
+                        "location_number": {
+                          "type": "string",
+                          "example": "S/N"
+                        },
+                        "postal_code": {
+                          "type": "string",
+                          "example": "01153000"
+                        },
+                        "state_abbr": {
+                          "type": "string",
+                          "example": "SP"
+                        },
+                        "country_id": {
+                          "type": "string",
+                          "example": "BR"
+                        }
+                      }
+                    },
+                    "invoice": {
+                      "type": "string",
+                      "example": "123456"
+                    },
+                    "own_hand": {
+                      "type": "boolean",
+                      "example": false,
+                      "default": true
+                    },
+                    "receipt": {
+                      "type": "boolean",
+                      "example": false,
+                      "default": true
+                    },
+                    "price": {
+                      "type": "number",
+                      "example": 19.79,
+                      "default": 0
+                    },
+                    "tracking": {
+                      "type": "string",
+                      "example": "EC451638075BR"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "pending"
+                    },
+                    "service_id": {
+                      "type": "integer",
+                      "example": 1,
+                      "default": 0
+                    },
+                    "products": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "example": "Produto 1"
+                          },
+                          "quantity": {
+                            "type": "string",
+                            "example": "1"
+                          },
+                          "unitary_value": {
+                            "type": "string",
+                            "example": "100"
+                          }
+                        }
+                      }
+                    },
+                    "insurance_value": {},
+                    "generated_at": {
+                      "type": "string",
+                      "example": "2022-12-03T17:36:01.159Z"
+                    },
+                    "posted_at": {
+                      "type": "string",
+                      "example": "2022-12-03T17:36:01.159Z"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "example": "2022-12-03T17:34:39.399Z"
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "example": "2022-12-03T17:36:04.481Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/v0/tag/print": {
+      "post": {
+        "summary": "Link para impressão da etiqueta",
+        "description": "",
+        "operationId": "tag-link",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "orders": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  \"url\": \"https://sandbox.superfrete.com/_etiqueta/pdf/eyJvcmRlcl9pZCI6IjA2bXlaNWFjcE9KeWpMT1A4bWNMIiwidWlkIjoiTTJ0RFMwZHhlbXhRUm1aRFJXb3lXREZVYTI5aU1EZFRUakpOTWc9PSJ9\"\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string",
+                      "example": "https://sandbox.superfrete.com/_etiqueta/pdf/eyJvcmRlcl9pZCI6IjA2bXlaNWFjcE9KeWpMT1A4bWNMIiwidWlkIjoiTTJ0RFMwZHhlbXhRUm1aRFJXb3lXREZVYTI5aU1EZFRUakpOTWc9PSJ9"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/v0/user/addresses": {
+      "get": {
+        "summary": "Listar endereços",
+        "description": "",
+        "operationId": "user-listar-endereços",
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/v0/user/balance": {
+      "get": {
+        "summary": "Verificar saldo na carteira",
+        "description": "",
+        "operationId": "user-verificar-saldo-na-carteira",
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  \"balance\": 1763.04\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "balance": {
+                      "type": "number",
+                      "example": 1763.04,
+                      "default": 0
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/v0/user": {
+      "get": {
+        "summary": "Buscar informações do usuário",
+        "description": "",
+        "operationId": "user-buscar-informações-do-usuário",
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  \"id\": \"3kCKGqzlPFfCEj2X1Tkob07SN2M2\",\n  \"firstname\": \"Nome\",\n  \"lastname\": \"Sobrenome\",\n  \"phone\": \"+5511999999999\",\n  \"email\": \"mail@gmail.com\",\n  \"document\": \"00000000000\",\n  \"limits\": {\n    \"shipments\": 3,\n    \"shipments_available\": 2\n  },\n  \"balance\": 1763.04\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "3kCKGqzlPFfCEj2X1Tkob07SN2M2"
+                    },
+                    "firstname": {
+                      "type": "string",
+                      "example": "Nome"
+                    },
+                    "lastname": {
+                      "type": "string",
+                      "example": "Sobrenome"
+                    },
+                    "phone": {
+                      "type": "string",
+                      "example": "+5511999999999"
+                    },
+                    "email": {
+                      "type": "string",
+                      "example": "mail@gmail.com"
+                    },
+                    "document": {
+                      "type": "string",
+                      "example": "00000000000"
+                    },
+                    "limits": {
+                      "type": "object",
+                      "properties": {
+                        "shipments": {
+                          "type": "integer",
+                          "example": 3,
+                          "default": 0
+                        },
+                        "shipments_available": {
+                          "type": "integer",
+                          "example": 2,
+                          "default": 0
+                        }
+                      }
+                    },
+                    "balance": {
+                      "type": "number",
+                      "example": 1763.04,
+                      "default": 0
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/v0/order/cancellable": {
+      "post": {
+        "summary": "Verificar se pedido é cancelável",
+        "description": "",
+        "operationId": "verificar-se-pedido-é-cancelável",
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/v0/cart (COPY)": {
+      "post": {
+        "summary": "Enviar Frete para a SuperFrete (COPY)",
+        "description": "",
+        "operationId": "enviar-frete-para-a-superfrete-copy",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "from",
+                  "to",
+                  "service",
+                  "volumes"
+                ],
+                "properties": {
+                  "from": {
+                    "type": "object",
+                    "description": "Dados do remetente",
+                    "required": [
+                      "name",
+                      "address",
+                      "district",
+                      "city",
+                      "state_abbr",
+                      "postal_code"
+                    ],
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "address": {
+                        "type": "string"
+                      },
+                      "complement": {
+                        "type": "string"
+                      },
+                      "number": {
+                        "type": "string"
+                      },
+                      "district": {
+                        "type": "string"
+                      },
+                      "city": {
+                        "type": "string"
+                      },
+                      "state_abbr": {
+                        "type": "string"
+                      },
+                      "postal_code": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "to": {
+                    "type": "object",
+                    "description": "Dados do destinatário",
+                    "required": [
+                      "name",
+                      "address",
+                      "district",
+                      "city",
+                      "state_abbr",
+                      "postal_code"
+                    ],
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "address": {
+                        "type": "string"
+                      },
+                      "complement": {
+                        "type": "string"
+                      },
+                      "number": {
+                        "type": "string"
+                      },
+                      "district": {
+                        "type": "string"
+                      },
+                      "city": {
+                        "type": "string"
+                      },
+                      "state_abbr": {
+                        "type": "string"
+                      },
+                      "postal_code": {
+                        "type": "string"
+                      },
+                      "email": {
+                        "type": "string",
+                        "description": "Email para envio de atualização de rastreio"
+                      }
+                    }
+                  },
+                  "service": {
+                    "type": "string",
+                    "description": "Serviço escolhido pelo cliente. 1: PAC, 2: SEDEX, 17: Mini Envios (Ex: \"service\": \"1,2,17\")"
+                  },
+                  "products": {
+                    "type": "array",
+                    "description": "Produtos para a criação da declaração de conteúdo.",
+                    "items": {
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "quantity": {
+                          "type": "integer",
+                          "format": "int32"
+                        },
+                        "unitary_value": {
+                          "type": "number",
+                          "format": "float"
+                        },
+                        "height": {
+                          "type": "number",
+                          "format": "float"
+                        },
+                        "width": {
+                          "type": "number",
+                          "format": "float"
+                        },
+                        "length": {
+                          "type": "number",
+                          "format": "float"
+                        },
+                        "weight": {
+                          "type": "number",
+                          "format": "float"
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "quantity",
+                        "unitary_value",
+                        "height",
+                        "width",
+                        "length",
+                        "weight"
+                      ],
+                      "type": "object"
+                    }
+                  },
+                  "volumes": {
+                    "type": "object",
+                    "description": "Mesmo pacote enviado na hora de calcular o frete.",
+                    "required": [
+                      "height",
+                      "width",
+                      "length",
+                      "weight"
+                    ],
+                    "properties": {
+                      "height": {
+                        "type": "number",
+                        "format": "float"
+                      },
+                      "width": {
+                        "type": "number",
+                        "format": "float"
+                      },
+                      "length": {
+                        "type": "number",
+                        "format": "float"
+                      },
+                      "weight": {
+                        "type": "number",
+                        "format": "float"
+                      }
+                    }
+                  },
+                  "options": {
+                    "type": "object",
+                    "properties": {
+                      "insurance_value": {
+                        "type": "number",
+                        "format": "float"
+                      },
+                      "receipt": {
+                        "type": "boolean"
+                      },
+                      "own_hand": {
+                        "type": "boolean"
+                      },
+                      "non_commercial": {
+                        "type": "boolean",
+                        "description": "Indicação de declaração de conteúdo (Atenção: Se não for passado ou for false, Nota Fiscal se torna obrigatória)"
+                      },
+                      "invoice": {
+                        "type": "object",
+                        "required": [
+                          "number"
+                        ],
+                        "properties": {
+                          "number": {
+                            "type": "string",
+                            "description": "Atenção: Obrigatório, mesmo com valor vazio."
+                          },
+                          "key": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "tags": {
+                        "type": "array",
+                        "items": {
+                          "properties": {
+                            "tag": {
+                              "type": "string",
+                              "description": "Identificação do pedido na plataforma"
+                            },
+                            "url": {
+                              "type": "string",
+                              "description": "Url da plataforma"
+                            }
+                          },
+                          "type": "object"
+                        }
+                      }
+                    }
+                  },
+                  "platform": {
+                    "type": "string",
+                    "description": "Nome da plataforma",
+                    "default": "Documentação"
+                  }
+                }
+              },
+              "examples": {
+                "Request": {
+                  "value": {
+                    "from": {
+                      "name": "Nome do remetente",
+                      "address": "Rua do remetente",
+                      "district": "Bairro",
+                      "state_abbr": "RJ",
+                      "postal_code": "20020050",
+                      "city": "Cidade"
+                    },
+                    "to": {
+                      "name": "Nome do destinatário",
+                      "address": "Rua do destinatário",
+                      "district": "Bairro",
+                      "city": "Cidade",
+                      "state_abbr": "SP",
+                      "postal_code": "01153000",
+                      "email": "email@mail.com"
+                    },
+                    "service": 1,
+                    "products": [
+                      {
+                        "name": "Produto 1",
+                        "quantity": 1,
+                        "unitary_value": 100
+                      },
+                      {
+                        "name": "Produto 2",
+                        "quantity": 2,
+                        "unitary_value": 200
+                      }
+                    ],
+                    "volumes": {
+                      "height": 2,
+                      "width": 11,
+                      "length": 16,
+                      "weight": 0.3
+                    },
+                    "options": {
+                      "invoice": {
+                        "key": "123456"
+                      }
+                    },
+                    "platform": "Documentação"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n   \"id\":\"r8p3dhqjn4I0tBpnvkpU\",\n   \"price\":34.27,\n   \"status\":\"pending\"\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "r8p3dhqjn4I0tBpnvkpU"
+                    },
+                    "price": {
+                      "type": "number",
+                      "example": 34.27,
+                      "default": 0
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "pending"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/api/v0/oauth/token": {
+      "post": {
+        "summary": "Solicitação do token",
+        "description": "",
+        "operationId": "solicitação-do-token",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "grant_type",
+                  "client_id",
+                  "client_secret",
+                  "redirect_uri",
+                  "code"
+                ],
+                "properties": {
+                  "grant_type": {
+                    "type": "string",
+                    "description": "Tipo do modo de solicitação de token"
+                  },
+                  "client_id": {
+                    "type": "string",
+                    "description": "Obtido entrando em contato com à nossa equipe"
+                  },
+                  "client_secret": {
+                    "type": "string",
+                    "description": "Obtido entrando em contato com à nossa equipe"
+                  },
+                  "redirect_uri": {
+                    "type": "string",
+                    "description": "Deve ser estática e conforme informado à nossa equipe"
+                  },
+                  "code": {
+                    "type": "string",
+                    "description": "Código de autorização"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n\t\"access_token\": \"eyJhbGciOiJIUf1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyaHpYZWhWdE9tWXJtVDdIU2xvbGVSVVhlekMyIiwiaWF0IjoxNjk4ODY5NjcwfQ.UEt_YKjMayHrbhOhRvxy_KM_VC0m0d61v5kydtyEPR8\",\n\t\"expires_in\": \"never\",\n\t\"token_type\": \"Bearer\"\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "access_token": {
+                      "type": "string",
+                      "example": "eyJhbGciOiJIUf1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyaHpYZWhWdE9tWXJtVDdIU2xvbGVSVVhlekMyIiwiaWF0IjoxNjk4ODY5NjcwfQ.UEt_YKjMayHrbhOhRvxy_KM_VC0m0d61v5kydtyEPR8"
+                    },
+                    "expires_in": {
+                      "type": "string",
+                      "example": "never"
+                    },
+                    "token_type": {
+                      "type": "string",
+                      "example": "Bearer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n\t\"error\": \"invalid_request\",\n\t\"http_status\": 400,\n\t\"error_description\": \"Required parameter 'client_id' was missing\",\n\t\"message\": \"Required parameter 'client_id' was missing\"\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "invalid_request"
+                    },
+                    "http_status": {
+                      "type": "integer",
+                      "example": 400,
+                      "default": 0
+                    },
+                    "error_description": {
+                      "type": "string",
+                      "example": "Required parameter 'client_id' was missing"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Required parameter 'client_id' was missing"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "401",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n\t\"error\": \"invalid_client\",\n\t\"http_status\": 401,\n\t\"error_description\": \"Client authentication failed\",\n\t\"message\": \"Client authentication failed\"\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "invalid_client"
+                    },
+                    "http_status": {
+                      "type": "integer",
+                      "example": 401,
+                      "default": 0
+                    },
+                    "error_description": {
+                      "type": "string",
+                      "example": "Client authentication failed"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Client authentication failed"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "500",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n\t\"error\": \"server_error\",\n\t\"http_status\": 500,\n\t\"error_description\": \"An server error has occurred\",\n\t\"message\": \"An server error has occurred\"\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "server_error"
+                    },
+                    "http_status": {
+                      "type": "integer",
+                      "example": 500,
+                      "default": 0
+                    },
+                    "error_description": {
+                      "type": "string",
+                      "example": "An server error has occurred"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "An server error has occurred"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false,
+        "security": []
+      }
+    },
+    "/api/v0/services/info": {
+      "get": {
+        "summary": "Informações dos pacotes",
+        "description": "",
+        "operationId": "informações-dos-pacotes",
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n\t\"1\": {\n\t\t\"name\": \"PAC\",\n\t\t\"type\": \"express\",\n\t\t\"range\": \"interstate\",\n\t\t\"restrictions\": {\n\t\t\t\"insurance_value\": {\n\t\t\t\t\"min\": 24.5,\n\t\t\t\t\"max\": 34000\n\t\t\t},\n\t\t\t\"formats\": {\n\t\t\t\t\"package\": {\n\t\t\t\t\t\"weight\": {\n\t\t\t\t\t\t\"min\": 0.3,\n\t\t\t\t\t\t\"max\": 30\n\t\t\t\t\t},\n\t\t\t\t\t\"width\": {\n\t\t\t\t\t\t\"min\": 16,\n\t\t\t\t\t\t\"max\": 150\n\t\t\t\t\t},\n\t\t\t\t\t\"height\": {\n\t\t\t\t\t\t\"min\": 4,\n\t\t\t\t\t\t\"max\": 150\n\t\t\t\t\t},\n\t\t\t\t\t\"length\": {\n\t\t\t\t\t\t\"min\": 24,\n\t\t\t\t\t\t\"max\": 150\n\t\t\t\t\t},\n\t\t\t\t\t\"sum\": 300\n\t\t\t\t}\n\t\t\t}\n\t\t},\n\t\t\"requirements\": [\n\t\t\t\"names\",\n\t\t\t\"addresses\"\n\t\t],\n\t\t\"optionals\": [\n\t\t\t\"AR\",\n\t\t\t\"MP\",\n\t\t\t\"VD\"\n\t\t],\n\t\t\"company\": {\n\t\t\t\"name\": \"Correios\",\n\t\t\t\"picture\": \"https://storage.googleapis.com/sandbox-api-superfrete.appspot.com/logos/correios.png\"\n\t\t}\n\t},\n\t\"2\": {\n\t\t\"name\": \"SEDEX\",\n\t\t\"type\": \"express\",\n\t\t\"range\": \"interstate\",\n\t\t\"restrictions\": {\n\t\t\t\"insurance_value\": {\n\t\t\t\t\"min\": 24.5,\n\t\t\t\t\"max\": 34000\n\t\t\t},\n\t\t\t\"formats\": {\n\t\t\t\t\"package\": {\n\t\t\t\t\t\"weight\": {\n\t\t\t\t\t\t\"min\": 0.3,\n\t\t\t\t\t\t\"max\": 30\n\t\t\t\t\t},\n\t\t\t\t\t\"width\": {\n\t\t\t\t\t\t\"min\": 16,\n\t\t\t\t\t\t\"max\": 150\n\t\t\t\t\t},\n\t\t\t\t\t\"height\": {\n\t\t\t\t\t\t\"min\": 4,\n\t\t\t\t\t\t\"max\": 150\n\t\t\t\t\t},\n\t\t\t\t\t\"length\": {\n\t\t\t\t\t\t\"min\": 24,\n\t\t\t\t\t\t\"max\": 150\n\t\t\t\t\t},\n\t\t\t\t\t\"sum\": 300\n\t\t\t\t}\n\t\t\t}\n\t\t},\n\t\t\"requirements\": [\n\t\t\t\"names\",\n\t\t\t\"addresses\"\n\t\t],\n\t\t\"optionals\": [\n\t\t\t\"AR\",\n\t\t\t\"MP\",\n\t\t\t\"VD\"\n\t\t],\n\t\t\"company\": {\n\t\t\t\"name\": \"Correios\",\n\t\t\t\"picture\": \"https://storage.googleapis.com/sandbox-api-superfrete.appspot.com/logos/correios.png\"\n\t\t}\n\t},\n\t\"17\": {\n\t\t\"name\": \"MiniEnvios\",\n\t\t\"type\": \"express\",\n\t\t\"range\": \"interstate\",\n\t\t\"restrictions\": {\n\t\t\t\"insurance_value\": {\n\t\t\t\t\"min\": 12.25,\n\t\t\t\t\"max\": 100\n\t\t\t},\n\t\t\t\"formats\": {\n\t\t\t\t\"package\": {\n\t\t\t\t\t\"weight\": {\n\t\t\t\t\t\t\"min\": 0.0001,\n\t\t\t\t\t\t\"max\": 0.3\n\t\t\t\t\t},\n\t\t\t\t\t\"width\": {\n\t\t\t\t\t\t\"min\": 10,\n\t\t\t\t\t\t\"max\": 16\n\t\t\t\t\t},\n\t\t\t\t\t\"height\": {\n\t\t\t\t\t\t\"min\": 1,\n\t\t\t\t\t\t\"max\": 4\n\t\t\t\t\t},\n\t\t\t\t\t\"length\": {\n\t\t\t\t\t\t\"min\": 15,\n\t\t\t\t\t\t\"max\": 24\n\t\t\t\t\t},\n\t\t\t\t\t\"sum\": 300\n\t\t\t\t}\n\t\t\t}\n\t\t},\n\t\t\"requirements\": [\n\t\t\t\"names\",\n\t\t\t\"addresses\"\n\t\t],\n\t\t\"optionals\": [\n\t\t\t\"AR\",\n\t\t\t\"MP\",\n\t\t\t\"VD\"\n\t\t],\n\t\t\"company\": {\n\t\t\t\"name\": \"Correios\",\n\t\t\t\"picture\": \"https://storage.googleapis.com/sandbox-api-superfrete.appspot.com/logos/correios.png\"\n\t\t}\n\t}\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "1": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "example": "PAC"
+                        },
+                        "type": {
+                          "type": "string",
+                          "example": "express"
+                        },
+                        "range": {
+                          "type": "string",
+                          "example": "interstate"
+                        },
+                        "restrictions": {
+                          "type": "object",
+                          "properties": {
+                            "insurance_value": {
+                              "type": "object",
+                              "properties": {
+                                "min": {
+                                  "type": "number",
+                                  "example": 24.5,
+                                  "default": 0
+                                },
+                                "max": {
+                                  "type": "integer",
+                                  "example": 34000,
+                                  "default": 0
+                                }
+                              }
+                            },
+                            "formats": {
+                              "type": "object",
+                              "properties": {
+                                "package": {
+                                  "type": "object",
+                                  "properties": {
+                                    "weight": {
+                                      "type": "object",
+                                      "properties": {
+                                        "min": {
+                                          "type": "number",
+                                          "example": 0.3,
+                                          "default": 0
+                                        },
+                                        "max": {
+                                          "type": "integer",
+                                          "example": 30,
+                                          "default": 0
+                                        }
+                                      }
+                                    },
+                                    "width": {
+                                      "type": "object",
+                                      "properties": {
+                                        "min": {
+                                          "type": "integer",
+                                          "example": 16,
+                                          "default": 0
+                                        },
+                                        "max": {
+                                          "type": "integer",
+                                          "example": 150,
+                                          "default": 0
+                                        }
+                                      }
+                                    },
+                                    "height": {
+                                      "type": "object",
+                                      "properties": {
+                                        "min": {
+                                          "type": "integer",
+                                          "example": 4,
+                                          "default": 0
+                                        },
+                                        "max": {
+                                          "type": "integer",
+                                          "example": 150,
+                                          "default": 0
+                                        }
+                                      }
+                                    },
+                                    "length": {
+                                      "type": "object",
+                                      "properties": {
+                                        "min": {
+                                          "type": "integer",
+                                          "example": 24,
+                                          "default": 0
+                                        },
+                                        "max": {
+                                          "type": "integer",
+                                          "example": 150,
+                                          "default": 0
+                                        }
+                                      }
+                                    },
+                                    "sum": {
+                                      "type": "integer",
+                                      "example": 300,
+                                      "default": 0
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "requirements": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "example": "names"
+                          }
+                        },
+                        "optionals": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "example": "AR"
+                          }
+                        },
+                        "company": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "example": "Correios"
+                            },
+                            "picture": {
+                              "type": "string",
+                              "example": "https://storage.googleapis.com/sandbox-api-superfrete.appspot.com/logos/correios.png"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "2": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "example": "SEDEX"
+                        },
+                        "type": {
+                          "type": "string",
+                          "example": "express"
+                        },
+                        "range": {
+                          "type": "string",
+                          "example": "interstate"
+                        },
+                        "restrictions": {
+                          "type": "object",
+                          "properties": {
+                            "insurance_value": {
+                              "type": "object",
+                              "properties": {
+                                "min": {
+                                  "type": "number",
+                                  "example": 24.5,
+                                  "default": 0
+                                },
+                                "max": {
+                                  "type": "integer",
+                                  "example": 34000,
+                                  "default": 0
+                                }
+                              }
+                            },
+                            "formats": {
+                              "type": "object",
+                              "properties": {
+                                "package": {
+                                  "type": "object",
+                                  "properties": {
+                                    "weight": {
+                                      "type": "object",
+                                      "properties": {
+                                        "min": {
+                                          "type": "number",
+                                          "example": 0.3,
+                                          "default": 0
+                                        },
+                                        "max": {
+                                          "type": "integer",
+                                          "example": 30,
+                                          "default": 0
+                                        }
+                                      }
+                                    },
+                                    "width": {
+                                      "type": "object",
+                                      "properties": {
+                                        "min": {
+                                          "type": "integer",
+                                          "example": 16,
+                                          "default": 0
+                                        },
+                                        "max": {
+                                          "type": "integer",
+                                          "example": 150,
+                                          "default": 0
+                                        }
+                                      }
+                                    },
+                                    "height": {
+                                      "type": "object",
+                                      "properties": {
+                                        "min": {
+                                          "type": "integer",
+                                          "example": 4,
+                                          "default": 0
+                                        },
+                                        "max": {
+                                          "type": "integer",
+                                          "example": 150,
+                                          "default": 0
+                                        }
+                                      }
+                                    },
+                                    "length": {
+                                      "type": "object",
+                                      "properties": {
+                                        "min": {
+                                          "type": "integer",
+                                          "example": 24,
+                                          "default": 0
+                                        },
+                                        "max": {
+                                          "type": "integer",
+                                          "example": 150,
+                                          "default": 0
+                                        }
+                                      }
+                                    },
+                                    "sum": {
+                                      "type": "integer",
+                                      "example": 300,
+                                      "default": 0
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "requirements": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "example": "names"
+                          }
+                        },
+                        "optionals": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "example": "AR"
+                          }
+                        },
+                        "company": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "example": "Correios"
+                            },
+                            "picture": {
+                              "type": "string",
+                              "example": "https://storage.googleapis.com/sandbox-api-superfrete.appspot.com/logos/correios.png"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "17": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "example": "MiniEnvios"
+                        },
+                        "type": {
+                          "type": "string",
+                          "example": "express"
+                        },
+                        "range": {
+                          "type": "string",
+                          "example": "interstate"
+                        },
+                        "restrictions": {
+                          "type": "object",
+                          "properties": {
+                            "insurance_value": {
+                              "type": "object",
+                              "properties": {
+                                "min": {
+                                  "type": "number",
+                                  "example": 12.25,
+                                  "default": 0
+                                },
+                                "max": {
+                                  "type": "integer",
+                                  "example": 100,
+                                  "default": 0
+                                }
+                              }
+                            },
+                            "formats": {
+                              "type": "object",
+                              "properties": {
+                                "package": {
+                                  "type": "object",
+                                  "properties": {
+                                    "weight": {
+                                      "type": "object",
+                                      "properties": {
+                                        "min": {
+                                          "type": "number",
+                                          "example": 0.0001,
+                                          "default": 0
+                                        },
+                                        "max": {
+                                          "type": "number",
+                                          "example": 0.3,
+                                          "default": 0
+                                        }
+                                      }
+                                    },
+                                    "width": {
+                                      "type": "object",
+                                      "properties": {
+                                        "min": {
+                                          "type": "integer",
+                                          "example": 10,
+                                          "default": 0
+                                        },
+                                        "max": {
+                                          "type": "integer",
+                                          "example": 16,
+                                          "default": 0
+                                        }
+                                      }
+                                    },
+                                    "height": {
+                                      "type": "object",
+                                      "properties": {
+                                        "min": {
+                                          "type": "integer",
+                                          "example": 1,
+                                          "default": 0
+                                        },
+                                        "max": {
+                                          "type": "integer",
+                                          "example": 4,
+                                          "default": 0
+                                        }
+                                      }
+                                    },
+                                    "length": {
+                                      "type": "object",
+                                      "properties": {
+                                        "min": {
+                                          "type": "integer",
+                                          "example": 15,
+                                          "default": 0
+                                        },
+                                        "max": {
+                                          "type": "integer",
+                                          "example": 24,
+                                          "default": 0
+                                        }
+                                      }
+                                    },
+                                    "sum": {
+                                      "type": "integer",
+                                      "example": 300,
+                                      "default": 0
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "requirements": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "example": "names"
+                          }
+                        },
+                        "optionals": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "example": "AR"
+                          }
+                        },
+                        "company": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "example": "Correios"
+                            },
+                            "picture": {
+                              "type": "string",
+                              "example": "https://storage.googleapis.com/sandbox-api-superfrete.appspot.com/logos/correios.png"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    }
+  },
+  "x-readme": {
+    "headers": [
+      {
+        "key": "User-Agent",
+        "value": "Nome e versão da aplicação (email para contato técnico)"
+      }
+    ]
+  },
+  "x-readme-fauxas": true
+}

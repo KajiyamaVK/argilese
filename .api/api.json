@@ -1,0 +1,11 @@
+{
+  "version": "1.0",
+  "apis": [
+    {
+      "identifier": "superfrete",
+      "source": "@superfrete/v0#4s21dlu1lrthk",
+      "integrity": "sha512-fohcwaFq9wEh8cs8G3e15TYAzoixAkjisp8gmtN6vC8ltUaU/OHjWcQl/xUH0HjZE7pnnKC6InEzOizae8QIPw==",
+      "installerVersion": "6.1.1"
+    }
+  ]
+}

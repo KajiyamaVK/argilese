@@ -130,7 +130,8 @@ export async function getDeliveryPrices(
         return { message: 'Error fetching delivery price', isError: true, affectedRows: 0, insertId: 0 }
       })
   } else if (process.env.FRETE_SERVICE === 'superfrete') {
-    const url = 'https://sandbox.superfrete.com/api/v0/calculator'
+    const url = 'https://api.superfrete.com/api/v0/calculator'
+    //const url = 'https://sandbox.superfrete.com/api/v0/calculator'
     const options = {
       method: 'POST',
       headers: {

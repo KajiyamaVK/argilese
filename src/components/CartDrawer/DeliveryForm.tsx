@@ -73,13 +73,15 @@ export function DeliveryForm({ purchaseId }: { purchaseId: number }) {
     // eslint-disable-next-line
   }, [currentStep])
 
+  const deliveryType = watch('deliveryType')
+
   useEffect(() => {
+    // Lógica que será executada cada vez que deliveryType mudar
     setValue(
       'deliveryPrice',
-      watch('deliveryType') === 'SEDEX' ? deliveriesPricesData!.sedexPrice : deliveriesPricesData!.pacPrice,
+      deliveryType === 'SEDEX' ? deliveriesPricesData!.sedexPrice : deliveriesPricesData!.pacPrice,
     )
-    // eslint-disable-next-line
-  }, [watch('deliveryType')])
+  }, [deliveryType]) // eslint-disable-line
 
   function goBackToCart() {
     setCurrentStep('cart')
@@ -156,7 +158,18 @@ export function DeliveryForm({ purchaseId }: { purchaseId: number }) {
     )
       .then((data) => {
         if (data.isError) throw new Error(data.message)
-        setDeliveriesPricesData(data.data)
+        const prices = {
+          pac: data.data.pacPrice as number,
+          sedex: data.data.sedexPrice as number,
+          pacDeliveryTime: data.data.pacDeliveryTime as number,
+          sedexDeliveryTime: data.data.sedexDeliveryTime as number,
+        }
+        setDeliveriesPricesData({
+          pacPrice: prices.pac.toFixed(2).replace('.', ','),
+          pacDeliveryTime: prices.pacDeliveryTime.toString(),
+          sedexPrice: prices.sedex.toFixed(2).replace('.', ','),
+          sedexDeliveryTime: prices.sedexDeliveryTime.toString(),
+        })
       })
       .catch((error) => {
         setGetDeliveryPriceTries(getDeliveryPriceTries + 1)

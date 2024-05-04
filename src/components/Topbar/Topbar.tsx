@@ -27,7 +27,7 @@ export function Topbar() {
   }
 
   return (
-    <div>
+    <header>
       <div className=" flex items-center justify-between bg-orange-100 p-3 ">
         <Link href="/" className="flex cursor-pointer items-center gap-5">
           <Image
@@ -48,6 +48,6 @@ export function Topbar() {
         </div>
       </div>
       <CartDrawer isOpen={isCartOpen} setIsOpen={setIsCartOpen} />
-    </div>
+    </header>
   )
 }

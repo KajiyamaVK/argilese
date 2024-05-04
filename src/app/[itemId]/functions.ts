@@ -179,7 +179,7 @@ export async function getDeliveryPrices(
 
           response = {
             pacPrice: pacData[0].price,
-            pacDeliveryTime: pacData[0].delivery_time,
+            pacDeliveryTime: pacData[0].delivery_time + Number(pacData[0].discount),
             sedexPrice: sedexData[0].price + Number(sedexData[0].discount),
             sedexDeliveryTime: sedexData[0].delivery_time,
           }

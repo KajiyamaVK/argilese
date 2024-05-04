@@ -87,7 +87,7 @@ export async function getDeliveryPrices(
         //
         const pac = data.filter((item: IPurchaseDelivery) => item.type === 'PAC')
 
-        const pacPrice = pac[0].error ? 0 : pac[0].price + pac[0].discount
+        const pacPrice: number = pac[0].error ? 0 : Number(pac[0].price + pac[0].discount)
         const pacDeliveryTime = pac[0].error ? 0 : pac[0].delivery_time
 
         const sedex = data.filter((item: IPurchaseDelivery) => item.type === 'SEDEX')

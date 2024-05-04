@@ -91,6 +91,10 @@ export async function getDeliveryPrices(
         const sedexPrice: number = Number(sedex[0].price) + Number(sedex[0].discount)
         const pacPrice: number = Number(pac[0].price) + Number(pac[0].discount)
 
+        console.log('Number(pac[0].price)', Number(pac[0].price))
+        console.log('Number(pac[0].discount)', Number(pac[0].discount))
+        console.log('pacPrice', pacPrice)
+
         const sedexDeliveryTime = sedex[0].error ? 0 : sedex[0].delivery_time
         const pacDeliveryTime = pac[0].error ? 0 : pac[0].delivery_time
 

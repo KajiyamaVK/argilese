@@ -4,12 +4,19 @@ import logo from '/public/logo_lg.png'
 import Image from 'next/image'
 import { useContext, useEffect, useState } from 'react'
 import { GeneralContext } from '@/contexts/GeneralContext'
+import Cookies from 'js-cookie'
 
 export function MainBanner() {
   const { setIsAdmin } = useContext(GeneralContext)
   const [devCounter, setDevCounter] = useState(0)
 
   useEffect(() => {
+    const isAdminCookie = Cookies.get('Argilese.isAdmin')
+
+    if (isAdminCookie) {
+      setIsAdmin(true)
+      return
+    }
     if (devCounter === 10) {
       alert('Erro na página - por favor, recarregue a página')
     }
@@ -17,6 +24,11 @@ export function MainBanner() {
     if (devCounter === 20) {
       setIsAdmin(true)
       alert('Tome muito cuidado, criança...')
+
+      Cookies.set('Argilese.isAdmin', 'true', {
+        path: '/',
+        expires: 31,
+      })
     }
 
     setTimeout(() => {

@@ -178,8 +178,8 @@ export async function getDeliveryPrices(
           const sedexData = data.filter((item: ISuperFreteOption) => item.name === 'SEDEX')
 
           response = {
-            pacPrice: pacData[0].price,
-            pacDeliveryTime: pacData[0].delivery_time + Number(pacData[0].discount),
+            pacPrice: pacData[0].price + Number(pacData[0].discount),
+            pacDeliveryTime: pacData[0].delivery_time,
             sedexPrice: sedexData[0].price + Number(sedexData[0].discount),
             sedexDeliveryTime: sedexData[0].delivery_time,
           }

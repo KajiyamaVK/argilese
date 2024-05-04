@@ -26,7 +26,8 @@ export async function getProducts(id?: number) {
         milliliters,
         isSold
       FROM products
-      ${id ? 'WHERE id = ?' : ''}
+      WHERE isActive=1
+      ${id ? 'AND id = ?' : ''}
     `
 
     await Conn.query(

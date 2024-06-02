@@ -1,5 +1,6 @@
 // import { sendEmail } from '@/utils/emailFunctions/sendEmail'
-// import { getCustomerData, getPaymentData, updatePaymentStatus } from './functions'
+//import { getCustomerData, getPaymentData, updatePaymentStatus } from './functions'
+import { getPaymentData } from './functions'
 // import { AfterPurchaseEmailHTML } from '@/utils/emailFunctions/AfterPurchaseEmail'
 
 interface PaymentUpdate {
@@ -19,9 +20,9 @@ export async function POST(req: Request) {
   const body: PaymentUpdate = await req.json()
   console.log('body', body)
 
-  // const returnValue = await getPaymentData(body.data.id)
-  // console.log('body.data.id', body.data.id)
-  // console.log('returnValue', returnValue)
+  const returnValue = await getPaymentData(body.data.id)
+  console.log('body.data.id', body.data.id)
+  console.log('returnValue', returnValue)
 
   // updatePaymentStatus({ paymentId: body.data.id, status: returnValue.status })
 

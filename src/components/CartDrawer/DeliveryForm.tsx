@@ -48,7 +48,6 @@ export function DeliveryForm({ purchaseId }: { purchaseId: number }) {
     setValue,
     setFocus,
     watch,
-    getValues,
   } = useForm<DeliveryFormType>({
     resolver: zodResolver(DeliveryFormSchema),
   })
@@ -107,8 +106,6 @@ export function DeliveryForm({ purchaseId }: { purchaseId: number }) {
       sedexPrice: '',
       sedexDeliveryTime: '',
     })
-
-    console.log(getValues())
   }
 
   async function onSubmit(data: DeliveryFormType) {

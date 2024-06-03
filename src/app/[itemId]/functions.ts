@@ -185,7 +185,7 @@ export async function getDeliveryPrices(
           }
         }
       })
-      .then((json) => console.log(json))
+      .then((json) => console.info(json))
       .catch((err) => console.error('error:' + err))
   }
 

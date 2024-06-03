@@ -160,13 +160,13 @@ export function PaymentBrick({ amount, setPaymentId, purchaseId, setPaymentMetho
             netAmount: response.transaction_details.net_received_amount ?? 0,
             installments: response.installments,
           })
-          console.log('Payment saved')
+
           setPaymentMethod(response.payment_method_id)
           if (response.status === 'approved') {
             cart.map((product) => {
               removeProductFromShelf(product.id)
             })
-            console.log('Sending post purchase email')
+
             console.log(
               'Email data:',
               JSON.stringify({
@@ -187,7 +187,7 @@ export function PaymentBrick({ amount, setPaymentId, purchaseId, setPaymentMetho
               }),
             })
           }
-          console.log('Changing current step to paymentStatus')
+
           setCurrentStep('paymentStatus')
           // receber o resultado do pagamento
         })

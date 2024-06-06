@@ -3,16 +3,16 @@ import { getCustomerData, getPaymentData, updatePaymentStatus } from './function
 import { AfterPurchaseEmailHTML } from '@/utils/emailFunctions/AfterPurchaseEmail'
 
 interface PaymentUpdate {
-  action: string
-  api_version: string
+  action?: string
+  api_version?: string
   data: {
     id: string
   }
-  date_created: string
-  id: string
-  live_mode: boolean
-  type: string
-  user_id: number
+  date_created?: string
+  id?: string
+  live_mode?: boolean
+  type?: string
+  user_id?: number
 }
 //teste
 export async function POST(req: Request) {

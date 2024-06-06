@@ -46,8 +46,8 @@ export function CartDrawer({ isOpen, setIsOpen }: ICartDrawer) {
         const response = await getPurchasePaymentStatus(paymentId)
         if (response.status === 'approved') {
           clearInterval(interval)
-          setPaymentStatus('approved') // Atualiza o estado para refletir o status aprovado
         }
+        setPaymentStatus(response.status) // Atualiza o estado para refletir o status aprovado
       }, 5000)
 
       return () => clearInterval(interval) // Limpeza do intervalo
@@ -61,8 +61,6 @@ export function CartDrawer({ isOpen, setIsOpen }: ICartDrawer) {
     }
     // eslint-disable-next-line
   }, [totalCartQty])
-
-  useEffect(() => {}, [totalPurchaseAmount])
 
   return (
     <Drawer.Root isOpen={isOpen} onOpenChange={setIsOpen}>

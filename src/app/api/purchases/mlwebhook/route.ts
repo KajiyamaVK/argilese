@@ -19,6 +19,7 @@ export async function POST(req: Request) {
   const body: PaymentUpdate = await req.json()
 
   const returnValue = await getPaymentData(body.data.id)
+  console.log('returnValue', returnValue)
 
   updatePaymentStatus({ paymentId: body.data.id, status: returnValue.status })
 

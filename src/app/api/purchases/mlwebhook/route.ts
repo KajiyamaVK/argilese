@@ -25,12 +25,16 @@ export async function POST(req: Request) {
   }
   const returnValue = await getPaymentData(body.data.id)
   console.log('returnValue', returnValue)
-
+  console.log('begin updatePaymentStatus')
   updatePaymentStatus({ paymentId: body.data.id, status: returnValue.status })
+  console.log('end updatePaymentStatus')
 
+  console.log('begin getCustomerData')
   const customerData = await getCustomerData(returnValue.id)
+  console.log('end getCustomerData')
 
   if (returnValue.status === 'approved') {
+    console.log('begin sendEmail')
     sendEmail({
       to: customerData[0].customerEmail,
       subject: 'Pagamento registrado! Muito obrigado! ^^ ',
@@ -39,6 +43,7 @@ export async function POST(req: Request) {
         order: customerData[0].purchaseIdFK.toString(),
       }),
     })
+    console.log('end sendEmail')
   }
   return new Response('ok')
 }

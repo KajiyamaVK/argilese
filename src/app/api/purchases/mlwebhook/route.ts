@@ -16,8 +16,12 @@ interface PaymentUpdate {
 }
 //teste
 export async function POST(req: Request) {
-  const body: PaymentUpdate = await req.json()
-
+  let body: PaymentUpdate = {} as PaymentUpdate
+  try {
+    body = await req.json()
+  } catch (e) {
+    console.log('erroooou', e)
+  }
   const returnValue = await getPaymentData(body.data.id)
   console.log('returnValue', returnValue)
 

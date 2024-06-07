@@ -16,6 +16,7 @@ import { FieldPacket, QueryResult } from 'mysql2'
 export async function getPaymentData(paymentId: string) {
   try {
     console.log('paymentId', paymentId)
+    console.log('token', process.env.MERCADO_PAGO_TOKEN)
     console.log('begin fetch')
 
     const response = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {

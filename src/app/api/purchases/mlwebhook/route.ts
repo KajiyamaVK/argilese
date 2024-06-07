@@ -37,14 +37,20 @@ export async function POST(req: Request) {
 
   if (returnValue.status === 'approved') {
     console.log('begin sendEmail')
-    sendEmail({
-      to: customerData[0].customerEmail,
-      subject: 'Pagamento registrado! Muito obrigado! ^^ ',
-      html: AfterPurchaseEmailHTML({
-        name: customerData[0].customerName.split(' ')[0],
-        order: customerData[0].purchaseIdFK.toString(),
-      }),
-    })
+    console.log('customerData', customerData)
+    try {
+      sendEmail({
+        to: customerData[0].customerEmail,
+        subject: 'Pagamento registrado! Muito obrigado! ^^ ',
+        html: AfterPurchaseEmailHTML({
+          name: customerData[0].customerName.split(' ')[0],
+          order: customerData[0].purchaseIdFK.toString(),
+        }),
+      })
+    } catch (e) {
+      console.log('erroooou', e)
+      return new Response('erro')
+    }
     console.log('end sendEmail')
   }
   return new Response('ok')

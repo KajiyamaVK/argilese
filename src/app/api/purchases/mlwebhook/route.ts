@@ -23,7 +23,9 @@ export async function POST(req: Request) {
   } catch (e) {
     console.log('erroooou', e)
   }
+  console.log('begin getPaymentData')
   const returnValue = await getPaymentData(body.data.id)
+  console.log('end getPaymentData')
   console.log('returnValue', returnValue)
   console.log('begin updatePaymentStatus')
   updatePaymentStatus({ paymentId: body.data.id, status: returnValue.status })

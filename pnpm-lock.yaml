@@ -109,7 +109,7 @@ importers:
         specifier: ^1.5.11
         version: 1.5.11
       '@types/node':
-        specifier: ^20
+        specifier: ^20.14.2
         version: 20.14.2
       '@types/nodemailer':
         specifier: ^6.4.14

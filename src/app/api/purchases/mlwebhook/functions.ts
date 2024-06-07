@@ -14,6 +14,8 @@ import { FieldPacket, QueryResult } from 'mysql2'
  * response status is not 200, it throws an error message "Failed to fetch payment data"
  */
 export async function getPaymentData(paymentId: string) {
+  console.log('paymentId', paymentId)
+  console.log('begin fetch')
   const payment = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
     method: 'GET',
     headers: {
@@ -21,14 +23,17 @@ export async function getPaymentData(paymentId: string) {
     },
   })
     .then((response) => {
+      console.log('response', response)
       if (response.status === 200) {
         return response.json()
       }
       throw new Error('Failed to fetch payment data')
     })
     .catch((er) => {
+      console.error('Failed to fetch payment data', er)
       return er
     })
+  console.log('end fetch')
 
   return payment
 }

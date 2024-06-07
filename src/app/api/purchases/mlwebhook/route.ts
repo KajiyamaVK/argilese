@@ -16,6 +16,7 @@ interface PaymentUpdate {
 }
 //teste
 export async function POST(req: Request) {
+  console.log('Entrou na api')
   let body: PaymentUpdate = {} as PaymentUpdate
   try {
     body = await req.json()

@@ -12,6 +12,7 @@ const transporter = nodemailer.createTransport({
 })
 
 export async function sendEmail({ to, html, subject }) {
+  console.log('transporter', JSON.stringify(transporter))
   await transporter.sendMail({
     from: '"Argile-se" <contato@argilesestudio.com.br>', // remetente
     to: to, // lista de destinatários

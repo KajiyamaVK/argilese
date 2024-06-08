@@ -26,9 +26,11 @@ export async function POST(req) {
     })
     .then((response) => {
       console.log('Payment Created')
+      console.log(response)
       return new Response(JSON.stringify(response))
     })
     .catch((error) => {
+      console.error(error)
       return new Response(JSON.stringify(error))
     })
 }

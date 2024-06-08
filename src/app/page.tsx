@@ -2,7 +2,7 @@ import { ItemsContainer } from '@/components/ItemsContainer/ItemsContainer'
 import { MainBanner } from '@/components/MainBanner/MainBanner'
 
 export default function Home() {
-  const inMaintenance = false
+  const inMaintenance = true
   console.log('inMaintenance', inMaintenance, typeof inMaintenance)
 
   if (inMaintenance) {

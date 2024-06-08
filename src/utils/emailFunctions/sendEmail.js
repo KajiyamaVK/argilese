@@ -13,6 +13,7 @@ const transporter = nodemailer.createTransport({
 
 export async function sendEmail({ to, html, subject }) {
   console.log('Enviando lemaill')
+  console.log('content', to, subject)
   try {
     const info = await transporter.sendMail({
       from: '"Argile-se" <contato@argilesestudio.com.br>', // remetente

@@ -5,6 +5,7 @@ import { baloo } from '@/utils/fontsExports/fonts'
 import { AddToCartButton } from './AddToCartButton'
 import BackButton from '@/components/BackButton/BackButton'
 import { getProducts } from '@/components/ItemsContainer/functions'
+import React from 'react'
 export default async function ItemPage({ params }: { params: { itemId: number } }) {
   const { itemId } = params
 
@@ -22,6 +23,11 @@ export default async function ItemPage({ params }: { params: { itemId: number } 
     return <div>Produto não encontrado</div>
   }
   const productImages = product.productImages.split(';')
+
+  const descriptionLines = product.productDescription
+    .split('\n')
+    .map((line, index) => <React.Fragment key={index}>{line.trim() === '' ? <br /> : <p>{line}</p>}</React.Fragment>)
+
   return (
     <div className="flex w-full flex-col p-20 lg:flex-row lg:gap-5">
       <div className="mx-auto w-full lg:w-1/2  ">
@@ -30,7 +36,7 @@ export default async function ItemPage({ params }: { params: { itemId: number } 
       </div>
       <div className="mx-auto mt-5 max-w-[300px] lg:flex lg:w-1/2 lg:min-w-[500px] lg:flex-col ">
         <h1 className={`border-b border-gray-500 text-[2rem] ${baloo.className}`}>{product.productName}</h1>
-        {/* <p>{product.productDescription}</p> */}
+        <p>{descriptionLines}</p>
         <p className="mt-5">
           <b>Medidas aproximadas</b>
         </p>

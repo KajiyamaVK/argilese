@@ -3,7 +3,7 @@ import Image from 'next/image'
 import { baloo } from '@/utils/fontsExports/fonts'
 import { useRouter } from 'next/navigation'
 import { IProduct } from '@/models/products'
-import { useContext, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { PurchaseContext } from '@/contexts/PurchaseContext'
 import { AlertDialogContext } from '@/contexts/AlertDialogContext'
 import { GeneralContext } from '@/contexts/GeneralContext'
@@ -28,6 +28,9 @@ export function ItemCard({ product }: IItemCard) {
 
   const productImages = product.productImages.split(';')
   if (isAdmin || product.productName !== 'Produto teste') {
+    const descriptionLines = product.productDescription
+      .split('\n')
+      .map((line, index) => <React.Fragment key={index}>{line.trim() === '' ? <br /> : <p>{line}</p>}</React.Fragment>)
     return (
       <div className=" relative flex w-[300px]  flex-col flex-wrap rounded-lg bg-white p-5 pt-20 text-foreground shadow shadow-gray-500">
         <Image
@@ -38,7 +41,7 @@ export function ItemCard({ product }: IItemCard) {
           className="absolute inset-x-0 -top-20 mx-auto max-h-[150px] min-h-[150px] rounded-full border-4 border-white object-cover shadow-lg shadow-gray-500"
         />
         <h3 className={`${baloo.className} mx-auto mb-4 font-extrabold`}>{product.productName}</h3>
-        <p>{product.productDescription}</p>
+        <p>{descriptionLines}</p>
         <div className=" flex  flex-1 flex-col justify-end">
           <div className="mt-3 flex items-end ">
             <p className="font-bold">R$ </p>

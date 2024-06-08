@@ -125,7 +125,6 @@ export function PaymentBrick({ amount, setPaymentId, purchaseId, setPaymentMetho
     const body = {
       ...formData,
       additional_info,
-      notification_url: 'https://argilesestudio.com.br/api/purchases/mlwebhook',
     }
 
     return new Promise<void>(async (resolve, reject) => {

@@ -20,6 +20,7 @@ interface ISavePayment {
 }
 
 export async function savePayment(data: ISavePayment): Promise<IDBResponse> {
+  console.log('Saving payment')
   const Conn = await getDatabaseConnection()
 
   const savePaymentQuery = `
@@ -55,6 +56,8 @@ export async function savePayment(data: ISavePayment): Promise<IDBResponse> {
     .finally(() => {
       Conn.end()
     })
+
+  console.log('Saved payment')
   return { message: 'Gravado com sucesso', isError: false } as IDBResponse
 }
 

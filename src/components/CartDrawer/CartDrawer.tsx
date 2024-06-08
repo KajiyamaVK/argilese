@@ -29,6 +29,8 @@ export function CartDrawer({ isOpen, setIsOpen }: ICartDrawer) {
   useEffect(() => {
     if (isOpen) {
       setCurrentStep('cart')
+      console.log('pending')
+      setPaymentStatus('pending')
     }
 
     // To clear the cart when the payment is done and the user doesn't use the OK button.
@@ -42,14 +44,23 @@ export function CartDrawer({ isOpen, setIsOpen }: ICartDrawer) {
     if (currentStep === 'payment') {
       initMercadoPago(mercadoPagoPublicToken!)
     } else if (currentStep === 'paymentStatus') {
+      console.log('Opening Status')
+
+      // The setInterval function will execute the async function getPurchasePaymentStatus
+      // every 5 seconds until the payment status is 'approved'. The payment status is
+      // updated in the component's state to reflect the new status.
       const interval = setInterval(async () => {
         const response = await getPurchasePaymentStatus(paymentId)
+        console.log('response', response)
         if (response.status === 'approved') {
+          // If the payment status is 'approved', the interval is cleared and the payment status is
+          // updated in the component's state.
           clearInterval(interval)
         }
         setPaymentStatus(response.status) // Atualiza o estado para refletir o status aprovado
       }, 5000)
 
+      console.log('Status Opened')
       return () => clearInterval(interval) // Limpeza do intervalo
     }
     // eslint-disable-next-line

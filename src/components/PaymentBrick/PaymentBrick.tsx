@@ -138,13 +138,15 @@ export function PaymentBrick({ amount, setPaymentId, purchaseId, setPaymentMetho
       })
         .then((response) => response.json())
         .then((response) => {
+          console.log('Setting paymentId')
           setPaymentId(response.id)
+
           if (response.status === 500) {
             sendAlert({ type: 'error', message: response.message })
             reject()
             return
           }
-
+          console.log('Resolving')
           resolve()
 
           savePayment({
@@ -161,23 +163,13 @@ export function PaymentBrick({ amount, setPaymentId, purchaseId, setPaymentMetho
             installments: response.installments,
           })
 
+          console.log('setPaymentMethod')
           setPaymentMethod(response.payment_method_id)
           if (response.status === 'approved') {
             cart.map((product) => {
               removeProductFromShelf(product.id)
             })
 
-            console.log(
-              'Email data:',
-              JSON.stringify({
-                to: deliveryData.customerEmail,
-                subject: 'Compra realizada com sucesso!',
-                html: AfterPurchaseEmailHTML({
-                  name: deliveryData.customerName.split(' ')[0],
-                  order: purchaseId.toString(),
-                }),
-              }),
-            )
             sendEmail({
               to: deliveryData.customerEmail,
               subject: 'Compra realizada com sucesso!',
@@ -187,12 +179,13 @@ export function PaymentBrick({ amount, setPaymentId, purchaseId, setPaymentMetho
               }),
             })
           }
-
+          console.log('setPaymentStatus')
           setCurrentStep('paymentStatus')
           // receber o resultado do pagamento
         })
         .catch(() => {
           // lidar com a resposta de erro ao tentar criar o pagamento
+          sendAlert({ type: 'error', message: 'Erro ao processar o pagamento. Tente novamente mais tarde.' })
           reject()
         })
     })

@@ -23,7 +23,9 @@ export async function getPaymentData(paymentId: string) {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${process.env.MERCADO_PAGO_TOKEN}`,
+        'Content-Type': 'application/json',
       },
+      cache: 'no-store',
     })
 
     console.log('response', response)

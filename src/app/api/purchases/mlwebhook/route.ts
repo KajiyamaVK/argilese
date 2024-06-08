@@ -29,6 +29,7 @@ export async function POST(req: Request) {
   console.log('end getPaymentData')
   console.log('returnValue', returnValue)
   console.log('begin updatePaymentStatus')
+  console.log('returnValueStatus', returnValue.status)
   updatePaymentStatus({ paymentId: body.data.id, status: returnValue.status })
   console.log('end updatePaymentStatus')
 
@@ -54,26 +55,9 @@ export async function POST(req: Request) {
     }
     console.log('end sendEmail')
   }
-  // Send a 200 response immediately
-  // Send a 200 response immediately
+
+  console.log('Saindo da API')
   const response = NextResponse.json({ message: 'OK' }, { status: 200 })
-
-  // Perform the secondary task asynchronously
-  setImmediate(async () => {
-    try {
-      const body = await req.json()
-      console.log('Request body:', body)
-
-      // Perform your main logic here
-      // const returnValue = await getPaymentData(body.data.id);
-      // await updatePaymentStatus({ paymentId: body.data.id, status: returnValue.status });
-
-      console.log('Secondary task')
-      // Your secondary task logic here
-    } catch (error) {
-      console.log('Error in secondary task:', error)
-    }
-  })
 
   return response
 }

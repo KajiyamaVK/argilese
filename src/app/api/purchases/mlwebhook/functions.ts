@@ -28,7 +28,7 @@ export async function getPaymentData(paymentId: string) {
       cache: 'no-store',
     })
 
-    console.log('response', response)
+    console.log('response2', response)
 
     if (response.status !== 200) {
       throw new Error('Failed to fetch payment data')

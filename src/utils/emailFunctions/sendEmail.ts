@@ -21,13 +21,8 @@ export async function sendEmail({ to, html, subject }: EmailOptions) {
   console.log('Enviando e-mail')
   console.log('content', to, subject)
   try {
-    transporter.verify((error, success) => {
-      if (error) {
-        console.error('Transporter setup error:', error)
-      } else {
-        console.log('Server is ready to take our messages', success)
-      }
-    })
+    await transporter.verify()
+    console.log('Server is ready to take our messages')
     const info = await transporter.sendMail({
       from: '"Argile-se" <contato@argilesestudio.com.br>', // remetente
       to, // lista de destinatários

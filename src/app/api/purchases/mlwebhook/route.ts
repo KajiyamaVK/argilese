@@ -43,7 +43,7 @@ export async function POST(req: Request) {
     try {
       sendEmail({
         to: customerData[0].customerEmail,
-        subject: 'Pagamento registrado! Muito obrigado! ^^ ',
+        subject: 'Compra realizada com sucesso!',
         html: AfterPurchaseEmailHTML({
           name: customerData[0].customerName.split(' ')[0],
           order: customerData[0].purchaseIdFK.toString(),
